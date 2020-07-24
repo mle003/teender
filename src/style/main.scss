@@ -122,3 +122,23 @@ $rightNavWidth: 350px;
   }
 }
 
+.my-card {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-rows: 65% 35%;
+
+  .my-card-img {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
+
+  .my-card-info {
+    .my-card-title {
+      margin-top: 15px;
+      @include text(22px, $boldWeight, $charcoal);
+      text-align: center;
+    }
+  }
+}

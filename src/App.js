@@ -4,6 +4,19 @@ import logo from './assets/logo.png'
 // style
 import './style/main.scss'
 
+const demoList = [1, 2, 3]
+
+const demoImgUrl = 'https://picsum.photos/id/237/200/300'
+
+const myCard = (imageUrl, name, age) => {
+  return(<div className="my-card">
+    <div className="my-card-img" style={{backgroundImage: `url(${demoImgUrl})`}}></div>
+    <div className="my-card-info">
+      <div className="my-card-title">{name}, {age}</div>
+    </div>
+  </div>)
+}
+
  
 class App extends Component {
   constructor(props) {
@@ -32,6 +45,9 @@ class App extends Component {
     return list
   }
 
+  onSwipeLeft() {console.log('left')}
+  onSwipeRight() {console.log('right')}
+
   render() {
     let { navTitles, chosenIndex } = this.state
     return(
@@ -57,8 +73,14 @@ class App extends Component {
         <div id="main">
           <div id="card-wrapper">
             <CardWrapper>
-              <Card>Hello World 1!</Card>
-              <Card>Hello World 2!</Card>
+              {demoList.map(item => {
+                return <Card
+                key={item}
+                onSwipeLeft={this.onSwipeLeft.bind(this)}
+                onSwipeRight={this.onSwipeRight.bind(this)}>
+                {myCard(demoImgUrl, "John", 30)}
+              </Card>
+              })}
             </CardWrapper>
           </div>
           <div id="instruction"></div>
