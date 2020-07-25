@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Card, CardWrapper } from "react-swipeable-cards";
 import logo from "./assets/logo.png";
 import MainScreen from "./screens/mainScreen/index.js";
+import SignUpScreen from "./screens/signUpScreen/index.js";
 // style
 import "./style/main.scss";
 
@@ -67,7 +68,7 @@ class App extends Component {
   //   );
   // }
   render() {
-    return <MainScreen />;
+    return <SignUpScreen />;
   }
 }
 
