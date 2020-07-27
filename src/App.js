@@ -1,22 +1,8 @@
 import React, { Component } from 'react';
-import { Card, CardWrapper } from 'react-swipeable-cards';
 import logo from './assets/logo.png'
 // style
 import './style/main.scss'
-
-const demoList = [1, 2, 3]
-
-const demoImgUrl = 'https://picsum.photos/id/237/200/300'
-
-const myCard = (imageUrl, name, age) => {
-  return(<div className="my-card">
-    <div className="my-card-img" style={{backgroundImage: `url(${demoImgUrl})`}}></div>
-    <div className="my-card-info">
-      <div className="my-card-title">{name}, {age}</div>
-    </div>
-  </div>)
-}
-
+// import './style.css'
  
 class App extends Component {
   constructor(props) {
@@ -71,18 +57,8 @@ class App extends Component {
           </div>
         </div>
         <div id="main">
-          <div id="card-wrapper">
-            <CardWrapper>
-              {demoList.map(item => {
-                return <Card
-                key={item}
-                onSwipeLeft={this.onSwipeLeft.bind(this)}
-                onSwipeRight={this.onSwipeRight.bind(this)}>
-                {myCard(demoImgUrl, "John", 30)}
-              </Card>
-              })}
-            </CardWrapper>
-          </div>
+          {/* <div id="card-wrapper"> */}
+
           <div id="instruction"></div>
         </div>
       </div>
@@ -90,4 +66,4 @@ class App extends Component {
   }
 }
 
-export default App
+export default App 
