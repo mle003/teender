@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import logo from './assets/logo.png'
+import Deck from './demo'
 // style
 import './style/main.scss'
+import Match from './parts/match';
 // import './style.css'
  
 class App extends Component {
@@ -30,10 +32,6 @@ class App extends Component {
     })
     return list
   }
-
-  onSwipeLeft() {console.log('left')}
-  onSwipeRight() {console.log('right')}
-
   render() {
     let { navTitles, chosenIndex } = this.state
     return(
@@ -44,7 +42,7 @@ class App extends Component {
             <div id="nav-titles">
               {this.genTitles(navTitles, chosenIndex)}
             </div>
-            <div id="nav-main"></div>
+            <div id="nav-main"><Match/></div>
           </div>
           <div id="nav-footer">
             <div id="nav-footer-avatar"></div>
@@ -57,8 +55,9 @@ class App extends Component {
           </div>
         </div>
         <div id="main">
-          {/* <div id="card-wrapper"> */}
-
+          <div id="cards-stack">
+            <Deck/>
+          </div>
           <div id="instruction"></div>
         </div>
       </div>

@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM, { render } from 'react-dom'
-import Deck from './demo'
+import App from './App'
 
 render(
-  <Deck />,
+  <App />,
   document.querySelector('#app')
 )
