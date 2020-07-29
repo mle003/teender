@@ -52,14 +52,18 @@ function Deck() {
   return props.map(({ x, y, rot, scale }, i) => (
     <animated.div key={i} className="card-container" style={{ transform: interpolate([x, y], (x, y) => `translate3d(${x}px,${y}px,0)`) }}>
       {/* This is the card itself, we're binding our gesture to it (and inject its index so we know which is which) */}
-      <animated.div {...bind(i)} className="card" style={{ transform: interpolate([rot, scale], trans), backgroundImage: `url(${cards[i]})` }}>
+      <animated.div {...bind(i)} onDoubleClick={(e)=>clickInfo(e)} className="card" style={{ transform: interpolate([rot, scale], trans), backgroundImage: `url(${cards[i]})` }}>
       <div className="card-info">
-        <div className="big-info">John Smith, 20 <ion-icon name="male" style={{position: 'relative', bottom: -2.5}}></ion-icon></div>
-        <div className="small-info">Bad boy ain't good but good boy ain't fun. Finding a good boy to have fun. Bad boy ain't good but good boy ain't fun. Finding a good boy to have fun.Bad boy ain't good but good boy ain't fun. Finding a good boy to have fun.Bad boy ain't good but good boy ain't fun. Finding a good boy to have fun.Bad boy ain't good but good boy ain't fun. Finding a good boy to have fun.Bad boy ain't good but good boy ain't fun. Finding a good boy to have fun.Bad boy ain't good but good boy ain't fun. Finding a good boy to have fun.Bad boy ain't good but good boy ain't fun. Finding a good boy to have fun.</div>
+        <div className="big-info">John Smith, 20 
+        <ion-icon name="male" style={{position: 'relative', bottom: -2, marginLeft: 5}}></ion-icon>
+        <ion-icon onClick={(e)=>clickInfo(e)} name="information-circle" class="info-icon" style={{position: 'relative', bottom: -2.5, marginLeft: 5}}></ion-icon></div>
+        <div className="small-info">Bad boy ain't good but good boy ain't fun. Finding a good boy to have fun.</div>
       </div>
       </animated.div>
     </animated.div>
   ))
 }
-
+function clickInfo(x) {
+  console.log(x)
+}
 export default Deck

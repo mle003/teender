@@ -201,6 +201,8 @@ body {
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-start;
+    @include smoothTransition();
+    cursor: pointer;
 
     .card-info {
       width: 100%;
@@ -214,6 +216,15 @@ body {
     .small-info {
       @include text(16px, $lightWeight, white);
       margin: 0 15px;
+    }
+    .info-icon {
+      @include smoothTransition();
+      &:hover {
+        opacity: 0.8;
+      }
+      &:active {
+        opacity: 0.6;
+      }
     }
   }
 }
