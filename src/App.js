@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import logo from './assets/logo.png'
-import Deck from './cards/deck'
+import Deck from './demo'
 // style
 import './style/main.scss'
 import Match from './parts/match';
