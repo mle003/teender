@@ -27,8 +27,13 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "react": "^16.13.1",
+    "react-date-picker": "^8.0.1",
     "react-dom": "^16.13.1",
-    "react-swipeable-cards": "^1.0.6"
+    "react-image": "^4.0.3",
+    "react-images-upload": "^1.2.8",
+    "react-swipeable-cards": "^1.0.6",
+    "react-validation": "^3.0.7"
   }
 }
