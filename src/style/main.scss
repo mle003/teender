@@ -1,4 +1,4 @@
-$mainFontFam: 'Sora', sans-serif;
+$mainFontFam: "Sora", sans-serif;
 $lightWeight: 300;
 $mediumWeight: 500;
 $boldWeight: 700;
@@ -64,7 +64,7 @@ $rightNavWidth: 350px;
   padding: 7px 0;
   border-radius: 99px;
   @include displayCenter();
-  @include smoothTransition()
+  @include smoothTransition();
 }
 
 .chosen-nav-title {
@@ -82,7 +82,7 @@ $rightNavWidth: 350px;
 }
 
 .unchosen-nav-title:hover {
-  background-color: rgba(#cccccc, 0.2); 
+  background-color: rgba(#cccccc, 0.2);
 }
 
 #nav-footer {
@@ -100,7 +100,7 @@ $rightNavWidth: 350px;
   @include text(18px, $lightWeight, $mainColor);
   @include smoothTransition();
   span {
-    @include smoothTransition()
+    @include smoothTransition();
   }
 }
 #nav-footer-text:hover {
@@ -118,7 +118,5 @@ $rightNavWidth: 350px;
     display: none;
   }
   @media only screen and (min-aspect-ratio: 3/2) {
-    
   }
 }
-
