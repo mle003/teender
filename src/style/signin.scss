@@ -1,0 +1,141 @@
+@mixin displayCenter() {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body {
+  background: url("../assets/yo.jpg") center;
+  background-color: #f9f9f9;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
+    sans-serif, Apple Color Emoji, Segoe UI Emoji;
+}
+.sign-in-screen-container {
+  #sign-in-logo {
+    @include displayCenter();
+    border-bottom: 0.5px solid #cccccc;
+    padding: 20px 20px;
+  }
+}
+#sign-in-label {
+  @include displayCenter();
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  margin: 20px;
+}
+
+#form-sign-in {
+  height: 450px;
+  width: 350px;
+  margin: auto;
+  box-shadow: 1px 0.5px 1px 0.5px #ffffff9e;
+  background-color: rgb(253, 253, 253);
+  border: 1px solid #d8dee2;
+  border-radius: 8px;
+
+  .sign-in-input-container {
+    display: flex;
+    flex-direction: column;
+    padding: 29px;
+    font-size: 14px;
+    input {
+      @include displayCenter();
+      border: none;
+      background-color: transparent;
+      border-style: solid;
+      border-width: 0px 0px 1px 0px;
+      border-color: lightgrey;
+      background: transparent;
+      width: 100%;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      padding: 5px 12px;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 550;
+      // color: #24292e;
+      vertical-align: middle;
+      // background-color: #fff;
+      // background-repeat: no-repeat;
+      background-position: right 8px center;
+      // border-radius: 6px;
+      outline: none;
+      // box-shadow: inset 0 1px 0 rgba(225, 228, 232, 0.2);
+    }
+    input::placeholder {
+      font-size: 12.8px;
+      font-weight: 500;
+      // font-style: italic;
+    }
+    input:focus {
+      border-width: 0px 0px 2px 0px;
+    }
+    label {
+      display: block;
+      margin-bottom: 2px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    span {
+      color: #585858;
+
+      margin: 4px 1px 9px 1px;
+      font-size: 12px;
+      font-weight: 500;
+      font-style: italic;
+    }
+    span:hover {
+      color: rgb(29, 29, 29);
+
+      cursor: pointer;
+    }
+    button {
+      height: 35px;
+      border-radius: 80px;
+      outline: none;
+      border: none;
+      background: url("../assets/yo.jpg") left;
+      outline: none;
+      box-shadow: none;
+      margin: 9px 1px 5px 1px;
+    }
+    button:hover {
+      cursor: pointer;
+      background: url("../assets/yo.jpg") center;
+    }
+    #forgot-pass {
+      display: flex;
+      justify-content: flex-end;
+    }
+    #error {
+      @include displayCenter();
+      margin: 5px;
+      color: red;
+      font-weight: 500;
+    }
+    // display: flex;
+  }
+  .to-sign-up-container {
+    @include displayCenter();
+    margin-top: 29px;
+    flex-direction: column;
+    #ask-text {
+      font-size: 14px;
+      font-weight: 400;
+      color: gray;
+    }
+    #to-sign-up {
+      color: #585858;
+      margin-top: 9px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    #to-sign-up:hover {
+      cursor: pointer;
+      color: rgb(29, 29, 29);
+    }
+  }
+
+  //   display: flex;
+}
