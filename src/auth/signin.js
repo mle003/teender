@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 // import { Route } from "react-router-dom";
 import logo from "../assets/logo.png";
-import Axios from "axios";
+import Axios from "../home/card/node_modules/axios";
 class SignInScreen extends Component {
   constructor(props) {
     super(props);

@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import logo from "../../assets/logo.png";
 import DatePicker from "react-date-picker";
-import axios from "axios";
+import axios from "../home/card/node_modules/axios";
 
 class SignUpScreen extends Component {
   constructor(props) {
