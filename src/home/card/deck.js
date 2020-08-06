@@ -3,19 +3,7 @@ import { useSprings, animated, interpolate } from "react-spring";
 import { useGesture } from "react-with-gesture";
 import axios from "axios";
 
-// const userPic = () => {
-//   axios
-//     .request({
-//       url: "http://localhost:9000/api/users",
-//       method: "GET",
-//     })
-//     .then((res) => {
-//       console.log(res.data);
-//     })
-//     .catch((err) => {
-//       console.log(err.response.data.message);
-//     });
-// };
+const year = parseInt(new Date().getFullYear());
 
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
 const to = (i) => ({
@@ -45,37 +33,34 @@ function Deck() {
   //   "https://upload.wikimedia.org/wikipedia/en/thumb/8/88/RWS_Tarot_02_High_Priestess.jpg/690px-RWS_Tarot_02_High_Priestess.jpg",
   //   "https://upload.wikimedia.org/wikipedia/en/d/de/RWS_Tarot_01_Magician.jpg",
   // ];
-  let [cards, setCards] = useState([]);
-  // let check = true;
+  const [infos, setInfos] = useState([]);
+  const [count, setCount] = useState(1);
+  // if (infos.length === 0) {
   useEffect(() => {
     axios
       .request({
         url: "http://localhost:9000/api/users",
         method: "GET",
+        headers: {},
       })
       .then((res) => {
         if (check) {
           // console.log(res.data.data[0].info.imgUrl);
           let data = res.data.data;
-          let arr = [];
-          data.map((v) => {
-            console.log(v.info.imgUrl);
-            return arr.push(v.info.imgUrl);
-          });
-          console.log(arr);
-          setCards(arr);
+          console.log(JSON.stringify(data[0]));
+          setInfos(data);
           check = false;
         }
       })
       .catch((err) => {
-        console.log(err.response.data.message);
+        console.log(err);
+        // console.log(err.response.data.message);
       });
   });
-
-  // console.log(cards);
-
+  //   return <div></div>;
+  // }
   const [gone] = useState(() => new Set()); // The set flags all the cards that are flicked out
-  const [props, set] = useSprings(cards.length, (i) => ({
+  const [props, set] = useSprings(infos.length, (i) => ({
     ...to(i),
     from: from(i),
   })); // Create a bunch of springs using the helpers above
@@ -99,6 +84,7 @@ function Deck() {
         const rot = xDelta / 100 + (isGone ? dir * 10 * velocity : 0); // How much the card tilts, flicking it harder makes it rotate faster
         const scale = down ? 1.1 : 1; // Active cards lift up a bit
         if (isGone) {
+          console.log(infos);
           if (dir > 0) {
             console.log("like");
           } else {
@@ -113,7 +99,7 @@ function Deck() {
           config: { friction: 50, tension: down ? 800 : isGone ? 200 : 500 },
         };
       });
-      if (!down && gone.size === cards.length)
+      if (!down && gone.size === infos.length)
         setTimeout(() => gone.clear() || set((i) => to(i)), 600);
     }
   );
@@ -137,16 +123,24 @@ function Deck() {
         className="card"
         style={{
           transform: interpolate([rot, scale], trans),
-          backgroundImage: `url(${cards[i]})`,
+          backgroundImage: `url(${infos[i].info.imgUrl})`,
         }}
       >
         <div className="card-info">
           <div className="big-info">
-            John Smith, 20
-            <ion-icon
-              name="male"
-              style={{ position: "relative", bottom: -2, marginLeft: 5 }}
-            ></ion-icon>
+            {infos[i].info.name}{" "}
+            {year - parseInt(infos[i].info.birthdate.substring(0, 4))}
+            {infos[i].info.gender === "male" ? (
+              <ion-icon
+                name="male"
+                style={{ position: "relative", bottom: -2, marginLeft: 5 }}
+              ></ion-icon>
+            ) : (
+              <ion-icon
+                name="female"
+                style={{ position: "relative", bottom: -2, marginLeft: 5 }}
+              ></ion-icon>
+            )}
             <ion-icon
               onClick={(e) => clickInfo(e)}
               name="information-circle"
@@ -154,10 +148,7 @@ function Deck() {
               style={{ position: "relative", bottom: -2.5, marginLeft: 5 }}
             ></ion-icon>
           </div>
-          <div className="small-info">
-            Bad boy ain't good but good boy ain't fun. Finding a good boy to
-            have fun.
-          </div>
+          <div className="small-info">{infos[i].info.desc}</div>
         </div>
       </animated.div>
     </animated.div>

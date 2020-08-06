@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import logo from "./assets/logo.png";
+import logo from "../assets/logo.png";
 import Deck from "./card/deck";
 // style
-import "./style/main.scss";
+import "../style/main.scss";
 import Match from "./match";
-import axios from "./card/node_modules/axios";
+// import axios from "axios";
 // import './style.css'
 
 class App extends Component {
