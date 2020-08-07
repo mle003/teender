@@ -7,7 +7,7 @@ import Match from "./match";
 // import axios from "axios";
 // import './style.css'
 
-class App extends Component {
+class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,20 +16,11 @@ class App extends Component {
       arrowMargin: 5,
     };
   }
-
-  // componentWillMount() {
-  //   axios
-  //     .request({
-  //       url: "http://localhost:9000/api/users",
-  //       method: "GET",
-  //     })
-  //     .then((res) => {
-  //       console.log(res.data);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err.response.data.message);
-  //     });
-  // }
+  componentWillMount() {
+    let teenderToken = localStorage.getItem('teenderToken')
+    console.log(teenderToken)
+    // handle auth here
+  }
 
   genTitles(titles, chosenIndex) {
     let list = titles.map((item, index) => {
@@ -50,10 +41,9 @@ class App extends Component {
     });
     return list;
   }
-  render() {
+  mainScreen() {
     let { navTitles, chosenIndex } = this.state;
-    return (
-      <div id="main-screen">
+    return (<div id="main-screen">
         <div id="nav">
           <div id="nav-logo">
             <img src={logo} height="30" />
@@ -86,9 +76,24 @@ class App extends Component {
           </div>
           <div id="instruction"></div>
         </div>
-      </div>
+      </div>)}
+  render() {
+    return (
+      <Route
+        // {...rest}
+        render={({ location }) =>
+          true ? (()=>this.mainScreen()) : (
+            <Redirect
+              to={{
+                pathname: "/login",
+                state: { from: location }
+              }}
+            />
+          )
+        }
+      /> 
     );
   }
 }
 
-export default App;
+export default Home;
