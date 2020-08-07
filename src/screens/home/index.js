@@ -19,7 +19,8 @@ class Home extends Component {
   componentWillMount() {
     let teenderToken = localStorage.getItem('teenderToken')
     console.log(teenderToken)
-    // handle auth here
+    // handle checking auth here
+    
   }
 
   genTitles(titles, chosenIndex) {

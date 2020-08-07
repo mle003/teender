@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 // import { Route } from "react-router-dom";
 import logo from "../assets/logo.png";
-import Axios from "../home/card/node_modules/axios";
+import MyRequest from "../../global/api/request";
+// import Axios from "axios";
+impor
 class SignInScreen extends Component {
   constructor(props) {
     super(props);
@@ -30,37 +32,29 @@ class SignInScreen extends Component {
       password: target.value,
     });
   }
-  submitHandler(e) {
+  async submitHandler(e) {
     e.preventDefault();
     let { email, password } = this.state;
-    // email = JSON.stringify(email);
-    // password = JSON.stringify(password);
-    Axios.request({
-      method: "POST",
-      url: "http://localhost:9000/api/auth/sign-in",
-      headers: {
-        "Content-Type": "application/json",
-        token: "" || JSON.parse(localStorage.getItem("token")),
-      },
-      data: {
-        email,
-        password,
-      },
-    })
-      .then((res) => {
-        console.log(res.data);
-
-        this.setState({
-          error: "",
-        });
-        localStorage.setItem("token", JSON.stringify(res.data.accessToken));
+    let loginData = {email: email, password: password}
+    try {
+      let user = await MyRequest.login(loginData)
+      this.setState({
+        error: "",
       })
-      .catch((err) => {
-        this.setState({
-          error: err.response.data.message,
-        });
-      });
+    } catch(err) {
+      this.setState({
+        error: err.message,
+      })
+    }
+
+    function onError(err) {
+      
+    }
+
+    MyRequest.login()
+
   }
+  
   render() {
     return (
       <div className="sign-in-screen-container">
