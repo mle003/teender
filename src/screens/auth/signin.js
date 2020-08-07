@@ -47,12 +47,6 @@ class SignInScreen extends Component {
       })
     }
 
-    function onError(err) {
-      
-    }
-
-    MyRequest.login()
-
   }
   
   render() {
