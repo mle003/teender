@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import logo from "../../assets/logo.png";
 import DatePicker from "react-date-picker";
-import axios from "../home/card/node_modules/axios";
+import Axios from "axios";
 
 class SignUpScreen extends Component {
   constructor(props) {
@@ -73,7 +73,7 @@ class SignUpScreen extends Component {
 
     e.preventDefault();
     if (this.handleValidation()) {
-      axios
+      Axios
         .request({
           url: "http://localhost:9000/api/auth/sign-up",
           method: "POST",

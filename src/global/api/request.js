@@ -5,22 +5,25 @@ const headers = {
 }
 class MyRequest {
   static async login(data) {
-    let api = "/api/auth/sign-in"
-    let responseJson = await Axios.request({
+    let api = BASE_URL + "/api/auth/sign-in"
+    let body = {
+      email: data.email,
+      password: data.password,
+    }
+    let response = await Axios.request({
       method: "POST",
-      url: BASE_URL + api,
+      url: api,
       headers: headers,
-      data: {
-        email: data.email,
-        password: data.password,
-      },
+      data: body,
     })
-    let response = JSON.parse(responseJson)
-    if (response.success) {
-      localStorage.setItem("token", JSON.stringify(res.data.accessToken))
-      return response.data
+    if (response.status >= 200 && response.status <= 300 ) {
+      let responseData = response.data
+      if (responseData.success) 
+        return responseData.data
+      else 
+        throw new Error(responseData.message)
     } else {
-      throw new Error(response.message)
+      throw new Error(response.statusText)
     }
   }
 }

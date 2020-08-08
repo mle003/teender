@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 // import { Route } from "react-router-dom";
-import logo from "../assets/logo.png";
+import logo from "../../assets/logo.png";
 import MyRequest from "../../global/api/request";
-// import Axios from "axios";
-impor
+import MyContainer from '../../global/state'
+
 class SignInScreen extends Component {
   constructor(props) {
     super(props);
@@ -12,41 +12,32 @@ class SignInScreen extends Component {
       password: "",
       error: "",
     };
-    this.passwordHandler = this.passwordHandler.bind(this);
-    this.emailHandler = this.emailHandler.bind(this);
-    this.submitHandler = this.submitHandler.bind(this);
   }
-  emailHandler(e) {
-    let target = e.target;
-    // let email = document.querySelector("#email")
-    // let password = document.querySelector("#password")
+  inputHandler(e, title) {
     this.setState({
-      email: target.value,
-    });
-  }
-  passwordHandler(e) {
-    let target = e.target;
-    // let email = document.querySelector("#email")
-    // let password = document.querySelector("#password")
-    this.setState({
-      password: target.value,
+      [title]: e.target.value,
     });
   }
   async submitHandler(e) {
     e.preventDefault();
-    let { email, password } = this.state;
-    let loginData = {email: email, password: password}
+    let loginData = {
+      email: this.state.email, 
+      password: this.state.password
+    }
     try {
       let user = await MyRequest.login(loginData)
+      console.log(user)
+      // MyContainer.saveUserData(user)
+      console.log(MyContainer.state)
       this.setState({
         error: "",
       })
     } catch(err) {
+      console.log(err)
       this.setState({
         error: err.message,
       })
     }
-
   }
   
   render() {
@@ -56,12 +47,12 @@ class SignInScreen extends Component {
           <img src={logo} height="29" />
         </div>
         <div id="sign-in-label">Sign in to Teender</div>
-        <form id="form-sign-in" onSubmit={this.submitHandler}>
+        <form id="form-sign-in" onSubmit={e=>this.submitHandler(e)}>
           <div className="sign-in-input-container">
             <label>Email Address</label>
             <input
               value={this.state.email}
-              onChange={this.emailHandler}
+              onChange={e=>this.inputHandler(e, 'email')}
               id="email"
               placeholder="Type your email"
               required
@@ -71,7 +62,7 @@ class SignInScreen extends Component {
             <label>Password</label>
             <input
               value={this.state.password}
-              onChange={this.passwordHandler}
+              onChange={e=>this.inputHandler(e, 'password')}
               id="password"
               placeholder="Type your password"
               required
@@ -83,7 +74,7 @@ class SignInScreen extends Component {
             {this.state.error == "" ? null : (
               <div id="error"> {this.state.error} </div>
             )}
-            <button type="submit">Sign In</button>
+            <button>Sign In</button>
           </div>
           <div className="to-sign-up-container">
             <div id="ask-text">Have not account yet?</div>

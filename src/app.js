@@ -1,22 +1,23 @@
 import React, { Component } from 'react'
-import { Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
+import { Provider } from 'unstated'
+
 import ROUTES from './global/routes'
 import LandingPage from './screens/landing'
 import SignUpScreen from './screens/auth/signup'
 import SignInScreen from './screens/auth/signin'
 import Home from './screens/home'
-import { Provider } from 'unstated'
 
-
-function PrivateRoute({ children, ...rest }) {
+function PrivateHomeRoute({ children, ...rest }) {
   return (
     <Route {...rest}
       render={({ location }) =>
-        true  
+      // check user api here => return boolean
+        false  
         ? (children) 
         : (<Redirect
             to={{
-              pathname: "/login",
+              pathname: ROUTES.SIGN_IN,
               state: { from: location }
             }}
           />
@@ -26,26 +27,18 @@ function PrivateRoute({ children, ...rest }) {
   );
 }
 
-class App extends Component {
-  constructor(props) {
-    super(props)
-  }
-
-  render() {
+function App() {
     return (
+      // unstated
       <Provider>
         <Router>
-          <div style={{fontSize: 50}}>
-            loading
-          </div>
           <Route exact path={ROUTES.LANDING} component={LandingPage}/>
           <Route path={ROUTES.SIGN_UP} component={SignUpScreen}/>
           <Route path={ROUTES.SIGN_IN} component={SignInScreen}/>
-          <PrivateRoute path={ROUTES.HOME}><Home/></PrivateRoute>
+          <PrivateHomeRoute path={ROUTES.HOME}><Home/></PrivateHomeRoute>
         </Router>
       </Provider>
     )
   }
-}
 
 export default App

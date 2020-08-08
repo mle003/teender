@@ -1,12 +1,13 @@
-import React, { Component } from 'react'
 import { Container } from 'unstated'
+import User from './model/user'
 
 class MyContainer extends Container {
   state = {
-    count: 0
-  };
-
-
+    user: null
+  }
+  saveUserData = (userData) => {
+    this.setState({ user: new User(userData) });
+  }
 }
 
 export default MyContainer

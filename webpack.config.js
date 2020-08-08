@@ -4,7 +4,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 // const isRunningDevServer = process.env.WEBPACK_DEV_SERVER
 module.exports = {
-  entry: path.join(__dirname, 'src/main.js'),
+  entry: [
+    path.join(__dirname, 'src/main.js'),
+  ],
   output: {
     filename: 'js/[name].[contenthash].js',
     publicPath: '/'
@@ -47,5 +49,10 @@ module.exports = {
         }
       }
     ]
+  },
+  resolve: {
+    alias: {
+      src: path.resolve(__dirname, 'src/'),
+    }
   }
 }
