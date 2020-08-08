@@ -1,6 +1,7 @@
 import React, { Component, useState } from "react";
 import logo from "../../assets/logo.png";
 import DatePicker from "react-date-picker";
+import '../../style/signup.scss'
 import Axios from "axios";
 
 class SignUpScreen extends Component {
@@ -65,7 +66,7 @@ class SignUpScreen extends Component {
       password,
       gender,
       birthday,
-      profilePic,
+      imgUrl,
     } = registerInfo;
     let name = firstName + " " + lastName;
     console.log(name);
@@ -86,7 +87,7 @@ class SignUpScreen extends Component {
             password,
             gender,
             birthday,
-            profilePic,
+            imgUrl,
           },
         })
         .then((res) => {
@@ -114,7 +115,7 @@ class SignUpScreen extends Component {
   pictureHandler(event) {
     // console.log(event.target.files[0]);
     let registerInfo = this.state.registerInfo;
-    registerInfo["profilePic"] = event.target.files[0];
+    registerInfo["imgUrl"] = event.target.files[0];
   }
 
   render() {

@@ -13,12 +13,12 @@ class User {
   constructor(item) {
     this._id = item._id
     this.email = item.email
-    this.info = UserInfo(item.info)
+    this.info = new UserInfo(item.info)
     this.match = item.match
     this.likedBy = item.likedBy
     this.like = item.like
     this.unlike = item.unlike
-    this.token = item.token
+    this.accessToken = item.accessToken
   }
 }
 export default User

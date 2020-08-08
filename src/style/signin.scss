@@ -4,7 +4,7 @@
   align-items: center;
 }
 body {
-  background: url("../assets/yo.jpg") center;
+  // background: url("../assets/yo.jpg") center;
   background-color: #f9f9f9;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
     sans-serif, Apple Color Emoji, Segoe UI Emoji;
@@ -95,14 +95,14 @@ body {
       border-radius: 80px;
       outline: none;
       border: none;
-      background: url("../assets/yo.jpg") left;
+      // background: url("../assets/yo.jpg") left;
       outline: none;
       box-shadow: none;
       margin: 9px 1px 5px 1px;
     }
     button:hover {
       cursor: pointer;
-      background: url("../assets/yo.jpg") center;
+      // background: url("../assets/yo.jpg") center;
     }
     #forgot-pass {
       display: flex;

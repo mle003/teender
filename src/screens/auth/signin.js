@@ -3,6 +3,8 @@ import React, { Component } from "react";
 import logo from "../../assets/logo.png";
 import MyRequest from "../../global/api/request";
 import MyContainer from '../../global/state'
+import '../../style/signin.scss'
+import { Subscribe } from "unstated";
 
 class SignInScreen extends Component {
   constructor(props) {
@@ -11,6 +13,7 @@ class SignInScreen extends Component {
       email: "",
       password: "",
       error: "",
+      user: null
     };
   }
   inputHandler(e, title) {
@@ -26,11 +29,10 @@ class SignInScreen extends Component {
     }
     try {
       let user = await MyRequest.login(loginData)
-      console.log(user)
       // MyContainer.saveUserData(user)
-      console.log(MyContainer.state)
       this.setState({
         error: "",
+        user: user
       })
     } catch(err) {
       console.log(err)
@@ -42,6 +44,19 @@ class SignInScreen extends Component {
   
   render() {
     return (
+    <div>
+      <Subscribe to={[MyContainer]}>
+        {container => {
+          let user = this.state.user
+          if (user) {
+            console.log(user)
+            container.saveUserData(user)
+            this.setState({ user: null })
+            console.log(container)
+          }
+          return <div></div>;
+        }}
+      </Subscribe>
       <div className="sign-in-screen-container">
         <div id="sign-in-logo">
           <img src={logo} height="29" />
@@ -82,6 +97,7 @@ class SignInScreen extends Component {
           </div>
         </form>
       </div>
+    </div>
     );
   }
 }
