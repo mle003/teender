@@ -43,7 +43,6 @@ body {
   overflow: hidden;
 }
 
-
 #main-screen {
   height: 100%;
   display: grid;
@@ -161,7 +160,7 @@ body {
   }
 }
 
-#main {
+#main-deck {
   display: grid;
   grid-template-rows: 90% 10%;
 
@@ -254,5 +253,24 @@ body {
     &:active {
       opacity: 0.6;
     }
+  }
+}
+
+#main-chat {
+  width: 100%;
+  display: grid;
+  grid-template-columns: calc(100% - 300px) 300px;
+}
+
+#chat-box {
+  height: 100%;
+  display: grid;
+  grid-template-rows: $footerNavHeight auto $footerNavHeight;
+  border-right: $lightBorder;
+  #chat-header {
+    border-bottom: $lightBorder;
+  }
+  #chat-body {
+    border-bottom: $lightBorder;
   }
 }

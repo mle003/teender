@@ -1,0 +1,61 @@
+$mainFontFam: 'Sora', sans-serif;
+$lightWeight: 300;
+$mediumWeight: 500;
+$boldWeight: 700;
+
+$lightGrey: #cccccc;
+$mainColor: #a778b6;
+$charcoal: #333333;
+$lightBorder: 0.5px solid $lightGrey;
+$footerNavHeight: 75px;
+$rightNavWidth: 350px;
+
+@mixin text($size: 12px, $weight: $lightWeight, $color: black) {
+  font-size: $size;
+  font-weight: $weight;
+  color: $color;
+}
+.mess {
+  padding: 7px 10px;
+  border: $lightBorder;
+  margin: 10px 10px 0 10px;
+  border-radius: 16px;
+  @include text(14px);
+  max-width: 400px;
+
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow: hidden;
+}
+
+#chat-header {
+  display: flex;
+  align-items: center;
+  #chat-header-avatar {
+    height: 47px;
+    width: 47px;
+    border-radius: 50%;
+    border: $lightBorder;
+    margin: 0 25px;
+  }
+  #chat-header-text {
+    #chat-header-name {
+      @include text(22px, $mediumWeight, $charcoal)
+    }
+    #chat-header-info {
+      @include text(12px, $lightWeight, $charcoal)
+    }
+  }
+}
+
+.sent-mess {
+  background-color: $mainColor;
+  color: white;
+  border-color: transparent 
+}
+
+.received-mess {
+  background-color: rgba($lightGrey, 0.2);
+  color: black;
+  border-color: transparent 
+}

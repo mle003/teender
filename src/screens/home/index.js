@@ -1,11 +1,31 @@
 import React, { Component } from "react";
 import logo from "../../assets/logo.png"
 import Deck from "./card/deck";
+import ChatBox from './chat/index'
+import detailCard from './card/detailCard'
+import Match from "./match";
+
 // style
 import "../../style/main.scss";
-import Match from "./match";
 // import axios from "axios";
 // import './style.css'
+
+function deckScreen() {
+  return (
+  <div id="main-deck">
+    <div id="cards-stack">
+      <Deck />
+    </div>
+    <div id="instruction"></div>
+  </div>)
+}
+function chatScreen() {
+  return (
+  <div id="main-chat">
+    <ChatBox/>
+    {detailCard()}
+  </div>)
+}
 
 class Home extends Component {
   constructor(props) {
@@ -42,7 +62,7 @@ class Home extends Component {
     });
     return list;
   }
-  mainScreen() {
+  render() {
     let { navTitles, chosenIndex } = this.state;
     return (<div id="main-screen">
         <div id="nav">
@@ -71,30 +91,8 @@ class Home extends Component {
             </div>
           </div>
         </div>
-        <div id="main">
-          <div id="cards-stack">
-            <Deck />
-          </div>
-          <div id="instruction"></div>
-        </div>
+        {chatScreen()}
       </div>)}
-  render() {
-    return (
-      <Route
-        // {...rest}
-        render={({ location }) =>
-          true ? (()=>this.mainScreen()) : (
-            <Redirect
-              to={{
-                pathname: "/login",
-                state: { from: location }
-              }}
-            />
-          )
-        }
-      /> 
-    );
-  }
 }
 
 export default Home;

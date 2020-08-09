@@ -29,7 +29,6 @@ class SignInScreen extends Component {
     }
     try {
       let user = await MyRequest.login(loginData)
-      // MyContainer.saveUserData(user)
       this.setState({
         error: "",
         user: user
@@ -49,10 +48,8 @@ class SignInScreen extends Component {
         {container => {
           let user = this.state.user
           if (user) {
-            console.log(user)
             container.saveUserData(user)
             this.setState({ user: null })
-            console.log(container)
           }
           return <div></div>;
         }}
