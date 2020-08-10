@@ -15,10 +15,23 @@ $rightNavWidth: 350px;
   font-weight: $weight;
   color: $color;
 }
+
+#chat-box {
+  height: 100%;
+  display: grid;
+  grid-template-rows: $footerNavHeight calc(100vh - 150px) $footerNavHeight;
+  border-right: $lightBorder;
+  #chat-header {
+    box-shadow: 0px 5px 60px 0 rgba($lightGrey, 0.2);
+  }
+  #chat-body {
+    overflow-y: scroll;
+  }
+}
 .mess {
   padding: 7px 10px;
   border: $lightBorder;
-  margin: 10px 10px 0 10px;
+  margin: 10px 14px 0 14px;
   border-radius: 16px;
   @include text(14px);
   max-width: 400px;
@@ -31,19 +44,46 @@ $rightNavWidth: 350px;
 #chat-header {
   display: flex;
   align-items: center;
-  #chat-header-avatar {
-    height: 47px;
-    width: 47px;
-    border-radius: 50%;
-    border: $lightBorder;
-    margin: 0 25px;
+  justify-content: space-between;
+
+  #chat-header-avatar-container {
+    width: 15%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    #chat-header-avatar {
+      height: 47px;
+      width: 47px;
+      border-radius: 50%;
+      border: $lightBorder;
+    }
   }
+  
   #chat-header-text {
+    width: 75%;
+    text-align: left;
     #chat-header-name {
       @include text(22px, $mediumWeight, $charcoal)
     }
     #chat-header-info {
       @include text(12px, $lightWeight, $charcoal)
+    }
+  }
+  #chat-close-button {
+    cursor: pointer;
+    width: 10%;
+    height: 100%;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    font-size: 30px;
+    font-weight: $boldWeight;
+    color: $lightGrey;
+    &:hover {
+      opacity: 0.8;
+    }
+    &:active {
+      opacity: 0.6;
     }
   }
 }
@@ -59,3 +99,42 @@ $rightNavWidth: 350px;
   color: black;
   border-color: transparent 
 }
+
+#chat-footer {
+  padding: 0 14px;
+}
+#chat-form {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  #chat-input {
+    padding: 10px 10px;
+    border: $lightBorder;
+    border-radius: 100px;
+    width: 90%;
+    @include text(14px, $lightWeight, $charcoal);
+  } 
+  #send-button {
+    cursor: pointer;
+    outline: none;
+    width: 50px;
+    height: 50px;
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    text-align: center;
+    #send-icon {
+      font-size: 24px;
+      color: $mainColor;
+    }
+    &:hover {
+      opacity: 0.8;
+    }
+    &:active {
+      opacity: 0.6;
+    }
+  }
+}
+

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSprings, animated, interpolate } from "react-spring";
 import { useGesture } from "react-with-gesture";
 import axios from "axios";
+import 'src/style/card.scss'
 
 const year = parseInt(new Date().getFullYear());
 

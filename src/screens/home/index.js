@@ -6,7 +6,8 @@ import detailCard from './card/detailCard'
 import Match from "./match";
 
 // style
-import "../../style/main.scss";
+import "src/style/main.scss";
+
 // import axios from "axios";
 // import './style.css'
 

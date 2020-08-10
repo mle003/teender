@@ -43,6 +43,11 @@ body {
   overflow: hidden;
 }
 
+input {
+  font-family: $mainFontFam;
+  outline: none;
+}
+
 #main-screen {
   height: 100%;
   display: grid;
@@ -139,95 +144,6 @@ body {
   }
 }
 
-.my-card {
-  height: 100%;
-  width: 100%;
-  display: grid;
-  grid-template-rows: 65% 35%;
-
-  .my-card-img {
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-  }
-
-  .my-card-info {
-    .my-card-title {
-      margin-top: 15px;
-      @include text(22px, $boldWeight, $charcoal);
-      text-align: center;
-    }
-  }
-}
-
-#main-deck {
-  display: grid;
-  grid-template-rows: 90% 10%;
-
-  #cards-stack {
-    position: fixed;
-    overflow: hidden;
-    width: 75%;
-    height: 100%;
-    cursor: pointer;
-    @include displayCenter()
-  }
-  
-  #cards-stack > .card-container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    will-change: transform;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  #cards-stack > .card-container > .card {
-    background-color: white;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-    width: 50vh;
-    // max-width: 300px;
-    height: 70vh;
-    // max-height: 570px;
-    will-change: transform;
-    border-radius: 10px;
-    box-shadow: 10px 12.5px 10px -10px rgba(168, 168, 168, 0.4);
-
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-start;
-    @include smoothTransition();
-    cursor: pointer;
-
-    .card-info {
-      width: 100%;
-      height: 35%;
-      background-image: linear-gradient(to top, rgba(44, 44, 44, 0.7), rgba(255, 255, 255, 0));
-    }
-    .big-info {
-      @include text(26px, $boldWeight, white);
-      margin: 0 15px;
-    }
-    .small-info {
-      @include text(16px, $lightWeight, white);
-      margin: 0 15px;
-    }
-    .info-icon {
-      @include smoothTransition();
-      &:hover {
-        opacity: 0.8;
-      }
-      &:active {
-        opacity: 0.6;
-      }
-    }
-  }
-}
-
 .match-part {
   display: flex;
   justify-content: space-between;
@@ -260,17 +176,4 @@ body {
   width: 100%;
   display: grid;
   grid-template-columns: calc(100% - 300px) 300px;
-}
-
-#chat-box {
-  height: 100%;
-  display: grid;
-  grid-template-rows: $footerNavHeight auto $footerNavHeight;
-  border-right: $lightBorder;
-  #chat-header {
-    border-bottom: $lightBorder;
-  }
-  #chat-body {
-    border-bottom: $lightBorder;
-  }
 }
