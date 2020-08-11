@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSprings, animated, interpolate } from "react-spring";
 import { useGesture } from "react-with-gesture";
-import axios from "axios";
 import 'src/style/card.scss'
+import MyRequest from "../../../global/api/request";
 
-const year = parseInt(new Date().getFullYear());
 
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
 const to = (i) => ({
@@ -38,25 +37,26 @@ function Deck() {
   const [count, setCount] = useState(1);
   // if (infos.length === 0) {
   useEffect(() => {
-    axios
-      .request({
-        url: "http://localhost:9000/api/users",
-        method: "GET",
-        headers: {},
-      })
-      .then((res) => {
-        if (check) {
-          // console.log(res.data.data[0].info.imgUrl);
-          let data = res.data.data;
-          console.log(JSON.stringify(data[0]));
-          setInfos(data);
-          check = false;
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        // console.log(err.response.data.message);
-      });
+    MyRequest.getCards(count)
+    // axios
+    //   .request({
+    //     url: "http://localhost:9000/api/cards",
+    //     method: "GET",
+    //     headers: {},
+    //   })
+    //   .then((res) => {
+    //     if (check) {
+    //       // console.log(res.data.data[0].info.imgUrl);
+    //       let data = res.data.data;
+    //       console.log(JSON.stringify(data[0]));
+    //       setInfos(data);
+    //       check = false;
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     // console.log(err.response.data.message);
+    //   });
   });
   //   return <div></div>;
   // }
@@ -118,40 +118,7 @@ function Deck() {
       }}
     >
       {/* This is the card itself, we're binding our gesture to it (and inject its index so we know which is which) */}
-      <animated.div
-        {...bind(i)}
-        onDoubleClick={(e) => clickInfo(e)}
-        className="card"
-        style={{
-          transform: interpolate([rot, scale], trans),
-          backgroundImage: `url(${infos[i].info.imgUrl})`,
-        }}
-      >
-        <div className="card-info">
-          <div className="big-info">
-            {infos[i].info.name}{" "}
-            {year - parseInt(infos[i].info.birthdate.substring(0, 4))}
-            {infos[i].info.gender === "male" ? (
-              <ion-icon
-                name="male"
-                style={{ position: "relative", bottom: -2, marginLeft: 5 }}
-              ></ion-icon>
-            ) : (
-              <ion-icon
-                name="female"
-                style={{ position: "relative", bottom: -2, marginLeft: 5 }}
-              ></ion-icon>
-            )}
-            <ion-icon
-              onClick={(e) => clickInfo(e)}
-              name="information-circle"
-              class="info-icon"
-              style={{ position: "relative", bottom: -2.5, marginLeft: 5 }}
-            ></ion-icon>
-          </div>
-          <div className="small-info">{infos[i].info.desc}</div>
-        </div>
-      </animated.div>
+      
     </animated.div>
   ));
 }

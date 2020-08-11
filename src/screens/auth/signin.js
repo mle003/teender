@@ -28,7 +28,7 @@ class SignInScreen extends Component {
       password: this.state.password
     }
     try {
-      let user = await MyRequest.login(loginData)
+      let user = await MyRequest.signIn(loginData)
       this.setState({
         error: "",
         user: user
