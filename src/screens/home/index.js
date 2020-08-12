@@ -4,6 +4,7 @@ import Deck from "./card/deck";
 import ChatBox from './chat/index'
 import detailCard from './card/detailCard'
 import Match from "./match";
+import ChatList from "./chat/chatList";
 
 // style
 import "src/style/main.scss";
@@ -73,7 +74,7 @@ class Home extends Component {
           <div id="nav-body">
             <div id="nav-titles">{this.genTitles(navTitles, chosenIndex)}</div>
             <div id="nav-main">
-              <Match />
+              <ChatList />
             </div>
           </div>
           <div id="nav-footer">
