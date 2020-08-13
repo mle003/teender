@@ -1,10 +1,12 @@
 import React, { Component } from "react";
-import logo from "../../assets/logo.png"
+import logo from "../../assets/logo.png";
 import Deck from "./card/deck";
 // style
 import "../../style/main.scss";
 import Match from "./match";
-// import axios from "axios";
+import MyContainer from "../../global/state.js";
+import { Subscribe } from "unstated";
+import axios from "axios";
 // import './style.css'
 
 class Home extends Component {
@@ -14,16 +16,35 @@ class Home extends Component {
       navTitles: ["Match", "Message"],
       chosenIndex: 0,
       arrowMargin: 5,
+      infos: [],
     };
   }
-  componentWillMount() {
-    let teenderToken = localStorage.getItem('teenderToken')
-    console.log(teenderToken)
-    // handle checking auth here
-    
-  }
+  // componentWillMount() {
+  //   let teenderToken = localStorage.getItem("teenderToken");
+  //   console.log(teenderToken);
+  //   // handle checking auth here
+  //   axios
+  //     .request({
+  //       url: "http://localhost:9000/api/cards",
+  //       method: "GET",
+  //       headers: {},
+  //     })
+  //     .then((res) => {
+  //       // console.log(res.data.data[0].info.imgUrl);
+  //       let data = res.data.data;
+  //       console.log("data", res.data);
+  //       // console.log(JSON.stringify(data[0]));
+  //       this.setState({ infos: data });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       // console.log(err.response.data.message);
+  //     });
+  // }
 
   genTitles(titles, chosenIndex) {
+    console.log("container props", MyContainer);
+
     let list = titles.map((item, index) => {
       return (
         <div
@@ -42,9 +63,15 @@ class Home extends Component {
     });
     return list;
   }
-  mainScreen() {
+  render() {
     let { navTitles, chosenIndex } = this.state;
-    return (<div id="main-screen">
+    return (
+      <div id="main-screen">
+        {/* <Subscribe to={[MyContainer]}>
+          {(container) => {
+            let user = this.state.user;
+          }}
+        </Subscribe> */}
         <div id="nav">
           <div id="nav-logo">
             <img src={logo} height="30" />
@@ -77,22 +104,7 @@ class Home extends Component {
           </div>
           <div id="instruction"></div>
         </div>
-      </div>)}
-  render() {
-    return (
-      <Route
-        // {...rest}
-        render={({ location }) =>
-          true ? (()=>this.mainScreen()) : (
-            <Redirect
-              to={{
-                pathname: "/login",
-                state: { from: location }
-              }}
-            />
-          )
-        }
-      /> 
+      </div>
     );
   }
 }

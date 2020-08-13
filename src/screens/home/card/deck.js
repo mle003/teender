@@ -25,40 +25,41 @@ const trans = (r, s) =>
 let check = true;
 
 function Deck() {
-  // const cards = [
-  //   "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR9QhoAasSH6BhE-hbSTalPuZs9wKD9E-B64g&usqp=CAU",
-  //   "https://upload.wikimedia.org/wikipedia/en/5/53/RWS_Tarot_16_Tower.jpg",
-  //   "https://upload.wikimedia.org/wikipedia/en/9/9b/RWS_Tarot_07_Chariot.jpg",
-  //   "https://upload.wikimedia.org/wikipedia/en/d/db/RWS_Tarot_06_Lovers.jpg",
-  //   "https://upload.wikimedia.org/wikipedia/en/thumb/8/88/RWS_Tarot_02_High_Priestess.jpg/690px-RWS_Tarot_02_High_Priestess.jpg",
-  //   "https://upload.wikimedia.org/wikipedia/en/d/de/RWS_Tarot_01_Magician.jpg",
-  // ];
   const [infos, setInfos] = useState([]);
   const [count, setCount] = useState(1);
-  // if (infos.length === 0) {
+
   useEffect(() => {
-    axios
-      .request({
-        url: "http://localhost:9000/api/users",
-        method: "GET",
-        headers: {},
-      })
-      .then((res) => {
-        if (check) {
-          // console.log(res.data.data[0].info.imgUrl);
-          let data = res.data.data;
-          console.log(JSON.stringify(data[0]));
-          setInfos(data);
-          check = false;
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        // console.log(err.response.data.message);
-      });
+    if (infos.length === 0) {
+      axios
+        .request({
+          url: "http://localhost:9000/api/cards",
+          method: "GET",
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+          params: {
+            pageIndex: count,
+          },
+        })
+        .then((res) => {
+          if (check) {
+            // console.log(res.data.data[0].info.imgUrl);
+            let data = res.data.data;
+            console.log("data", res.data);
+            // console.log(JSON.stringify(data[0]));
+            setInfos(data);
+            check = false;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          // console.log(err.response.data.message);
+        });
+    } else {
+      console.log("123456");
+    }
   });
-  //   return <div></div>;
-  // }
+  console.log("908", infos);
   const [gone] = useState(() => new Set()); // The set flags all the cards that are flicked out
   const [props, set] = useSprings(infos.length, (i) => ({
     ...to(i),
@@ -74,6 +75,7 @@ function Deck() {
       direction: [xDir],
       velocity,
     }) => {
+      console.log(infos);
       const trigger = velocity > 0.2; // If you flick hard enough it should trigger the card to fly out
       const dir = xDir < 0 ? -1 : 1; // Direction should either point left or right
       if (!down && trigger) gone.add(index); // If button/finger's up and trigger velocity is reached, we flag the card ready to fly out
@@ -84,13 +86,14 @@ function Deck() {
         const rot = xDelta / 100 + (isGone ? dir * 10 * velocity : 0); // How much the card tilts, flicking it harder makes it rotate faster
         const scale = down ? 1.1 : 1; // Active cards lift up a bit
         if (isGone) {
-          console.log(infos);
+          console.log(i);
           if (dir > 0) {
             console.log("like");
           } else {
             console.log("unlike");
           }
         }
+
         return {
           x,
           rot,
@@ -119,6 +122,7 @@ function Deck() {
       {/* This is the card itself, we're binding our gesture to it (and inject its index so we know which is which) */}
       <animated.div
         {...bind(i)}
+        // {...removeUsers(i)}
         onDoubleClick={(e) => clickInfo(e)}
         className="card"
         style={{

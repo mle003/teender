@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode production",
-    "start": "webpack-dev-server --https --cert ./ssl/client-1.local.crt --key ./ssl/client-1.local.key --mode production"
+    "start": "webpack-dev-server --mode production"
   },
   "author": "",
   "license": "ISC",
