@@ -4,7 +4,7 @@ const headers = {
   "Content-Type": "application/json",
 };
 class MyRequest {
-  static async login(data) {
+  static async signIn(data) {
     let api = BASE_URL + "/api/auth/sign-in";
     let body = {
       email: data.email,
@@ -23,6 +23,21 @@ class MyRequest {
       else throw new Error(responseData.message);
     } else {
       console.log(response.data.message);
+    }
+  }
+  static async checkUser(token) {
+    let api = BASE_URL + "/api/auth/check-user";
+    let response = await Axios.request({
+      method: "GET",
+      url: api,
+      headers: { headers, token: token },
+    });
+    if (response.status >= 200 && response.status <= 300) {
+      let responseData = response.data;
+      if (responseData.success) return responseData.data;
+      else throw new Error(responseData.message);
+    } else {
+      throw new Error(response.statusText);
     }
   }
 }

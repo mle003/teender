@@ -5,9 +5,8 @@ class MyContainer extends Container {
   state = {
     user: null,
   };
-  saveUserData = (userData) => {
-    console.log("userData", userData);
-    this.setState({ user: new User(userData) });
+  saveUserData = async userData => {
+    await this.setState({ user: new User(userData) })
   };
 }
 
