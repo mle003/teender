@@ -170,7 +170,7 @@ $rightNavWidth: 350px;
   .chat-tile-info {
     width: calc(100% - 160px);
     .chat-tile-name {
-      @include text(15px, $boldWeight, $charcoal);
+      @include text(17px, $boldWeight, $charcoal);
       width: 100%;
       @include limitLine();
     }
