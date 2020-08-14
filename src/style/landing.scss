@@ -1,4 +1,4 @@
-$bgUrl: 'https://images.unsplash.com/photo-1541251486001-470f7c85e0bb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80';
+$bgUrl: 'https://images.unsplash.com/photo-1516653596519-e001baef98fe?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80';
 $mainFontFam: 'Sora', sans-serif;
 $lightWeight: 300;
 $mediumWeight: 500;
@@ -6,8 +6,21 @@ $boldWeight: 700;
 
 $lightGrey: #cccccc;
 $mainColor: #a778b6;
+$mainColorDark: #7d528b;
+
 $charcoal: #333333;
 
+$lightBorder: 0.5px solid $lightGrey;
+
+@mixin clickButton() {
+  transition: all 0.4s;
+  &:hover {
+    background-color: rgba($lightGrey, 0.4);
+  }
+  &:active {
+    opacity: 0.6;
+  }
+}
 @mixin centerBg() {
   background-size: cover;
   background-repeat: no-repeat;
@@ -38,23 +51,49 @@ $charcoal: #333333;
   height: 100%;
   width: 100%;
   background-image: url($bgUrl);
-  @include centerBg();
+  background-repeat: no-repeat;
+  background-size: 120%;
+  background-position: right;
+  
 }
 
 #landing-bg-filter {
   height: 100%;
   width: 100%;
-  background-color: rgba(white, 0.3);
+  background: linear-gradient(180deg, rgba(white, 0.8), transparent);
+  display: flex;
+  justify-content: flex-end;
+}
+
+#landing-content {
+  padding: 8vw 18vw 0 0;
 }
 
 #landing-title {
-  @include text(70px, $boldWeight, $mainColor)
+  @include text(70px, $boldWeight, $mainColor);
+  text-shadow: white;
 }
 
 #landing-sub-title {
-  @include text(25px, $lightWeight, $mainColor)
+  @include text(25px, $lightWeight, $mainColor);
+}
+#landing-signup {
+  margin: 30px 0;
+}
+#landing-signup-button {
+  padding: 10px 20px;
+  @include text(17px, $mediumWeight, $charcoal);
+  border-radius: 7px;
+  border: $lightBorder;
+  @include clickButton();
 }
 
-#landing-signup-button {
-  height: 40px;
+#landing-auth-button {
+  @include text(17px, $mediumWeight, $mainColorDark);
+  @include clickButton();
+}
+
+#landing-signin-button {
+  @include text(12px, $lightWeight, $charcoal);
+  @include clickButton();
 }

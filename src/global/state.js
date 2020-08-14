@@ -6,7 +6,8 @@ class MyContainer extends Container {
     user: null,
   };
   saveUserData = async userData => {
-    await this.setState({ user: new User(userData) })
+    if (userData)
+      await this.setState({ user: new User(userData) })
   };
 }
 

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import { Provider } from "unstated";
+import { Provider, Subscribe } from "unstated";
 import MyRequest from "./global/api/request";
 
 import ROUTES from "./global/routes";
@@ -12,34 +12,42 @@ import MyContainer from "./global/state";
 
 function PrivateHomeRoute({ children, ...rest }) {
   let token = localStorage.getItem("token");
-  let valid = false;
-  MyRequest.checkUser(token)
-    .then((res) => {
-      console.log(res);
-      valid = true;
-      let container = new MyContainer()
-      container.saveUserData(res)
-    })
-    .catch((err) => {
-      console.log(err);
-      valid = false;
-    });
+  let loaded = false;
+  let user = null;
   return (
-    <Route
-      {...rest}
-      render={({ location }) => {
-        return valid ? (
-          children
-        ) : (
-            <Redirect
-              to={{
-                pathname: ROUTES.SIGN_IN,
-                state: { from: location },
-              }}
-            />
-          );
-      }}
-    />
+    <Subscribe to={[MyContainer]}>
+    {container => { 
+      if (!loaded) {
+        MyRequest.checkUser(token)
+        .then((res) => {
+          console.log(res);
+          user = res
+          container.saveUserData(user)
+          loaded = true
+        })
+        .catch((err) => {
+          console.log(err);
+          loaded = true
+        });
+      }
+      return <Route
+        {...rest}
+        render={({ location }) => {
+          console.log('container')
+          console.log(container)
+          return !!user ? (
+            children
+          ) : (
+              <Redirect
+                to={{
+                  pathname: ROUTES.SIGN_IN,
+                  state: { from: location },
+                }}
+              />
+            );
+        }}
+    />}}
+    </Subscribe>
   );
 }
 
