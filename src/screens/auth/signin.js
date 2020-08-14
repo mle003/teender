@@ -5,7 +5,7 @@ import MyRequest from "../../global/api/request";
 import MyContainer from "../../global/state";
 import "../../style/signin.scss";
 import { Subscribe } from "unstated";
-import { Redirect, Router } from "react-router-dom";
+import { Redirect, Router, Link } from "react-router-dom";
 import ROUTES from "../../global/routes";
 
 class SignInScreen extends Component {
@@ -62,9 +62,10 @@ class SignInScreen extends Component {
         </Subscribe>
         <div className="sign-in-screen-container">
           <div id="sign-in-logo">
-            <img src={logo} height="29" />
+            <div id="sign-in-label">Sign in to <span>teender</span></div>
+            {/* <img src={logo} height="29" /> */}
           </div>
-          <div id="sign-in-label">Sign in to Teender</div>
+          
           <form id="form-sign-in" onSubmit={(e) => this.submitHandler(e)}>
             <div className="sign-in-input-container">
               <label>Email Address</label>
@@ -95,8 +96,10 @@ class SignInScreen extends Component {
               <button type="submit">Sign In</button>
             </div>
             <div className="to-sign-up-container">
-              <div id="ask-text">Have not account yet?</div>
-              <div id="to-sign-up">Sign Up</div>
+              <div id="ask-text">Don't have an account?</div>
+              <div id="to-sign-up">
+                <Link to={ROUTES.SIGN_UP}>Sign up</Link>
+              </div>
             </div>
           </form>
         </div>

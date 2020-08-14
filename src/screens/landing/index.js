@@ -22,18 +22,18 @@ function LandingPage() {
           <div id="landing-title">teender</div>
           <div id="landing-sub-title">Swipe, connect, partner.</div>
           <div id="landing-signup">
-            <Link class="link" id="landing-signup-button" to={ROUTES.SIGN_UP}>Sign up now 🧡</Link>
+            <Link className="link" id="landing-signup-button" to={ROUTES.SIGN_UP}>Sign up now ❤️</Link>
           </div>
           <div id="landing-auth">
-            <Link class="link" id="landing-auth-button" to={ROUTES.HOME}>
+            <Link className="link" id="landing-auth-button" to={ROUTES.HOME}>
               {!container.state.user 
-                ? 'Sign in now!'
-                : `Sign in as ${container.state.user.info.name || 'Guest'}`}
+                ? 'or Sign in'
+                : <div>Sign in as <span id="landing-auth-user-name">{container.state.user.info.name || 'Guest'}</span></div>}
             </Link>
           </div>
           {!container.state.user 
             ? <div></div>
-            : <Link class="link" id="landing-signin-button" to={ROUTES.SIGN_IN}>Not you? Sign in as another person</Link> }
+            : <Link className="link" id="landing-signin-button" to={ROUTES.SIGN_IN}>Not you? Sign in as another person</Link> }
         </div>
         
       </div>

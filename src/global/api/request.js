@@ -16,29 +16,39 @@ class MyRequest {
       headers: headers,
       data: body,
     });
-    if (response.status >= 200 && response.status <= 300) {
-      console.log("asd", response);
-      let responseData = response.data;
-      if (responseData.success) return responseData.data;
-      else throw new Error(responseData.message);
-    } else {
-      console.log(response.data.message);
-    }
+    console.log("sign in", response);
+    let responseData = response.data;
+    if (responseData.success) return responseData.data;
+    else throw new Error(responseData.message);
+
   }
   static async checkUser(token) {
+    headers.token = token
     let api = BASE_URL + "/api/auth/check-user";
     let response = await Axios.request({
       method: "GET",
       url: api,
-      headers: { headers, token: token },
+      headers: headers,
     });
-    if (response.status >= 200 && response.status <= 300) {
-      let responseData = response.data;
-      if (responseData.success) return responseData.data;
-      else throw new Error(responseData.message);
-    } else {
-      throw new Error(response.statusText);
-    }
+    let responseData = response.data;
+    if (responseData.success) return responseData.data;
+    else throw new Error(responseData.message);
+
+  }
+  static async getCards(page) {
+    headers.token = localStorage.getItem("token")
+    let api = BASE_URL + "/api/cards";
+    let response = await Axios.request({
+      method: "GET",
+      url: api,
+      headers: headers,
+      params: {
+        pageIndex: page
+      }
+    });
+    let responseData = response.data;
+    if (responseData.success) return responseData.data;
+    else throw new Error(responseData.message);
   }
 }
 
