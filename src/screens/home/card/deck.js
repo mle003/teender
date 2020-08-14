@@ -24,49 +24,56 @@ const trans = (r, s) =>
 // const trans = (r, s) => `perspective(1500px) rotateX(0deg) rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`
 let check = true;
 
-function Deck() {
-  const [infos, setInfos] = useState([]);
+function Deck({ infos }) {
+  // const [infos, setInfos] = useState([]);
   const [count, setCount] = useState(1);
+  const [image, setImage] = useState([]);
+  let newInfos = [...infos];
+  let asd = [];
+  console.log("qwerty", infos);
+  console.log("abcxyz", newInfos);
+  // const fetchImage = () => {
+  //   axios
+  //     .request({
+  //       url: "http://localhost:9000/api/cards",
+  //       method: "GET",
+  //       headers: {
+  //         token: localStorage.getItem("token"),
+  //       },
+  //       params: {
+  //         pageIndex: count,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       if (check) {
+  //         // console.log(res.data.data[0].info.imgUrl);
+  //         let data = res.data.data;
+  //         console.log("data", res.data);
+  //         // console.log(JSON.stringify(data[0]));
+  //         setInfos(data);
+  //         check = false;
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       // console.log(err.response.data.message);
+  //     });
+  // };
 
-  useEffect(() => {
-    if (infos.length === 0) {
-      axios
-        .request({
-          url: "http://localhost:9000/api/cards",
-          method: "GET",
-          headers: {
-            token: localStorage.getItem("token"),
-          },
-          params: {
-            pageIndex: count,
-          },
-        })
-        .then((res) => {
-          if (check) {
-            // console.log(res.data.data[0].info.imgUrl);
-            let data = res.data.data;
-            console.log("data", res.data);
-            // console.log(JSON.stringify(data[0]));
-            setInfos(data);
-            check = false;
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          // console.log(err.response.data.message);
-        });
-    } else {
-      console.log("123456");
-    }
-  });
-  console.log("908", infos);
+  // useEffect(() => {
+  //   if (infos.length === 0) {
+  //     fetchImage();
+  //   } else {
+  //     console.log("123456");
+  //   }
+  // }, [infos]);
   const [gone] = useState(() => new Set()); // The set flags all the cards that are flicked out
   const [props, set] = useSprings(infos.length, (i) => ({
     ...to(i),
     from: from(i),
   })); // Create a bunch of springs using the helpers above
   // Create a gesture, we're interested in down-state, delta (current-pos - click-pos), direction and velocity
-  const bind = useGesture(
+  const bind =  useGesture(
     ({
       args: [index],
       down,
@@ -75,7 +82,6 @@ function Deck() {
       direction: [xDir],
       velocity,
     }) => {
-      console.log(infos);
       const trigger = velocity > 0.2; // If you flick hard enough it should trigger the card to fly out
       const dir = xDir < 0 ? -1 : 1; // Direction should either point left or right
       if (!down && trigger) gone.add(index); // If button/finger's up and trigger velocity is reached, we flag the card ready to fly out
@@ -86,8 +92,9 @@ function Deck() {
         const rot = xDelta / 100 + (isGone ? dir * 10 * velocity : 0); // How much the card tilts, flicking it harder makes it rotate faster
         const scale = down ? 1.1 : 1; // Active cards lift up a bit
         if (isGone) {
-          console.log(i);
           if (dir > 0) {
+            newInfos.push("1", "2", "3");
+            console.log(newInfos);
             console.log("like");
           } else {
             console.log("unlike");
@@ -106,6 +113,8 @@ function Deck() {
         setTimeout(() => gone.clear() || set((i) => to(i)), 600);
     }
   );
+
+  console.log(newInfos);
 
   // Now we're just mapping the animated values to our view, that's it. Btw, this component only renders once. :-)
   return props.map(({ x, y, rot, scale }, i) => (

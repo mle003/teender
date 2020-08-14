@@ -1,4 +1,4 @@
-$mainFontFam: 'Sora', sans-serif;
+$mainFontFam: "Sora", sans-serif;
 $lightWeight: 300;
 $mediumWeight: 500;
 $boldWeight: 700;
@@ -38,11 +38,10 @@ body {
   height: 100%;
   width: 100%;
   user-select: none;
-  font-family: 'Sora', 'sans-serif';
+  font-family: "Sora", "sans-serif";
   position: fixed;
   overflow: hidden;
 }
-
 
 #main-screen {
   height: 100%;
@@ -82,7 +81,7 @@ body {
   padding: 7px 0;
   border-radius: 99px;
   @include displayCenter();
-  @include smoothTransition()
+  @include smoothTransition();
 }
 
 .chosen-nav-title {
@@ -100,7 +99,7 @@ body {
 }
 
 .unchosen-nav-title:hover {
-  background-color: rgba(#cccccc, 0.2); 
+  background-color: rgba(#cccccc, 0.2);
 }
 
 #nav-footer {
@@ -118,7 +117,7 @@ body {
   @include text(18px, $lightWeight, $mainColor);
   @include smoothTransition();
   span {
-    @include smoothTransition()
+    @include smoothTransition();
   }
 }
 #nav-footer-text:hover {
@@ -136,7 +135,6 @@ body {
     display: none;
   }
   @media only screen and (min-aspect-ratio: 3/2) {
-    
   }
 }
 
@@ -171,9 +169,9 @@ body {
     width: 75%;
     height: 100%;
     cursor: pointer;
-    @include displayCenter()
+    @include displayCenter();
   }
-  
+
   #cards-stack > .card-container {
     position: absolute;
     width: 100%;
@@ -183,7 +181,7 @@ body {
     align-items: center;
     justify-content: center;
   }
-  
+
   #cards-stack > .card-container > .card {
     background-color: white;
     background-size: cover;
@@ -207,7 +205,11 @@ body {
     .card-info {
       width: 100%;
       height: 35%;
-      background-image: linear-gradient(to top, rgba(44, 44, 44, 0.7), rgba(255, 255, 255, 0));
+      background-image: linear-gradient(
+        to top,
+        rgba(44, 44, 44, 0.7),
+        rgba(255, 255, 255, 0)
+      );
     }
     .big-info {
       @include text(26px, $boldWeight, white);
@@ -229,12 +231,13 @@ body {
   }
 }
 
+
 .match-part {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   padding: 8px;
-  
+
   cursor: pointer;
   .match-card-container {
     height: 140px;
@@ -246,7 +249,7 @@ body {
       background-color: rgba($mainColor, 0.2);
       margin: 16px 8px;
       border-radius: 5px;
-    }    
+    }
     &:hover {
       opacity: 0.8;
       transform: scale(1.1);

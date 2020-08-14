@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import logo from "../../assets/logo.png";
 import Deck from "./card/deck";
+import Deck2 from "./card/deck2";
 // style
 import "../../style/main.scss";
 import Match from "./match";
 import MyContainer from "../../global/state.js";
-import { Subscribe } from "unstated";
 import axios from "axios";
+
 // import './style.css'
 
 class Home extends Component {
@@ -19,28 +20,53 @@ class Home extends Component {
       infos: [],
     };
   }
-  // componentWillMount() {
-  //   let teenderToken = localStorage.getItem("teenderToken");
-  //   console.log(teenderToken);
-  //   // handle checking auth here
-  //   axios
-  //     .request({
-  //       url: "http://localhost:9000/api/cards",
-  //       method: "GET",
-  //       headers: {},
-  //     })
-  //     .then((res) => {
-  //       // console.log(res.data.data[0].info.imgUrl);
-  //       let data = res.data.data;
-  //       console.log("data", res.data);
-  //       // console.log(JSON.stringify(data[0]));
-  //       this.setState({ infos: data });
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       // console.log(err.response.data.message);
-  //     });
-  // }
+
+  fetchImage() {
+    axios
+      .request({
+        url: "http://localhost:9000/api/cards",
+        method: "GET",
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+        params: {
+          pageIndex: 1,
+        },
+      })
+      .then((res) => {
+        // console.log(res.data.data[0].info.imgUrl);
+        let data = res.data.data;
+        console.log("data", res.data);
+        // console.log(JSON.stringify(data[0]));
+        this.setState({ infos: data });
+      })
+      .catch((err) => {
+        console.log(err);
+        // console.log(err.response.data.message);
+      });
+  }
+
+  // modifySuperficialChoices(userId, action){
+  //   const infos = this.state.infos
+  //   const person
+  //   switch (action) {
+  //     case 'ADD_TO_LIKED_USERS':
+  //       if (!people[activeUser].likedUsers.includes(userId)) {
+  //         newPeople[activeUser].likedUsers.push(userId);
+  //         newLikedUsers.push(data[userId]);
+
+  //         setLikedUsers(newLikedUsers);
+  //         setPeople(removedPersonFromDataSrc(people, userId));
+  //       }
+  //       break;
+  //     default:
+  //       return infos;
+  //   }
+  // };
+
+  componentWillMount() {
+    this.fetchImage();
+  }
 
   genTitles(titles, chosenIndex) {
     console.log("container props", MyContainer);
@@ -100,7 +126,8 @@ class Home extends Component {
         </div>
         <div id="main">
           <div id="cards-stack">
-            <Deck />
+            {/* <Deck infos={this.state.infos} /> */}
+            <Deck2 />
           </div>
           <div id="instruction"></div>
         </div>
