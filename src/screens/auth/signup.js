@@ -84,8 +84,16 @@ class SignUpScreen extends Component {
       delete registerInfo.lastName
       console.log(registerInfo);
       let newUser = await MyRequest.signUp(registerInfo)
-      console.log(newUser)
+      localStorage.setItem("token", newUser.accessToken);
+      this.props.history.push({
+        pathname: ROUTES.HOME,
+        state: { user: newUser }
+      });
     } catch(err) {
+      let errMess = err.message
+      if (err.message.includes('duplicate key')) {
+        errMess = 'An account with this data has already be created. Please sign in 💁🏻'
+      }
       this.setState({formError: err.message})
     }
   }
@@ -104,7 +112,7 @@ class SignUpScreen extends Component {
                 <input
                   className="signup-input"
                   type="text"
-                  value={this.state.registerInfo["firstName"]}
+                  // value={this.state.registerInfo["firstName"]}
                   onChange={this.handleChange.bind(this, "firstName")}
                 />
                 <div id="firstname-error" className="message-error">
@@ -118,7 +126,7 @@ class SignUpScreen extends Component {
                 <input
                   className="signup-input"
                   type="text"
-                  value={this.state.registerInfo["lastName"]}
+                  // value={this.state.registerInfo["lastName"]}
                   onChange={this.handleChange.bind(this, "lastName")}
                 />
                 <div id="lastname-error" className="message-error">
@@ -135,7 +143,7 @@ class SignUpScreen extends Component {
                   <div>
                     <label className="gender-option">Male
                       <input type="radio" name="gender" value="male"
-                        checked={this.state.selectedGender === "male"}
+                        // checked={this.state.selectedGender === "male"}
                         onChange={this.handleChange.bind(this, "gender")}
                       />
                     </label>
@@ -143,7 +151,7 @@ class SignUpScreen extends Component {
                   <div>
                     <label className="gender-option">Female
                       <input type="radio" name="gender" value="female"
-                        checked={this.state.selectedGender === "female"}
+                        // checked={this.state.selectedGender === "female"}
                         onChange={this.handleChange.bind(this, "gender")}
                       />
                     </label>
@@ -158,7 +166,7 @@ class SignUpScreen extends Component {
                   <div>
                     <label className="gender-option">Male
                       <input type="radio" name="interest" value="male"
-                        checked={this.state.selectedInterest === "male"}
+                        // checked={this.state.selectedInterest === "male"}
                         onChange={this.handleChange.bind(this, "interest")}
                       />
                     </label>
@@ -166,7 +174,7 @@ class SignUpScreen extends Component {
                   <div>
                     <label className="gender-option">Female
                       <input type="radio" name="interest" value="female"
-                        checked={this.state.selectedInterest === "female"}
+                        // checked={this.state.selectedInterest === "female"}
                         onChange={this.handleChange.bind(this, "interest")}
                       />
                     </label>
@@ -182,7 +190,7 @@ class SignUpScreen extends Component {
                 <input
                   className="signup-input"
                   type="email"
-                  value={this.state.registerInfo["email"]}
+                  // value={this.state.registerInfo["email"]}
                   onChange={this.handleChange.bind(this, "email")}
                 />
                 <div id="email-error" className="message-error">
@@ -196,7 +204,7 @@ class SignUpScreen extends Component {
                 <input
                   className="signup-input"
                   type="password"
-                  value={this.state.registerInfo["password"]}
+                  // value={this.state.registerInfo["password"]}
                   onChange={this.handleChange.bind(this, "password")}
                 />
                 <div id="password-error" className="message-error">

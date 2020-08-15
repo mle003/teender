@@ -33,20 +33,12 @@ class SignInScreen extends Component {
     };
     try {
       let user = await MyRequest.signIn(loginData);
-      // MyContainer.saveUserData(user)
       localStorage.setItem("token", user.accessToken);
-      this.props.history.push(ROUTES.HOME);
-      // this.setState({
-      //   error: "",
-      //   user: user,
-      // });
-      
-      // if (this.subscribeContainer) {
-        // console.log(">>>", localStorage.getItem("token"));
-        // this.subscribeContainer.saveUserData(user);
-      // }
+      this.props.history.push({
+        pathname: ROUTES.HOME,
+        state: { user: user }
+      });
     } catch (err) {
-      // console.log(">>", err);
       this.setState({
         error: err.message,
       });
@@ -56,16 +48,6 @@ class SignInScreen extends Component {
   render() {
     return (
       <div>
-        {/* <Subscribe to={[MyContainer]}>
-          {(container) => {
-            // this.subscribeContainer = container;
-            if (!this.state.signedIn) {
-              console.log(this.state.user)
-              container.saveUserData(this.state.user)
-            }
-            return <div></div>;
-          }}
-        </Subscribe> */}
         <div className="sign-in-screen-container">
           <div id="sign-in-logo">
             <div id="sign-in-label">Sign in to <span>teender</span></div>
