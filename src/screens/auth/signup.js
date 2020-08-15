@@ -1,8 +1,11 @@
 import React, { Component, useState } from "react";
 import logo from "../../assets/logo.png";
 import DatePicker from "react-date-picker";
-import '../../style/signup.scss'
+import 'src/style/signup.scss'
 import Axios from "axios";
+import ROUTES from "../../global/routes";
+import { Link } from "react-router-dom";
+import MyRequest from "../../global/api/request";
 
 class SignUpScreen extends Component {
   constructor(props) {
@@ -10,12 +13,13 @@ class SignUpScreen extends Component {
 
     this.state = {
       startDate: new Date(),
-      registerInfo: { birthday: new Date().toISOString(), gender: "male" },
+      registerInfo: { birthdate: new Date().toISOString(), gender: "male", interest: "male" },
       validationError: {},
       selectedGender: "male",
+      selectedInterest: "male",
+      formError: ''
     };
   }
-
   handleValidation() {
     let registerInfo = this.state.registerInfo;
     let errors = {};
@@ -56,81 +60,49 @@ class SignUpScreen extends Component {
     return re.test(String(email).toLowerCase());
   }
 
-  submitHandler(e) {
-    let registerInfo = this.state.registerInfo;
-    console.log(registerInfo);
-    let {
-      firstName,
-      lastName,
-      email,
-      password,
-      gender,
-      birthday,
-      imgUrl,
-    } = registerInfo;
-    let name = firstName + " " + lastName;
-    console.log(name);
-    console.log(password);
+  pictureHandler(event) {
+    // console.log(event.target.files[0]);
+    var file = event.target.files[0];
+    var reader = new FileReader();
+    reader.onloadend = function () {
+      console.log('RESULT', reader.result)
+    }
+    reader.readAsDataURL(file);
 
+    // let registerInfo = this.state.registerInfo;
+    // registerInfo["imgUrl"] = event.target.files[0];
+  }
+
+  async submitHandler(e) { // email, pass + info(name, gender, interest, birthdate, desc, imgUrl)
     e.preventDefault();
-    if (this.handleValidation()) {
-      Axios
-        .request({
-          url: "http://localhost:9000/api/auth/sign-up",
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          data: {
-            name,
-            email,
-            password,
-            gender,
-            birthday,
-            imgUrl,
-          },
-        })
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((err) => {
-          console.log(err.response.data.message);
-        });
-    } else {
-      alert("Form has errors.");
+    try {
+      if (!this.handleValidation())
+        throw new Error('The data provided is not validated')
+      let registerInfo = {...this.state.registerInfo};
+      registerInfo.name = registerInfo.firstName + " " + registerInfo.lastName;
+      delete registerInfo.firstName
+      delete registerInfo.lastName
+      console.log(registerInfo);
+      let newUser = await MyRequest.signUp(registerInfo)
+      console.log(newUser)
+    } catch(err) {
+      this.setState({formError: err.message})
     }
   }
 
-  handleInputChange(event) {
-    let registerInfo = this.state.registerInfo;
-    registerInfo["gender"] = event.target.name;
-    this.setState({ selectedGender: event.target.name });
-  }
 
-  handleDateChange(event) {
-    let registerInfo = this.state.registerInfo;
-    registerInfo["birthday"] = event.target.name;
-  }
-
-  pictureHandler(event) {
-    // console.log(event.target.files[0]);
-    let registerInfo = this.state.registerInfo;
-    registerInfo["imgUrl"] = event.target.files[0];
-  }
 
   render() {
     return (
       <form id="signup-screen" onSubmit={this.submitHandler.bind(this)}>
-        <div id="signup-logo">
-          <img src={logo} height="30" />
-        </div>
-        <h1>Create Account</h1>
+        <div id="signup-title">Create account for<span>teender</span></div>
         <div id="signup-form">
           <div id="user-name">
             <div id="first-name" className="name">
               <label>
-                First Name:
+                <div className="input-label">First Name:</div>
                 <input
+                  className="signup-input"
                   type="text"
                   value={this.state.registerInfo["firstName"]}
                   onChange={this.handleChange.bind(this, "firstName")}
@@ -142,8 +114,9 @@ class SignUpScreen extends Component {
             </div>
             <div id="last-name" className="name">
               <label>
-                Last Name:
+                <div className="input-label">Last Name:</div>
                 <input
+                  className="signup-input"
                   type="text"
                   value={this.state.registerInfo["lastName"]}
                   onChange={this.handleChange.bind(this, "lastName")}
@@ -154,43 +127,60 @@ class SignUpScreen extends Component {
               </label>
             </div>
           </div>
-          <div id="gender">
-            <label>
-              Gender:
-              <div id="gender-options">
-                <div>
-                  <label className="gender-option">
-                    Male
-                    <input
-                      type="radio"
-                      name="male"
-                      value="male"
-                      checked={this.state.selectedGender === "male"}
-                      onChange={this.handleInputChange.bind(this)}
-                    />
-                  </label>
-                </div>
-                <div>
-                  <label className="gender-option">
-                    Female
-                    <input
-                      type="radio"
-                      name="female"
-                      value="female"
-                      checked={this.state.selectedGender === "female"}
-                      onChange={this.handleInputChange.bind(this)}
-                    />
-                  </label>
-                </div>
-              </div>
-            </label>
-          </div>
-
-          <div id="account">
-            <div id="username" className="account-info">
+          <div id="gender-row">
+            <div className="gender">
               <label>
-                Email Address:
+                <div className="input-label">Gender:</div>
+                <div className="gender-options">
+                  <div>
+                    <label className="gender-option">Male
+                      <input type="radio" name="gender" value="male"
+                        checked={this.state.selectedGender === "male"}
+                        onChange={this.handleChange.bind(this, "gender")}
+                      />
+                    </label>
+                  </div>
+                  <div>
+                    <label className="gender-option">Female
+                      <input type="radio" name="gender" value="female"
+                        checked={this.state.selectedGender === "female"}
+                        onChange={this.handleChange.bind(this, "gender")}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </label>
+            </div>
+            <div className="gender">
+              <label>
+                <div className="input-label">Interested in:</div>
+                <div className="gender-options">
+                  <div>
+                    <label className="gender-option">Male
+                      <input type="radio" name="interest" value="male"
+                        checked={this.state.selectedInterest === "male"}
+                        onChange={this.handleChange.bind(this, "interest")}
+                      />
+                    </label>
+                  </div>
+                  <div>
+                    <label className="gender-option">Female
+                      <input type="radio" name="interest" value="female"
+                        checked={this.state.selectedInterest === "female"}
+                        onChange={this.handleChange.bind(this, "interest")}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div id="account">
+            <div id="email" className="account-info">
+              <label>
+                <div className="input-label">Email:</div>
                 <input
+                  className="signup-input"
                   type="email"
                   value={this.state.registerInfo["email"]}
                   onChange={this.handleChange.bind(this, "email")}
@@ -202,8 +192,9 @@ class SignUpScreen extends Component {
             </div>
             <div id="password" className="account-info">
               <label>
-                Password:
+                <div className="input-label">Password:</div>
                 <input
+                  className="signup-input"
                   type="password"
                   value={this.state.registerInfo["password"]}
                   onChange={this.handleChange.bind(this, "password")}
@@ -217,13 +208,16 @@ class SignUpScreen extends Component {
           <div id="personal-information">
             <div id="date-picker">
               <label>
-                Date of birth:
+                <div className="input-label">Date of Birth:</div>
                 <DatePicker
-                  value={new Date(this.state.registerInfo["birthday"])}
+                  id="signup-date-picker"
+                  showLeadingZeros={true}
+                  format="dd-MM-y"
+                  value={new Date(this.state.registerInfo["birthdate"])}
                   date={new Date()}
                   onChange={(date) => {
                     let registerInfo = this.state.registerInfo;
-                    registerInfo["birthday"] = date.toISOString();
+                    registerInfo["birthdate"] = date.toISOString();
                     this.setState({ registerInfo });
                   }}
                 />
@@ -231,16 +225,27 @@ class SignUpScreen extends Component {
             </div>
             <div id="profile-picture">
               <label>
-                Upload profile picture:
-                <input type="file" onChange={this.pictureHandler.bind(this)} />
+                <div className="input-label">Upload profile picture:</div>
+                <input
+                  style={{ marginTop: 10, cursor: 'pointer' }}
+                  type="file"
+                  onChange={this.pictureHandler.bind(this)} />
               </label>
             </div>
           </div>
         </div>
         <div id="register-button">
+          <div id="sign-up-error">{this.state.formError}</div>
           <button type="submit" id="register-btn">
             Register
           </button>
+        </div>
+        <div className="to-sign-in-container">
+          <span className="ask-text">Or </span>
+          <span id="to-sign-in">
+            <Link to={ROUTES.SIGN_IN}>Sign in</Link>
+          </span>
+          <span className="ask-text"> if you already have an account</span>
         </div>
       </form>
     );

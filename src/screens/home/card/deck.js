@@ -97,8 +97,10 @@ function Deck() {
   );
 
   // Now we're just mapping the animated values to our view, that's it. Btw, this component only renders once. :-)
-  return props.map(({ x, y, rot, scale }, i) => (
-    <animated.div
+  return props.map(({ x, y, rot, scale }, i) => {
+    console.log('render infos list')
+    console.log(infos)
+    return (<animated.div
       key={i}
       className="card-container"
       style={{
@@ -144,7 +146,7 @@ function Deck() {
         </div>
       </animated.div>
     </animated.div>
-  ));
+  )});
 }
 function clickInfo(x) {
   console.log(x);

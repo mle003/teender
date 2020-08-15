@@ -5,7 +5,7 @@ import MyRequest from "../../global/api/request";
 import MyContainer from "../../global/state";
 import "../../style/signin.scss";
 import { Subscribe } from "unstated";
-import { Redirect, Router, Link } from "react-router-dom";
+import { Redirect, Router, Link, withRouter } from "react-router-dom";
 import ROUTES from "../../global/routes";
 
 class SignInScreen extends Component {
@@ -16,8 +16,9 @@ class SignInScreen extends Component {
       password: "",
       error: "",
       user: null,
+      signedIn: false
     };
-    this.subscribeContainer = null;
+    // this.subscribeContainer = null;
   }
   inputHandler(e, title) {
     this.setState({
@@ -33,18 +34,19 @@ class SignInScreen extends Component {
     try {
       let user = await MyRequest.signIn(loginData);
       // MyContainer.saveUserData(user)
-      this.setState({
-        error: "",
-        user: user,
-      });
-      if (this.subscribeContainer) {
-        localStorage.setItem("token", user.accessToken);
+      localStorage.setItem("token", user.accessToken);
+      this.props.history.push(ROUTES.HOME);
+      // this.setState({
+      //   error: "",
+      //   user: user,
+      // });
+      
+      // if (this.subscribeContainer) {
         // console.log(">>>", localStorage.getItem("token"));
-        this.subscribeContainer.saveUserData(user);
-        this.props.history.push("/home");
-      }
+        // this.subscribeContainer.saveUserData(user);
+      // }
     } catch (err) {
-      console.log(">>", err);
+      // console.log(">>", err);
       this.setState({
         error: err.message,
       });
@@ -54,12 +56,16 @@ class SignInScreen extends Component {
   render() {
     return (
       <div>
-        <Subscribe to={[MyContainer]}>
+        {/* <Subscribe to={[MyContainer]}>
           {(container) => {
-            this.subscribeContainer = container;
+            // this.subscribeContainer = container;
+            if (!this.state.signedIn) {
+              console.log(this.state.user)
+              container.saveUserData(this.state.user)
+            }
             return <div></div>;
           }}
-        </Subscribe>
+        </Subscribe> */}
         <div className="sign-in-screen-container">
           <div id="sign-in-logo">
             <div id="sign-in-label">Sign in to <span>teender</span></div>
@@ -107,4 +113,4 @@ class SignInScreen extends Component {
     );
   }
 }
-export default SignInScreen;
+export default withRouter(SignInScreen);

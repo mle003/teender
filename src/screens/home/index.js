@@ -43,7 +43,7 @@ class Home extends Component {
   // }
 
   genTitles(titles, chosenIndex) {
-    console.log("container props", MyContainer);
+    console.log("container props from home", MyContainer);
 
     let list = titles.map((item, index) => {
       return (

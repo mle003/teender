@@ -6,14 +6,24 @@ $boldWeight: 700;
 $lightGrey: #cccccc;
 $mainColor: #a778b6;
 $charcoal: #333333;
+$redError: #da4e4e;
 $lightBorder: 0.5px solid $lightGrey;
 $footerNavHeight: 75px;
 $rightNavWidth: 350px;
+
+button {
+  outline: none;
+}
 
 @mixin displayCenter() {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+@mixin text($size: 12px, $weight: $lightWeight, $color: black) {
+  font-size: $size;
+  font-weight: $weight;
+  color: $color;
 }
 
 #signup-screen {
@@ -23,16 +33,35 @@ $rightNavWidth: 350px;
     padding-top: 20;
     padding-bottom: 20;
   }
-  h1 {
-    // font-family: "Rowdies", cursive;
-    @include displayCenter();
-    padding-top: 20;
+}
+#signup-title {
+  @include displayCenter();
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  color: $mainColor;
+  margin: 40 0;
+  span {
+    font-weight: 700;
+    margin-left: 0.2em;
   }
 }
-
+.signup-input, .react-date-picker__wrapper {
+  border: $lightBorder;
+}
+.input-label {
+  @include text(14px, $mediumWeight, #505050)
+}
 #signup-form {
   @include displayCenter();
   flex-direction: column;
+  input, .react-date-picker__wrapper {
+    height: 40px;
+    padding: 0 5px;
+    @include text(15px, $lightWeight, black);
+    outline: none;
+    border-radius: 7px;
+  }
   #user-name {
     width: 40%;
     display: flex;
@@ -50,18 +79,36 @@ $rightNavWidth: 350px;
     display: flex;
     flex-direction: column;
   }
-  #gender {
+
+  #gender-row {
     width: 40%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .gender {
+    width: 45%;
     margin-top: 20;
     display: flex;
     flex-direction: row;
+    .gender-options {
+      width: 40%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      margin-bottom: 12;
+      div {
+        margin-right: 20
+      }
+    }
     .gender-option {
       display: flex;
       flex-direction: row;
+      align-items: center;
       .option {
-        margin: 20;
         margin-left: 0;
-        padding: 10;
+        padding: 5px 0;
         border: 0.5px solid black;
         // border-radius: 10px;
       }
@@ -70,6 +117,7 @@ $rightNavWidth: 350px;
       }
     }
   }
+  
   #account {
     width: 40%;
     display: flex;
@@ -84,8 +132,8 @@ $rightNavWidth: 350px;
     }
   }
   .message-error {
-    color: #ff0000;
-    font-size: 12px;
+    height: 12px;
+    @include text(10px, $lightWeight, $redError)
   }
 }
 
@@ -116,18 +164,38 @@ $rightNavWidth: 350px;
   background-color: red;
 }
 
+.react-date-picker__inputGroup {
+  .react-date-picker__inputGroup__day, 
+  .react-date-picker__inputGroup__month, 
+  .react-date-picker__inputGroup__year {
+    border: 0;
+  }
+}
+
+.react-date-picker__inputGroup {
+  letter-spacing: 0.1em;
+}
+
 #register-button {
   @include displayCenter();
-  margin-top: 70;
+  flex-direction: column;
+  margin-top: 20;
+  #sign-up-error {
+    height: 12px;
+    margin-bottom: 7;
+    @include text(12px, $mediumWeight, $redError)
+  }
   #register-btn {
-    width: 100px;
-    height: 40px;
+    padding: 10px 45px;
+    @include text(15px, $mediumWeight, white);
     border-radius: 10px;
+    border: none;
     background-color: $mainColor;
+    transition: all 0.4s;
   }
   #register-btn:hover {
     cursor: pointer;
-    color: white;
+    opacity: 0.6;
   }
 }
 
@@ -137,17 +205,25 @@ $rightNavWidth: 350px;
   padding: 10px;
   position: relative;
   text-align: center;
-  transition: background 600ms ease, color 600ms ease;
+  transition: 600ms ease, color 600ms ease;
 }
 
-#gender-options {
+.to-sign-in-container {
+  width: 100%;
   display: flex;
-  flex-direction: row;
-  margin: 20;
-  margin-left: 0;
-  justify-content: space-between;
-  // padding: 10;
+  justify-content: center;
+  margin-top: 10px;
+  span {
+    margin-right: 0.3em;
+  }
+  @include text(13, $lightWeight, $charcoal);
+  #to-sign-in {
+    @include text(13, $boldWeight, $mainColor);
+  }
 }
+
+
+
 
 // input[type="radio"].toggle {
 //   display: none;

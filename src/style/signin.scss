@@ -2,7 +2,7 @@ $mainFontFam: 'Sora', sans-serif;
 $lightGrey: #cccccc;
 $mainColor: #a778b6;
 $mainColorDark: #7d528b;
-
+$redError: #da4e4e;
 @mixin displayCenter() {
   display: flex;
   justify-content: center;
@@ -27,8 +27,7 @@ a {
 .sign-in-screen-container {
   #sign-in-logo {
     @include displayCenter();
-    border-bottom: 0.5px solid #cccccc;
-    padding: 20px 20px;
+    padding: 30px 20px 10px 20px;
     margin-bottom: 20px;
   }
 }
@@ -136,7 +135,7 @@ a {
     #error {
       @include displayCenter();
       margin: 5px;
-      color: #da4e4e;
+      color: $redError;
       font-weight: 500;
     }
     // display: flex;
@@ -151,7 +150,7 @@ a {
       color: gray;
     }
     #to-sign-up {
-      color: $mainColorDark;
+      color: $mainColor;
       margin-top: 9px;
       font-size: 14px;
       font-weight: 500;
