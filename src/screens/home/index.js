@@ -5,8 +5,7 @@ import Deck from "./card/deck";
 import "../../style/main.scss";
 import Match from "./match";
 import MyContainer from "../../global/state.js";
-import { Subscribe } from "unstated";
-import axios from "axios";
+import Deck2 from "./card/deck2";
 // import './style.css'
 
 class Home extends Component {
@@ -19,28 +18,6 @@ class Home extends Component {
       infos: [],
     };
   }
-  // componentWillMount() {
-  //   let teenderToken = localStorage.getItem("teenderToken");
-  //   console.log(teenderToken);
-  //   // handle checking auth here
-  //   axios
-  //     .request({
-  //       url: "http://localhost:9000/api/cards",
-  //       method: "GET",
-  //       headers: {},
-  //     })
-  //     .then((res) => {
-  //       // console.log(res.data.data[0].info.imgUrl);
-  //       let data = res.data.data;
-  //       console.log("data", res.data);
-  //       // console.log(JSON.stringify(data[0]));
-  //       this.setState({ infos: data });
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       // console.log(err.response.data.message);
-  //     });
-  // }
 
   genTitles(titles, chosenIndex) {
     console.log("container props from home", MyContainer);
@@ -100,7 +77,7 @@ class Home extends Component {
         </div>
         <div id="main">
           <div id="cards-stack">
-            <Deck />
+            <Deck2 />
           </div>
           <div id="instruction"></div>
         </div>
