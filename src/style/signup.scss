@@ -1,19 +1,4 @@
-$mainFontFam: "Sora", sans-serif;
-$lightWeight: 300;
-$mediumWeight: 500;
-$boldWeight: 700;
-
-$lightGrey: #cccccc;
-$mainColor: #a778b6;
-$charcoal: #333333;
-$redError: #da4e4e;
-$lightBorder: 0.5px solid $lightGrey;
-$footerNavHeight: 75px;
-$rightNavWidth: 350px;
-
-button {
-  outline: none;
-}
+@import "var";
 
 @mixin displayCenter() {
   display: flex;

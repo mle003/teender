@@ -1,0 +1,39 @@
+$mainFontFam: 'Sora', sans-serif;
+$lightWeight: 300;
+$mediumWeight: 500;
+$boldWeight: 700;
+
+$lightGrey: #cccccc;
+$mainColor: #a778b6;
+$mainColorDark: #7d528b;
+$charcoal: #333333;
+$redError: #da4e4e;
+$lightBorder: 0.5px solid $lightGrey;
+$footerNavHeight: 75px;
+$rightNavWidth: 350px;
+$paddingLeft: 15px;
+
+@mixin displayCenter() {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin text($size: 12px, $weight: $lightWeight, $color: black) {
+  font-size: $size;
+  font-weight: $weight;
+  color: $color;
+}
+
+@mixin smoothTransition {
+  transition: all 0.4s;
+}
+
+@mixin centerBg() {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+button {
+  outline: none;
+}

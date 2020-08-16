@@ -1,0 +1,148 @@
+@import "var";
+
+@mixin displayCenter() {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin text($size: 12px, $weight: $lightWeight, $color: black) {
+  font-size: $size;
+  font-weight: $weight;
+  color: $color;
+}
+
+@mixin smoothTransition {
+  transition: all 0.4s;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@mixin textOverflowFormat($width: 100%) {
+  width: $width;
+  text-overflow: ellipsis;
+}
+
+.my-card {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-rows: 65% 35%;
+
+  .my-card-img {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
+
+  .my-card-info {
+    .my-card-title {
+      margin-top: 15px;
+      @include text(22px, $boldWeight, $charcoal);
+      text-align: center;
+    }
+  }
+}
+
+#main-deck {
+  display: grid;
+  grid-template-rows: 90% 10%;
+
+  #cards-stack {
+    position: fixed;
+    overflow: hidden;
+    width: 75%;
+    height: 100%;
+    cursor: pointer;
+    @include displayCenter()
+  }
+  
+  #cards-stack > .card-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    will-change: transform;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #cards-stack > .card-container > .card {
+    background-color: white;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 50vh;
+    // max-width: 300px;
+    height: 70vh;
+    // max-height: 570px;
+    will-change: transform;
+    border-radius: 10px;
+    box-shadow: 10px 12.5px 10px -10px rgba(168, 168, 168, 0.4);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    @include smoothTransition();
+    cursor: pointer;
+
+    .card-info {
+      width: 100%;
+      height: 35%;
+      background-image: linear-gradient(to top, rgba(44, 44, 44, 0.7), rgba(255, 255, 255, 0));
+    }
+    .big-info {
+      @include text(26px, $boldWeight, white);
+      margin: 0 15px;
+    }
+    .small-info {
+      @include text(16px, $lightWeight, white);
+      margin: 0 15px;
+    }
+    .info-icon {
+      @include smoothTransition();
+      &:hover {
+        opacity: 0.8;
+      }
+      &:active {
+        opacity: 0.6;
+      }
+    }
+  }
+}
+
+.detail-card-container {
+  height: 100vh;
+  overflow-y: scroll;
+}
+.detail-img {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+
+  width: 100%;
+  height: 65vh;
+}
+
+.detail-name {
+  @include textOverflowFormat();
+  @include text(30px, $boldWeight, $charcoal);
+  padding: 0 $paddingLeft;
+  margin-top: $paddingLeft;
+}
+.detail-sub-info {
+  @include textOverflowFormat();
+  @include text(18px, $boldWeight, $charcoal);
+  padding: 0 $paddingLeft;
+}
+.detail-desc {
+  @include textOverflowFormat();
+  @include text(14px, $lightWeight, $charcoal);
+  padding: 0 $paddingLeft;
+  margin-top: $paddingLeft*0.5;
+  margin-bottom: $paddingLeft * 1.5;
+  word-wrap: break-word;
+}

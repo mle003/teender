@@ -1,13 +1,5 @@
-$mainFontFam: 'Sora', sans-serif;
-$lightGrey: #cccccc;
-$mainColor: #a778b6;
-$mainColorDark: #7d528b;
-$redError: #da4e4e;
-@mixin displayCenter() {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+@import "var";
+
 body {
   // background: url("../assets/yo.jpg") center;
   background-color: white;

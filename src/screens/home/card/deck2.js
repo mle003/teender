@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useSprings, animated, interpolate } from "react-spring";
 import axios from "axios";
-import like from "../../../assets/like.png";
-import dislike from "../../../assets/dislike.png";
-import superlike from "../../../assets/superlike.png";
-import rewind from "../../../assets/rewind.png";
+import like from "src/assets/like.png";
+import dislike from "src/assets/dislike.png";
+import superlike from "src/assets/superlike.png";
+import rewind from "src/assets/rewind.png";
+import 'src/style/card.scss'
 
 const year = parseInt(new Date().getFullYear());
 const to = (i) => ({

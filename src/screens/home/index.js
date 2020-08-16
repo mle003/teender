@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import logo from "../../assets/logo.png";
 import Deck from "./card/deck";
 // style
-import "../../style/main.scss";
+import "src/style/main.scss";
+import "src/style/card.scss";
+
 import Match from "./match";
 import MyContainer from "../../global/state.js";
 import Deck2 from "./card/deck2";
@@ -75,7 +77,7 @@ class Home extends Component {
             </div>
           </div>
         </div>
-        <div id="main">
+        <div id="main-deck">
           <div id="cards-stack">
             <Deck2 />
           </div>

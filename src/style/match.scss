@@ -1,0 +1,36 @@
+@import "var";
+
+.match-card-container {
+  cursor: pointer;
+  height: 140px;
+  width: 33%;
+  @include smoothTransition();
+  .match-card {
+    height: calc(100% - 16px);
+    width: calc(100% - 16px);
+    background-image: url('https://live.staticflickr.com/2734/4353428267_bba2b6f6f8.jpg');
+    @include centerBg();
+    margin: 16px 8px;
+    border-radius: 5px;
+    .match-card-filter {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      background-color: rgba($mainColor, 0.25);
+      border-radius: 5px;
+      display: flex;
+      align-items: flex-end;
+      .match-card-name {
+        @include text(11px, $mediumWeight, white);
+        margin: 5px;
+      }
+    }
+  }    
+  &:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+  &:active {
+    opacity: 0.6;
+  }
+}
