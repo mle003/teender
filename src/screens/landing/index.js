@@ -15,6 +15,7 @@ function LandingPage() {
   return (
   <Subscribe to={[MyContainer]}>
   {container => {
+    console.log(container.state)
   return (<div id="landing">
     <div id="landing-bg">
       <div id="landing-bg-filter">

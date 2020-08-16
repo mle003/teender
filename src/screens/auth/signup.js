@@ -73,22 +73,41 @@ class SignUpScreen extends Component {
         imageStatus: imageStatus.UPLOADING
       })
       var file = event.target.files[0];
+      let aMb = 1048576
+
+      if (!file) {
+        this.setState({
+          imageStatus: imageStatus.EMPTY
+        })
+      }
+
+      if (file.size> 8 * aMb)
+        throw new Error('The image size is too big! Please select another one')
+
       var reader = new FileReader();
       reader.readAsDataURL(file)
 
       reader.onloadend = async () => {
-        let base64Code = reader.result.split(',')[1]
-        let image = await OtherRequest.uploadImage(base64Code)
-        let registerInfo = this.state.registerInfo;
-        registerInfo['imgUrl'] = image.url;
-        this.setState({ 
-          registerInfo,
-          imageStatus: imageStatus.DONE
-        });
+        try{
+          let base64Code = reader.result.split(',')[1]
+          let image = await OtherRequest.uploadImage(base64Code)
+          let registerInfo = this.state.registerInfo;
+          registerInfo['imgUrl'] = image.link;
+          this.setState({ 
+            registerInfo,
+            imageStatus: imageStatus.DONE
+          });
+        } catch(err) {
+          this.setState({
+            imageStatus: imageStatus.FAILED
+          })
+          throw err
+        }
+        
       }
     } catch(err) {
       this.setState({
-        imageStatus: imageStatus.FAILED
+        imageStatus: err.message || imageStatus.FAILED
       })
     }
   }
@@ -252,8 +271,8 @@ class SignUpScreen extends Component {
               <label>
                 <div className="input-label">Upload profile picture:</div>
                 <input
-                  style={{ marginTop: 10, cursor: 'pointer', height: 30, paddingLeft: 0}}
-                  type="file"
+                  style={{ marginTop: 10, cursor: 'pointer', height: 30, paddingLeft: 0, borderRadius: 0}}
+                  type="file" accept="image/x-png,image/gif,image/jpeg"
                   onChange={this.pictureHandler.bind(this)} />
                 <div className="message-error" style={{color: 'black'}}>
                   {this.state.imageStatus}

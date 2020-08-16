@@ -50,6 +50,9 @@ module.exports = {
       }
     ]
   },
+  devServer: {
+    historyApiFallback: true,
+  },
   resolve: {
     alias: {
       src: path.resolve(__dirname, 'src/'),
