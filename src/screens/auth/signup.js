@@ -6,6 +6,14 @@ import Axios from "axios";
 import ROUTES from "../../global/routes";
 import { Link } from "react-router-dom";
 import MyRequest from "../../global/api/request";
+import OtherRequest from "../../global/api/external";
+
+const imageStatus = {
+  DONE: 'done uploading!',
+  UPLOADING: 'uploading',
+  FAILED: 'failed uploading :(',
+  EMPTY: ''
+}
 
 class SignUpScreen extends Component {
   constructor(props) {
@@ -15,9 +23,8 @@ class SignUpScreen extends Component {
       startDate: new Date(),
       registerInfo: { birthdate: new Date().toISOString(), gender: "male", interest: "male" },
       validationError: {},
-      selectedGender: "male",
-      selectedInterest: "male",
-      formError: ''
+      formError: '',
+      imageStatus: imageStatus.EMPTY
     };
   }
   handleValidation() {
@@ -61,16 +68,29 @@ class SignUpScreen extends Component {
   }
 
   pictureHandler(event) {
-    // console.log(event.target.files[0]);
-    var file = event.target.files[0];
-    var reader = new FileReader();
-    reader.onloadend = function () {
-      console.log('RESULT', reader.result)
-    }
-    reader.readAsDataURL(file);
+    try {
+      this.setState({
+        imageStatus: imageStatus.UPLOADING
+      })
+      var file = event.target.files[0];
+      var reader = new FileReader();
+      reader.readAsDataURL(file)
 
-    // let registerInfo = this.state.registerInfo;
-    // registerInfo["imgUrl"] = event.target.files[0];
+      reader.onloadend = async () => {
+        let base64Code = reader.result.split(',')[1]
+        let image = await OtherRequest.uploadImage(base64Code)
+        let registerInfo = this.state.registerInfo;
+        registerInfo['imgUrl'] = image.url;
+        this.setState({ 
+          registerInfo,
+          imageStatus: imageStatus.DONE
+        });
+      }
+    } catch(err) {
+      this.setState({
+        imageStatus: imageStatus.FAILED
+      })
+    }
   }
 
   async submitHandler(e) { // email, pass + info(name, gender, interest, birthdate, desc, imgUrl)
@@ -82,6 +102,7 @@ class SignUpScreen extends Component {
       registerInfo.name = registerInfo.firstName + " " + registerInfo.lastName;
       delete registerInfo.firstName
       delete registerInfo.lastName
+
       console.log(registerInfo);
       let newUser = await MyRequest.signUp(registerInfo)
       localStorage.setItem("token", newUser.accessToken);
@@ -94,7 +115,7 @@ class SignUpScreen extends Component {
       if (err.message.includes('duplicate key')) {
         errMess = 'An account with this data has already be created. Please sign in 💁🏻'
       }
-      this.setState({formError: err.message})
+      this.setState({formError: errMess})
     }
   }
 
@@ -112,7 +133,6 @@ class SignUpScreen extends Component {
                 <input
                   className="signup-input"
                   type="text"
-                  // value={this.state.registerInfo["firstName"]}
                   onChange={this.handleChange.bind(this, "firstName")}
                 />
                 <div id="firstname-error" className="message-error">
@@ -126,7 +146,6 @@ class SignUpScreen extends Component {
                 <input
                   className="signup-input"
                   type="text"
-                  // value={this.state.registerInfo["lastName"]}
                   onChange={this.handleChange.bind(this, "lastName")}
                 />
                 <div id="lastname-error" className="message-error">
@@ -143,7 +162,7 @@ class SignUpScreen extends Component {
                   <div>
                     <label className="gender-option">Male
                       <input type="radio" name="gender" value="male"
-                        // checked={this.state.selectedGender === "male"}
+                        checked={this.state.registerInfo.gender === "male"}
                         onChange={this.handleChange.bind(this, "gender")}
                       />
                     </label>
@@ -151,7 +170,7 @@ class SignUpScreen extends Component {
                   <div>
                     <label className="gender-option">Female
                       <input type="radio" name="gender" value="female"
-                        // checked={this.state.selectedGender === "female"}
+                        checked={this.state.registerInfo.gender === "female"}
                         onChange={this.handleChange.bind(this, "gender")}
                       />
                     </label>
@@ -166,7 +185,7 @@ class SignUpScreen extends Component {
                   <div>
                     <label className="gender-option">Male
                       <input type="radio" name="interest" value="male"
-                        // checked={this.state.selectedInterest === "male"}
+                        checked={this.state.registerInfo.interest === "male"}
                         onChange={this.handleChange.bind(this, "interest")}
                       />
                     </label>
@@ -174,7 +193,7 @@ class SignUpScreen extends Component {
                   <div>
                     <label className="gender-option">Female
                       <input type="radio" name="interest" value="female"
-                        // checked={this.state.selectedInterest === "female"}
+                        checked={this.state.registerInfo.interest === "female"}
                         onChange={this.handleChange.bind(this, "interest")}
                       />
                     </label>
@@ -190,7 +209,6 @@ class SignUpScreen extends Component {
                 <input
                   className="signup-input"
                   type="email"
-                  // value={this.state.registerInfo["email"]}
                   onChange={this.handleChange.bind(this, "email")}
                 />
                 <div id="email-error" className="message-error">
@@ -204,7 +222,6 @@ class SignUpScreen extends Component {
                 <input
                   className="signup-input"
                   type="password"
-                  // value={this.state.registerInfo["password"]}
                   onChange={this.handleChange.bind(this, "password")}
                 />
                 <div id="password-error" className="message-error">
@@ -235,16 +252,21 @@ class SignUpScreen extends Component {
               <label>
                 <div className="input-label">Upload profile picture:</div>
                 <input
-                  style={{ marginTop: 10, cursor: 'pointer' }}
+                  style={{ marginTop: 10, cursor: 'pointer', height: 30, paddingLeft: 0}}
                   type="file"
                   onChange={this.pictureHandler.bind(this)} />
+                <div className="message-error" style={{color: 'black'}}>
+                  {this.state.imageStatus}
+                </div>
               </label>
             </div>
           </div>
         </div>
         <div id="register-button">
           <div id="sign-up-error">{this.state.formError}</div>
-          <button type="submit" id="register-btn">
+          <button 
+            type="submit" id="register-btn" 
+            disabled={this.state.imageStatus == imageStatus.UPLOADING}>
             Register
           </button>
         </div>
