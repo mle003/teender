@@ -85,11 +85,12 @@ body {
 }
 #nav-footer-avatar {
   height: $footerNavHeight;
-  width: $footerNavHeight;
+  width: $footerNavHeight*1.25;
   border-right: $lightBorder;
+  transition: all 0.4s;
 }
 #nav-footer-text {
-  width: $rightNavWidth - $footerNavHeight - 0.5px;
+  width: 100%;
   @include displayCenter();
   @include text(18px, $lightWeight, $mainColor);
   @include smoothTransition();

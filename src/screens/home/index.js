@@ -86,20 +86,16 @@ class Home extends Component {
     let { chosenIndex } = this.state;
     return (
       <div id="main-screen">
-        {/* <Subscribe to={[MyContainer]}>
-          {(container) => {
-            let user = this.state.user;
-          }}
-        </Subscribe> */}
         <div id="nav">
           <div id="nav-logo">
             <Link to={ROUTES.LANDING}><img src={logo} height="30"/></Link>
           </div>
           <div id="nav-body">
-            <div id="nav-titles">{this.genTitles(NAV_TITLES, chosenIndex)}</div>
+            <div></div>
+            {/* <div id="nav-titles">{this.genTitles(NAV_TITLES, chosenIndex)}</div>
             <div id="nav-main">
               {NAV_TITLES[this.state.chosenIndex] == TITLES.MESSAGE ? chatList() : <Match/>}
-            </div>
+            </div> */}
           </div>
           <div id="nav-footer">
             <div id="nav-footer-avatar"></div>
@@ -117,7 +113,7 @@ class Home extends Component {
             </div>
           </div>
         </div>
-        {NAV_TITLES[this.state.chosenIndex] == TITLES.MESSAGE ? chatScreen() : deckScreen()}
+        {deckScreen()}
       </div>
     );
   }
