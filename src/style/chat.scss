@@ -1,0 +1,177 @@
+@import "var";
+
+@mixin limitLine() {
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow: hidden;
+}
+
+#chat-box {
+  height: 100%;
+  display: grid;
+  grid-template-rows: $footerNavHeight calc(100vh - 150px) $footerNavHeight;
+  border-right: $lightBorder;
+  #chat-header {
+    box-shadow: 0px 5px 60px 0 rgba($lightGrey, 0.2);
+  }
+  #chat-body {
+    overflow-y: scroll;
+    @include scrollBar()
+  }
+}
+.mess {
+  padding: 7px 10px;
+  border: $lightBorder;
+  margin: 10px 14px 0 14px;
+  border-radius: 16px;
+  @include text(14px);
+  max-width: 400px;
+
+  @include limitLine()
+}
+
+#chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  #chat-header-avatar-container {
+    width: 15%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    #chat-header-avatar {
+      height: 47px;
+      width: 47px;
+      border-radius: 50%;
+      border: $lightBorder;
+      @include centerBg()
+    }
+  }
+  
+  #chat-header-text {
+    width: 75%;
+    text-align: left;
+    #chat-header-name {
+      @include text(22px, $mediumWeight, $charcoal)
+    }
+    #chat-header-info {
+      @include text(12px, $lightWeight, $charcoal)
+    }
+  }
+  #chat-close-button {
+    cursor: pointer;
+    width: 10%;
+    height: 100%;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    font-size: 30px;
+    font-weight: $boldWeight;
+    color: $lightGrey;
+    &:hover {
+      opacity: 0.8;
+    }
+    &:active {
+      opacity: 0.6;
+    }
+  }
+}
+
+.sent-mess {
+  background-color: $mainColor;
+  color: white;
+  border-color: transparent 
+}
+
+.received-mess {
+  background-color: rgba($lightGrey, 0.2);
+  color: black;
+  border-color: transparent 
+}
+
+#chat-footer {
+  padding: 0 14px;
+}
+#chat-form {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  #chat-input {
+    padding: 10px 10px;
+    border: $lightBorder;
+    border-radius: 100px;
+    width: 90%;
+    @include text(14px, $lightWeight, $charcoal);
+  } 
+  #send-button {
+    cursor: pointer;
+    outline: none;
+    width: 50px;
+    height: 50px;
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    text-align: center;
+    #send-icon {
+      font-size: 24px;
+      color: $mainColor;
+    }
+    &:hover {
+      opacity: 0.8;
+    }
+    &:active {
+      opacity: 0.6;
+    }
+  }
+}
+.chat-tile {
+  cursor: pointer;
+  height: 80px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  .chat-tile-avatar {
+    height: 46px;
+    width: 46px;
+    margin-right: 17px;
+    @include centerBg();
+    border: $lightBorder;
+    border-radius: 50%;
+  }
+  .chat-tile-info {
+    width: calc(100% - 160px);
+    .chat-tile-name {
+      @include text(17px, $boldWeight, $charcoal);
+      width: 100%;
+      @include limitLine();
+    }
+    .chat-tile-text {
+      @include text(13.5px, $lightWeight, $charcoal);
+      width: 100%;
+      @include limitLine();
+    }
+  }
+  .chat-tile-new-container {
+    margin: 0 12px;
+    .chat-tile-new-dot {
+      height: 10px;
+      width: 10px;
+      border-radius: 50%;
+      background-color: $blue;
+    }
+  }
+  transition: all 0.4s;
+  &:hover {
+    background-color: rgba($lightGrey, 0.2);
+  }
+  &:active {
+    background-color: rgba($lightGrey, 0.4);
+  }
+}
+
+.chat-tile-chosen {
+  background-color: rgba($lightGrey, 0.3);
+}

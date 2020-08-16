@@ -143,7 +143,7 @@ class SignUpScreen extends Component {
   render() {
     return (
       <form id="signup-screen" onSubmit={this.submitHandler.bind(this)}>
-        <div id="signup-title">Create account for<span>teender</span></div>
+        <div id="signup-title">Create account for<span><Link to={ROUTES.LANDING}>teender</Link></span></div>
         <div id="signup-form">
           <div id="user-name">
             <div id="first-name" className="name">

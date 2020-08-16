@@ -50,7 +50,7 @@ class SignInScreen extends Component {
       <div>
         <div className="sign-in-screen-container">
           <div id="sign-in-logo">
-            <div id="sign-in-label">Sign in to <span>teender</span></div>
+            <div id="sign-in-label">Sign in to <span><Link to={ROUTES.LANDING}>teender</Link></span></div>
             {/* <img src={logo} height="29" /> */}
           </div>
           

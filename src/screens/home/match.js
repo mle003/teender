@@ -8,6 +8,14 @@ function Match() {
       <MatchCard/>
       <MatchCard/>
       <MatchCard/>
+      <MatchCard/>
+      <MatchCard/>
+      <MatchCard/>
+      <MatchCard/>
+      <MatchCard/>
+      <MatchCard/>
+      <MatchCard/>
+      <MatchCard/>
     </div>
   )
 }

@@ -8,10 +8,13 @@ $mainColor: #a778b6;
 $mainColorDark: #7d528b;
 $charcoal: #333333;
 $redError: #da4e4e;
+$blue: #7388ce;
+
 $lightBorder: 0.5px solid $lightGrey;
 $footerNavHeight: 75px;
 $rightNavWidth: 350px;
 $paddingLeft: 15px;
+$scrollBarWidth: 8px;
 
 @mixin displayCenter() {
   display: flex;
@@ -33,6 +36,16 @@ $paddingLeft: 15px;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
+}
+
+@mixin scrollBar {
+  &::-webkit-scrollbar {
+    width: $scrollBarWidth;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba($lightGrey, 0.7);
+    border-radius: 99px;
+  }
 }
 button {
   outline: none;

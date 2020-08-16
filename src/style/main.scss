@@ -1,30 +1,4 @@
-$mainFontFam: 'Sora', sans-serif;
-$lightWeight: 300;
-$mediumWeight: 500;
-$boldWeight: 700;
-
-$lightGrey: #cccccc;
-$mainColor: #a778b6;
-$charcoal: #333333;
-$lightBorder: 0.5px solid $lightGrey;
-$footerNavHeight: 75px;
-$rightNavWidth: 350px;
-
-@mixin displayCenter() {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-@mixin text($size: 12px, $weight: $lightWeight, $color: black) {
-  font-size: $size;
-  font-weight: $weight;
-  color: $color;
-}
-
-@mixin smoothTransition {
-  transition: all 0.4s;
-}
+@import "var";
 
 * {
   box-sizing: border-box;
@@ -71,15 +45,17 @@ body {
 }
 
 #nav-titles {
+  width: $rightNavWidth - $scrollBarWidth;
+  height: 50px;
   display: flex;
   justify-content: space-evenly;
-  margin-top: 10px;
+  padding: 10px 0;
 }
 
 .nav-title {
   cursor: pointer;
   width: 80px;
-  padding: 7px 0 0 0;
+  padding: 7px 0;
   border-radius: 99px;
   @include displayCenter();
   @include smoothTransition()
@@ -140,30 +116,8 @@ body {
   }
 }
 
-.my-card {
-  height: 100%;
+#main-chat {
   width: 100%;
   display: grid;
-  grid-template-rows: 65% 35%;
-
-  .my-card-img {
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-  }
-
-  .my-card-info {
-    .my-card-title {
-      margin-top: 15px;
-      @include text(22px, $boldWeight, $charcoal);
-      text-align: center;
-    }
-  }
-}
-
-.match-part {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  padding: 8px;
+  grid-template-columns: calc(100% - 330px) 330px;
 }

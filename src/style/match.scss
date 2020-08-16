@@ -1,5 +1,15 @@
 @import "var";
 
+.match-part {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  height: calc(100vh - 150px);
+  overflow-y: scroll;
+  padding: 8px;
+  @include scrollBar()
+}
+
 .match-card-container {
   cursor: pointer;
   height: 140px;
@@ -10,7 +20,7 @@
     width: calc(100% - 16px);
     background-image: url('https://live.staticflickr.com/2734/4353428267_bba2b6f6f8.jpg');
     @include centerBg();
-    margin: 16px 8px;
+    margin: 0 8px 16px 8px;
     border-radius: 5px;
     .match-card-filter {
       height: 100%;
