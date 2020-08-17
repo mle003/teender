@@ -138,148 +138,15 @@ class SignUpScreen extends Component {
     }
   }
 
-
-
   render() {
     return (
       <form id="signup-screen" onSubmit={this.submitHandler.bind(this)}>
         <div id="signup-title">Create account for<span><Link to={ROUTES.LANDING}>teender</Link></span></div>
         <div id="signup-form">
-          <div id="user-name">
-            <div id="first-name" className="name">
-              <label>
-                <div className="input-label">First Name:</div>
-                <input
-                  className="signup-input"
-                  type="text"
-                  onChange={this.handleChange.bind(this, "firstName")}
-                />
-                <div id="firstname-error" className="message-error">
-                  {this.state.validationError["firstName"]}
-                </div>
-              </label>
-            </div>
-            <div id="last-name" className="name">
-              <label>
-                <div className="input-label">Last Name:</div>
-                <input
-                  className="signup-input"
-                  type="text"
-                  onChange={this.handleChange.bind(this, "lastName")}
-                />
-                <div id="lastname-error" className="message-error">
-                  {this.state.validationError["lastName"]}
-                </div>
-              </label>
-            </div>
-          </div>
-          <div id="gender-row">
-            <div className="gender">
-              <label>
-                <div className="input-label">Gender:</div>
-                <div className="gender-options">
-                  <div>
-                    <label className="gender-option">Male
-                      <input type="radio" name="gender" value="male"
-                        checked={this.state.registerInfo.gender === "male"}
-                        onChange={this.handleChange.bind(this, "gender")}
-                      />
-                    </label>
-                  </div>
-                  <div>
-                    <label className="gender-option">Female
-                      <input type="radio" name="gender" value="female"
-                        checked={this.state.registerInfo.gender === "female"}
-                        onChange={this.handleChange.bind(this, "gender")}
-                      />
-                    </label>
-                  </div>
-                </div>
-              </label>
-            </div>
-            <div className="gender">
-              <label>
-                <div className="input-label">Interested in:</div>
-                <div className="gender-options">
-                  <div>
-                    <label className="gender-option">Male
-                      <input type="radio" name="interest" value="male"
-                        checked={this.state.registerInfo.interest === "male"}
-                        onChange={this.handleChange.bind(this, "interest")}
-                      />
-                    </label>
-                  </div>
-                  <div>
-                    <label className="gender-option">Female
-                      <input type="radio" name="interest" value="female"
-                        checked={this.state.registerInfo.interest === "female"}
-                        onChange={this.handleChange.bind(this, "interest")}
-                      />
-                    </label>
-                  </div>
-                </div>
-              </label>
-            </div>
-          </div>
-          <div id="account">
-            <div id="email" className="account-info">
-              <label>
-                <div className="input-label">Email:</div>
-                <input
-                  className="signup-input"
-                  type="email"
-                  onChange={this.handleChange.bind(this, "email")}
-                />
-                <div id="email-error" className="message-error">
-                  {this.state.validationError["email"]}
-                </div>
-              </label>
-            </div>
-            <div id="password" className="account-info">
-              <label>
-                <div className="input-label">Password:</div>
-                <input
-                  className="signup-input"
-                  type="password"
-                  onChange={this.handleChange.bind(this, "password")}
-                />
-                <div id="password-error" className="message-error">
-                  {this.state.validationError["password"]}
-                </div>
-              </label>
-            </div>
-          </div>
-          <div id="personal-information">
-            <div id="date-picker">
-              <label>
-                <div className="input-label">Date of Birth:</div>
-                <DatePicker
-                  id="signup-date-picker"
-                  showLeadingZeros={true}
-                  format="dd-MM-y"
-                  value={new Date(this.state.registerInfo["birthdate"])}
-                  date={new Date()}
-                  onChange={(date) => {
-                    let registerInfo = this.state.registerInfo;
-                    registerInfo["birthdate"] = date.toISOString();
-                    this.setState({ registerInfo });
-                  }}
-                />
-              </label>
-            </div>
-            <div id="profile-picture">
-              <label>
-                <div className="input-label">Upload profile picture:</div>
-                <input
-                  style={{ marginTop: 10, cursor: 'pointer', height: 30, paddingLeft: 0, borderRadius: 0}}
-                  type="file" accept="image/x-png,image/gif,image/jpeg"
-                  onChange={this.pictureHandler.bind(this)} />
-                <div className="message-error" style={{color: 'black'}}>
-                  {this.state.imageStatus}
-                </div>
-              </label>
-            </div>
-          </div>
+          {this.formName()}
+          {this.formGenderAndInterest()}
+          {this.formAccount()}
+          {this.formPersonalInfo()}
         </div>
         <div id="register-button">
           <div id="sign-up-error">{this.state.formError}</div>
@@ -289,6 +156,7 @@ class SignUpScreen extends Component {
             Register
           </button>
         </div>
+
         <div className="to-sign-in-container">
           <span className="ask-text">Or </span>
           <span id="to-sign-in">
@@ -298,6 +166,157 @@ class SignUpScreen extends Component {
         </div>
       </form>
     );
+  }
+
+  
+  formName() {
+    return(<div id="user-name">
+    <div id="first-name" className="name">
+      <label>
+        <div className="input-label">First Name:</div>
+        <input
+          className="signup-input"
+          type="text"
+          onChange={this.handleChange.bind(this, "firstName")}
+        />
+        <div id="firstname-error" className="message-error">
+          {this.state.validationError["firstName"]}
+        </div>
+      </label>
+    </div>
+    <div id="last-name" className="name">
+      <label>
+        <div className="input-label">Last Name:</div>
+        <input
+          className="signup-input"
+          type="text"
+          onChange={this.handleChange.bind(this, "lastName")}
+        />
+        <div id="lastname-error" className="message-error">
+          {this.state.validationError["lastName"]}
+        </div>
+      </label>
+    </div>
+  </div>
+  )
+  }
+
+  formGenderAndInterest() {
+    return(          <div id="gender-row">
+    <div className="gender">
+      <label>
+        <div className="input-label">Gender:</div>
+        <div className="gender-options">
+          <div>
+            <label className="gender-option">Male
+              <input type="radio" name="gender" value="male"
+                checked={this.state.registerInfo.gender === "male"}
+                onChange={this.handleChange.bind(this, "gender")}
+              />
+            </label>
+          </div>
+          <div>
+            <label className="gender-option">Female
+              <input type="radio" name="gender" value="female"
+                checked={this.state.registerInfo.gender === "female"}
+                onChange={this.handleChange.bind(this, "gender")}
+              />
+            </label>
+          </div>
+        </div>
+      </label>
+    </div>
+    <div className="gender">
+      <label>
+        <div className="input-label">Interested in:</div>
+        <div className="gender-options">
+          <div>
+            <label className="gender-option">Male
+              <input type="radio" name="interest" value="male"
+                checked={this.state.registerInfo.interest === "male"}
+                onChange={this.handleChange.bind(this, "interest")}
+              />
+            </label>
+          </div>
+          <div>
+            <label className="gender-option">Female
+              <input type="radio" name="interest" value="female"
+                checked={this.state.registerInfo.interest === "female"}
+                onChange={this.handleChange.bind(this, "interest")}
+              />
+            </label>
+          </div>
+        </div>
+      </label>
+    </div>
+  </div>
+  )
+  }
+
+  formAccount() {
+    return (<div id="account">
+    <div id="email" className="account-info">
+      <label>
+        <div className="input-label">Email:</div>
+        <input
+          className="signup-input"
+          type="email"
+          onChange={this.handleChange.bind(this, "email")}
+        />
+        <div id="email-error" className="message-error">
+          {this.state.validationError["email"]}
+        </div>
+      </label>
+    </div>
+    <div id="password" className="account-info">
+      <label>
+        <div className="input-label">Password:</div>
+        <input
+          className="signup-input"
+          type="password"
+          onChange={this.handleChange.bind(this, "password")}
+        />
+        <div id="password-error" className="message-error">
+          {this.state.validationError["password"]}
+        </div>
+      </label>
+    </div>
+  </div>
+  )
+  }
+
+  formPersonalInfo() {
+    return (<div id="personal-information">
+    <div id="date-picker">
+      <label>
+        <div className="input-label">Date of Birth:</div>
+        <DatePicker
+          id="signup-date-picker"
+          showLeadingZeros={true}
+          format="dd-MM-y"
+          value={new Date(this.state.registerInfo["birthdate"])}
+          date={new Date()}
+          onChange={(date) => {
+            let registerInfo = this.state.registerInfo;
+            registerInfo["birthdate"] = date.toISOString();
+            this.setState({ registerInfo });
+          }}
+        />
+      </label>
+    </div>
+    <div id="profile-picture">
+      <label>
+        <div className="input-label">Upload profile picture:</div>
+        <input
+          style={{ marginTop: 10, cursor: 'pointer', height: 30, paddingLeft: 0, borderRadius: 0}}
+          type="file" accept="image/x-png,image/gif,image/jpeg"
+          onChange={this.pictureHandler.bind(this)} />
+        <div className="message-error" style={{color: 'black'}}>
+          {this.state.imageStatus}
+        </div>
+      </label>
+    </div>
+  </div>)
   }
 }
 
