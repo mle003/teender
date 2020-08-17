@@ -116,7 +116,7 @@ class SignUpScreen extends Component {
     e.preventDefault();
     try {
       if (!this.handleValidation())
-        throw new Error('The data provided is not validated')
+        throw new Error('The data provided is not valid')
       let registerInfo = {...this.state.registerInfo};
       registerInfo.name = registerInfo.firstName + " " + registerInfo.lastName;
       delete registerInfo.firstName
