@@ -27,7 +27,7 @@ body {
 #nav {
   border-right: $lightBorder;
   display: grid;
-  grid-template-rows: $footerNavHeight auto $footerNavHeight;
+  grid-template-rows: $footerNavHeight calc(100vh - 149px) $footerNavHeight;
 }
 
 #nav-logo {
@@ -86,6 +86,7 @@ body {
 #nav-footer-avatar {
   height: $footerNavHeight;
   width: $footerNavHeight*1.25;
+  @include centerBg();
   border-right: $lightBorder;
   transition: all 0.4s;
 }

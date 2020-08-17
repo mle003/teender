@@ -47,6 +47,16 @@ $scrollBarWidth: 8px;
     border-radius: 99px;
   }
 }
+
+@mixin whiteButtonHover() {
+  transition: all 0.4s;
+  &:hover {
+    background-color: rgba($lightGrey, 0.2);
+  }
+  &:active {
+    background-color: rgba($lightGrey, 0.4);
+  }
+}
 button {
   outline: none;
 }

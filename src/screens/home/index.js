@@ -1,42 +1,47 @@
 import React, { Component } from "react";
 import logo from "../../assets/logo.png";
 import Deck from "./card/deck";
+import Deck2 from "./card/deck2";
+import detailCard from './card/detailCard'
+import ChatBox from './chat/index'
+import chatList from "./chat/chatList";
+import Match from "./match";
+
+import Profile from "../profile";
+import EditProfile from "../profile/edit";
+
 // style
 import "src/style/main.scss";
 import "src/style/card.scss";
 
-import Match from "./match";
 import MyContainer from "../../global/state.js";
-import Deck2 from "./card/deck2";
 import { Link } from "react-router-dom";
 import ROUTES from "../../global/routes";
-// import './style.css'
+import { Subscribe } from "unstated";
 
-import detailCard from './card/detailCard'
-import ChatBox from './chat/index'
-import chatList from "./chat/chatList";
+const userAvatarUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ8lgurxzZwpkDpQRks2gA5dSCJyoIzGrCyLQ&usqp=CAU'
 
 const TITLES = {
   MATCH: 'Match',
   MESSAGE: 'Message',
 }
 const NAV_TITLES = [TITLES.MATCH, TITLES.MESSAGE]
- 
+
 function deckScreen() {
   return (
-  <div id="main-deck">
-    <div id="cards-stack">
-      <Deck2 />
-    </div>
-    <div id="instruction"></div>
-  </div>)
+    <div id="main-deck">
+      <div id="cards-stack">
+        <Deck2 />
+      </div>
+      <div id="instruction"></div>
+    </div>)
 }
 function chatScreen() {
   return (
-  <div id="main-chat">
-    <ChatBox/>
-    {detailCard()}
-  </div>)
+    <div id="main-chat">
+      <ChatBox />
+      {detailCard()}
+    </div>)
 }
 
 class Home extends Component {
@@ -55,17 +60,31 @@ class Home extends Component {
     switch (NAV_TITLES[index]) {
       case TITLES.MATCH:
         // handle call api here
-      break;
+        break;
       case TITLES.MESSAGE:
         // handle call api here
-      break;
+        break;
       default:
-      break;
+        break;
     }
   }
 
+  toProfileButton() {
+    return (<div
+      id="nav-footer-text"
+      onMouseOver={() =>
+        this.setState({ ...this.state, arrowMargin: 12 })
+      }
+      onMouseOut={() =>
+        this.setState({ ...this.state, arrowMargin: 5 })
+      }
+    >
+      To my account
+    <span style={{ marginLeft: this.state.arrowMargin }}>➝</span>
+    </div>)
+  }
+
   genTitles(titles, chosenIndex) {
-    console.log("container props from home", MyContainer);
     let list = titles.map((item, index) => {
       return (
         <div
@@ -85,36 +104,39 @@ class Home extends Component {
   render() {
     let { chosenIndex } = this.state;
     return (
-      <div id="main-screen">
+    <Subscribe to={[MyContainer]}>
+      {container => {
+        let user = container.state.user
+        let propsUser = this.props.user
+        if (!user) {
+          container.saveUserData(propsUser)
+          user = propsUser
+        } else if (!!propsUser && user.email != propsUser.email) {
+          container.saveUserData(propsUser)
+          user = propsUser
+        }
+        return(<div id="main-screen">
         <div id="nav">
           <div id="nav-logo">
-            <Link to={ROUTES.LANDING}><img src={logo} height="30"/></Link>
+            <Link to={ROUTES.LANDING}><img src={logo} height="30" /></Link>
           </div>
           <div id="nav-body">
-            <div></div>
+            <EditProfile/>
             {/* <div id="nav-titles">{this.genTitles(NAV_TITLES, chosenIndex)}</div>
             <div id="nav-main">
               {NAV_TITLES[this.state.chosenIndex] == TITLES.MESSAGE ? chatList() : <Match/>}
             </div> */}
           </div>
           <div id="nav-footer">
-            <div id="nav-footer-avatar"></div>
-            <div
-              id="nav-footer-text"
-              onMouseOver={() =>
-                this.setState({ ...this.state, arrowMargin: 12 })
-              }
-              onMouseOut={() =>
-                this.setState({ ...this.state, arrowMargin: 5 })
-              }
-            >
-              To my profile
-              <span style={{ marginLeft: this.state.arrowMargin }}>➝</span>
-            </div>
+            <div id="nav-footer-avatar"
+              style={{backgroundImage: `url('${user.info.imgUrl || userAvatarUrl}')`}}
+            ></div>
+            {this.toProfileButton()}
           </div>
         </div>
         {deckScreen()}
-      </div>
+      </div>)}}
+    </Subscribe>
     );
   }
 }
