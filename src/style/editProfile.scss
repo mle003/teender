@@ -1,0 +1,99 @@
+@import "var";
+
+
+#nav-profile {
+  padding: 0 $paddingLeft;
+  #avatar-input {
+    display: none;
+  }
+  .input-label {
+    @include text(12px, $mediumWeight, black);
+  } 
+  input {
+    outline: none;
+    height: 30px;
+    border: none;
+    @include text(12px, $lightWeight, black)
+  }
+  #profile-name-email {
+    margin-top: $paddingLeft;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    label {
+      width: 45%;
+      input {
+        padding: 0;
+        border-bottom: $lightBorder;
+      }
+    }
+  }
+  #gender-row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: $paddingLeft;
+    @include text(12px, $lightWeight, black);
+    .gender {
+      width: 45%;
+    }
+    input {
+      height: 15px;
+      @include text(12px, $lightWeight, black)
+    }
+  }
+  .react-date-picker__inputGroup {
+    @include text(12px, $lightWeight, black);
+    letter-spacing: -0.07em;
+  }
+
+  #date-picker-input-label {
+    margin-top: $paddingLeft;
+    width: 100%;
+  }
+  #desc-textarea-container {
+    width: 100%;
+    margin: $paddingLeft 0;
+  }
+  textarea {
+    width: 100%;
+    resize: none;
+    outline: none;
+    border: $lightBorder;
+    border-radius: 5px;
+    padding: 5px;
+    @include text(12px, $lightWeight, black);
+    font-family: $mainFontFam;
+  }
+  
+  #profile-btn-group {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    button {
+      width: 35%;
+      @include displayCenter();
+      border: none;
+      padding: 10px 0;
+      border-radius: 5px;
+    }
+    #profile-submit {
+      @include buttonHover();
+      background-color: $mainColor;
+      @include text(14px, $mediumWeight, white)
+    }
+    #profile-reset {
+      @include whiteButtonHover();
+      @include text(14px, $mediumWeight, $mainColor)
+    }
+  }
+}
+
+.react-date-picker__inputGroup {
+  .react-date-picker__inputGroup__day, 
+  .react-date-picker__inputGroup__month, 
+  .react-date-picker__inputGroup__year,
+  input {
+    border: none
+  }
+}

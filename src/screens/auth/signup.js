@@ -58,7 +58,7 @@ class SignUpScreen extends Component {
 
   handleChange(field, e) {
     let registerInfo = this.state.registerInfo;
-    registerInfo[field] = e.target.value;
+    registerInfo[field] = e.target.value.trim();
     this.setState({ registerInfo });
   }
 

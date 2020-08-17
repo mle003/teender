@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+button:focus {
+  opacity: 0.7;
+}
+
 html,
 body {
   overscroll-behavior-y: contain;
@@ -82,16 +86,24 @@ body {
 #nav-footer {
   cursor: pointer;
   display: flex;
+  div {
+    position: relative;
+    z-index: 15;
+  }
 }
 #nav-footer-avatar {
   height: $footerNavHeight;
   width: $footerNavHeight*1.25;
+  background-color: white;
   @include centerBg();
   border-right: $lightBorder;
   transition: all 0.4s;
 }
 #nav-footer-text {
   width: 100%;
+  height: 100%;
+  background-color: white;
+  border-right: $lightBorder;
   @include displayCenter();
   @include text(18px, $lightWeight, $mainColor);
   @include smoothTransition();
@@ -100,10 +112,10 @@ body {
   }
 }
 #nav-footer-text:hover {
-  background-color: rgba($lightGrey, 0.1);
+  background-color: #e6e6e6;
 }
 #nav-footer-text:active {
-  background-color: rgba($lightGrey, 0.3);
+  background-color: #d4d4d4;
 }
 @media only screen and (max-width: 700px) {
   #main-screen {

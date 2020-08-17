@@ -49,12 +49,23 @@ $scrollBarWidth: 8px;
 }
 
 @mixin whiteButtonHover() {
+  cursor: pointer;
   transition: all 0.4s;
   &:hover {
     background-color: rgba($lightGrey, 0.2);
   }
   &:active {
     background-color: rgba($lightGrey, 0.4);
+  }
+}
+@mixin buttonHover() {
+  cursor: pointer;
+  transition: all 0.4s;
+  &:hover {
+    opacity: 0.8;
+  }
+  &:active {
+    opacity: 0.6;
   }
 }
 button {

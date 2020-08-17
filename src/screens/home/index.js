@@ -5,10 +5,12 @@ import Deck2 from "./card/deck2";
 import detailCard from './card/detailCard'
 import ChatBox from './chat/index'
 import chatList from "./chat/chatList";
-import Match from "./match";
+import Match from "./match/match";
 
 import Profile from "../profile";
 import EditProfile from "../profile/edit";
+import ResetPassword from "../profile/resetPassword";
+
 
 // style
 import "src/style/main.scss";
@@ -121,7 +123,7 @@ class Home extends Component {
             <Link to={ROUTES.LANDING}><img src={logo} height="30" /></Link>
           </div>
           <div id="nav-body">
-            <EditProfile/>
+            <ResetPassword/>
             {/* <div id="nav-titles">{this.genTitles(NAV_TITLES, chosenIndex)}</div>
             <div id="nav-main">
               {NAV_TITLES[this.state.chosenIndex] == TITLES.MESSAGE ? chatList() : <Match/>}

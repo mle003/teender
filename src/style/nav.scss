@@ -8,8 +8,8 @@
   align-items: center;
   #profile-avatar {
     cursor: pointer;
-    width: $rightNavWidth * 0.35;
-    height: $rightNavWidth * 0.35;
+    width: $rightNavWidth * 0.3;
+    height: $rightNavWidth * 0.3;
     @include centerBg();
     border: $lightBorder;
     border-radius: 50%;
