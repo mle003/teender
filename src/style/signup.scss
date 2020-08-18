@@ -11,6 +11,18 @@
   color: $color;
 }
 
+.form-input-row {
+  width: 40%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  .form-input {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+  }
+}
+
 #signup-screen {
   #signup-logo {
     @include displayCenter();
@@ -19,6 +31,36 @@
     padding-bottom: 20;
   }
 }
+
+#profile-picture {
+  #avatar-message-error {
+    width: 100;
+    text-align: center;
+  }
+  #avatar-container {
+    height: 100;
+    width: 100;
+    border: $lightBorder;
+    border-radius: 50%;
+    @include centerBg();
+    #avatar-filter {
+      cursor: pointer;
+      height: 100%;
+      width: 100%;
+      border-radius: 50%;
+      padding-bottom: 3px;
+
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+
+      background: linear-gradient(180deg, transparent 75%, rgba(black, 0.2) 25%);
+      @include text(20px, $lightWeight, white);
+    }
+  }
+}
+
+
 #signup-title {
   @include displayCenter();
   font-size: 30px;
@@ -47,22 +89,13 @@
     outline: none;
     border-radius: 7px;
   }
-  #user-name {
-    width: 40%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    .name {
-      display: flex;
-      flex-direction: column;
-      width: 45%;
-      //   margin: 20;
-      //   padding: 10;
-    }
-  }
   label {
     display: flex;
     flex-direction: column;
+  }
+
+  .react-date-picker {
+    width: fit-content;
   }
 
   #gender-row {
@@ -73,7 +106,7 @@
   }
 
   .gender {
-    width: 45%;
+    width: 40%;
     margin-top: 20;
     display: flex;
     flex-direction: row;
@@ -102,51 +135,13 @@
       }
     }
   }
-  
-  #account {
-    width: 40%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    .account-info {
-      display: flex;
-      flex-direction: column;
-      width: 45%;
-      //   margin: 20;
-      //   padding: 10;
-    }
+  .react-date-picker__button {
+    display: none;
   }
   .message-error {
     height: 12px;
     @include text(10px, $lightWeight, $redError)
   }
-}
-
-#personal-information {
-  width: 40%;
-  display: flex;
-  flex-direction: row;
-  margin-top: 20;
-  justify-content: space-between;
-  #date-picker {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    width: 45%;
-  }
-  #profile-picture {
-    margin-top: 5;
-    background-color: #ffffff;
-    border: none;
-    height: 10px;
-    width: 45%;
-  }
-}
-
-.upload-button {
-  padding: 0;
-  background-color: red;
 }
 
 .react-date-picker__inputGroup {

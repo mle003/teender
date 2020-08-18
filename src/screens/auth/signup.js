@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import MyRequest from "../../global/api/request";
 import OtherRequest from "../../global/api/external";
 
-const imageStatus = {
+const IMAGE_STATUS = {
   DONE: 'done uploading!',
   UPLOADING: 'uploading',
   FAILED: 'failed uploading :(',
@@ -24,7 +24,8 @@ class SignUpScreen extends Component {
       registerInfo: { birthdate: new Date().toISOString(), gender: "male", interest: "male" },
       validationError: {},
       formError: '',
-      imageStatus: imageStatus.EMPTY
+      imageStatus: IMAGE_STATUS.EMPTY,
+      imageCode: ''
     };
   }
   handleValidation() {
@@ -32,14 +33,9 @@ class SignUpScreen extends Component {
     let errors = {};
     let isValid = true;
 
-    if (!registerInfo["firstName"]) {
+    if (!registerInfo["name"]) {
       isValid = false;
-      errors["firstName"] = "Missing First Name";
-    }
-
-    if (!registerInfo["lastName"]) {
-      isValid = false;
-      errors["lastName"] = "Missing Last Name";
+      errors["name"] = "Missing Name";
     }
 
     if (!registerInfo["email"]) {
@@ -70,14 +66,14 @@ class SignUpScreen extends Component {
   pictureHandler(event) {
     try {
       this.setState({
-        imageStatus: imageStatus.UPLOADING
+        imageStatus: IMAGE_STATUS.UPLOADING
       })
       var file = event.target.files[0];
       let aMb = 1048576
 
       if (!file) {
         this.setState({
-          imageStatus: imageStatus.EMPTY
+          imageStatus: IMAGE_STATUS.EMPTY
         })
       }
 
@@ -89,17 +85,20 @@ class SignUpScreen extends Component {
 
       reader.onloadend = async () => {
         try{
+          this.setState({
+            imageCode: reader.result
+          })
           let base64Code = reader.result.split(',')[1]
           let image = await OtherRequest.uploadImage(base64Code)
           let registerInfo = this.state.registerInfo;
           registerInfo['imgUrl'] = image.link;
           this.setState({ 
             registerInfo,
-            imageStatus: imageStatus.DONE
+            imageStatus: IMAGE_STATUS.DONE
           });
         } catch(err) {
           this.setState({
-            imageStatus: imageStatus.FAILED
+            imageStatus: IMAGE_STATUS.FAILED
           })
           throw err
         }
@@ -107,7 +106,7 @@ class SignUpScreen extends Component {
       }
     } catch(err) {
       this.setState({
-        imageStatus: err.message || imageStatus.FAILED
+        imageStatus: err.message || IMAGE_STATUS.FAILED
       })
     }
   }
@@ -117,13 +116,11 @@ class SignUpScreen extends Component {
     try {
       if (!this.handleValidation())
         throw new Error('The data provided is not valid')
-      let registerInfo = {...this.state.registerInfo};
-      registerInfo.name = registerInfo.firstName + " " + registerInfo.lastName;
-      delete registerInfo.firstName
-      delete registerInfo.lastName
 
-      console.log(registerInfo);
+      let registerInfo = this.state.registerInfo;
       let newUser = await MyRequest.signUp(registerInfo)
+      console.log(registerInfo);
+
       localStorage.setItem("token", newUser.accessToken);
       this.props.history.push({
         pathname: ROUTES.HOME,
@@ -143,16 +140,16 @@ class SignUpScreen extends Component {
       <form id="signup-screen" onSubmit={this.submitHandler.bind(this)}>
         <div id="signup-title">Create account for<span><Link to={ROUTES.LANDING}>teender</Link></span></div>
         <div id="signup-form">
-          {this.formName()}
-          {this.formGenderAndInterest()}
           {this.formAccount()}
-          {this.formPersonalInfo()}
+          {this.formInfo()}
+          {this.formGenderAndInterest()}
+          {/* {this.formPersonalInfo()} */}
         </div>
         <div id="register-button">
           <div id="sign-up-error">{this.state.formError}</div>
           <button 
             type="submit" id="register-btn" 
-            disabled={this.state.imageStatus == imageStatus.UPLOADING}>
+            disabled={this.state.imageStatus == IMAGE_STATUS.UPLOADING}>
             Register
           </button>
         </div>
@@ -168,41 +165,92 @@ class SignUpScreen extends Component {
     );
   }
 
-  
-  formName() {
-    return(<div id="user-name">
-    <div id="first-name" className="name">
-      <label>
-        <div className="input-label">First Name:</div>
-        <input
-          className="signup-input"
-          type="text"
-          onChange={this.handleChange.bind(this, "firstName")}
-        />
-        <div id="firstname-error" className="message-error">
-          {this.state.validationError["firstName"]}
+  formAccount() {
+    return (
+    <div className="form-input-row">
+      <div className="form-input">
+        <div id="email" >
+          <label>
+            <div className="input-label">Email:</div>
+            <input
+              className="signup-input"
+              type="email"
+              onChange={this.handleChange.bind(this, "email")}
+            />
+            <div id="email-error" className="message-error">
+              {this.state.validationError["email"]}
+            </div>
+          </label>
         </div>
+        <div id="password">
+        <label>
+          <div className="input-label">Password:</div>
+          <input
+            className="signup-input"
+            type="password"
+            onChange={this.handleChange.bind(this, "password")}
+          />
+          <div id="password-error" className="message-error">
+            {this.state.validationError["password"]}
+          </div>
+        </label>
+      </div>
+      </div>
+      <div id="profile-picture" className="form-input">
+        <label id="avatar-container" style={{backgroundImage: `url('${this.state.imageCode}')`}}>
+          <div id="avatar-filter">
+            <input
+              style={{ display: 'none'}}
+              type="file" accept="image/x-png,image/gif,image/jpeg"
+              onChange={this.pictureHandler.bind(this)} />
+            <ion-icon name="camera"></ion-icon>
+          </div>    
+        </label>
+        <div className="message-error" id="avatar-message-error" style={{color: 'black'}}>
+          {this.state.imageStatus}
+        </div>
+      </div>
+    </div>
+    )
+  }
+
+  formInfo() {
+    return(
+    <div className="form-input-row">
+      <div id="first-name" className="form-input">
+        <label>
+          <div className="input-label">Name:</div>
+          <input
+            className="signup-input"
+            type="text"
+            onChange={this.handleChange.bind(this, "name")}
+          />
+          <div id="firstname-error" className="message-error">
+            {this.state.validationError["name"]}
+          </div>
+        </label>
+      </div>
+      <label className="form-input">
+        <div className="input-label">Date of Birth:</div>
+        <DatePicker
+          id="signup-date-picker"
+          showLeadingZeros={true}
+          format="dd-MM-y"
+          value={new Date(this.state.registerInfo["birthdate"])}
+          date={new Date()}
+          onChange={(date) => {
+            let registerInfo = this.state.registerInfo;
+            registerInfo["birthdate"] = date.toISOString();
+            this.setState({ registerInfo });
+          }}
+        />
       </label>
     </div>
-    <div id="last-name" className="name">
-      <label>
-        <div className="input-label">Last Name:</div>
-        <input
-          className="signup-input"
-          type="text"
-          onChange={this.handleChange.bind(this, "lastName")}
-        />
-        <div id="lastname-error" className="message-error">
-          {this.state.validationError["lastName"]}
-        </div>
-      </label>
-    </div>
-  </div>
-  )
+    )
   }
 
   formGenderAndInterest() {
-    return(          <div id="gender-row">
+    return(<div id="gender-row" className="form-input-row">
     <div className="gender">
       <label>
         <div className="input-label">Gender:</div>
@@ -251,72 +299,6 @@ class SignUpScreen extends Component {
     </div>
   </div>
   )
-  }
-
-  formAccount() {
-    return (<div id="account">
-    <div id="email" className="account-info">
-      <label>
-        <div className="input-label">Email:</div>
-        <input
-          className="signup-input"
-          type="email"
-          onChange={this.handleChange.bind(this, "email")}
-        />
-        <div id="email-error" className="message-error">
-          {this.state.validationError["email"]}
-        </div>
-      </label>
-    </div>
-    <div id="password" className="account-info">
-      <label>
-        <div className="input-label">Password:</div>
-        <input
-          className="signup-input"
-          type="password"
-          onChange={this.handleChange.bind(this, "password")}
-        />
-        <div id="password-error" className="message-error">
-          {this.state.validationError["password"]}
-        </div>
-      </label>
-    </div>
-  </div>
-  )
-  }
-
-  formPersonalInfo() {
-    return (<div id="personal-information">
-    <div id="date-picker">
-      <label>
-        <div className="input-label">Date of Birth:</div>
-        <DatePicker
-          id="signup-date-picker"
-          showLeadingZeros={true}
-          format="dd-MM-y"
-          value={new Date(this.state.registerInfo["birthdate"])}
-          date={new Date()}
-          onChange={(date) => {
-            let registerInfo = this.state.registerInfo;
-            registerInfo["birthdate"] = date.toISOString();
-            this.setState({ registerInfo });
-          }}
-        />
-      </label>
-    </div>
-    <div id="profile-picture">
-      <label>
-        <div className="input-label">Upload profile picture:</div>
-        <input
-          style={{ marginTop: 10, cursor: 'pointer', height: 30, paddingLeft: 0, borderRadius: 0}}
-          type="file" accept="image/x-png,image/gif,image/jpeg"
-          onChange={this.pictureHandler.bind(this)} />
-        <div className="message-error" style={{color: 'black'}}>
-          {this.state.imageStatus}
-        </div>
-      </label>
-    </div>
-  </div>)
   }
 }
 

@@ -93,17 +93,19 @@ body {
 }
 #nav-footer-avatar {
   height: $footerNavHeight;
-  width: $footerNavHeight*1.25;
+  width: $footerNavHeight;
   background-color: white;
   @include centerBg();
+  @include displayCenter();
   border-right: $lightBorder;
   transition: all 0.4s;
+  @include buttonHover();
+  @include text(30px, $lightWeight, $mainColor)
 }
 #nav-footer-text {
-  width: 100%;
+  width: $rightNavWidth - $footerNavHeight - 1;
   height: 100%;
   background-color: white;
-  border-right: $lightBorder;
   @include displayCenter();
   @include text(18px, $lightWeight, $mainColor);
   @include smoothTransition();
@@ -112,10 +114,10 @@ body {
   }
 }
 #nav-footer-text:hover {
-  background-color: #e6e6e6;
+  background-color: #f0f0f0;
 }
 #nav-footer-text:active {
-  background-color: #d4d4d4;
+  background-color: #ececec;
 }
 @media only screen and (max-width: 700px) {
   #main-screen {

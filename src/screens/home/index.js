@@ -7,10 +7,8 @@ import ChatBox from './chat/index'
 import chatList from "./chat/chatList";
 import Match from "./match/match";
 
-import Profile from "../profile";
 import EditProfile from "../profile/edit";
 import ResetPassword from "../profile/resetPassword";
-
 
 // style
 import "src/style/main.scss";
@@ -22,14 +20,23 @@ import ROUTES from "../../global/routes";
 import { Subscribe } from "unstated";
 
 const userAvatarUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ8lgurxzZwpkDpQRks2gA5dSCJyoIzGrCyLQ&usqp=CAU'
-
+const thisYear = new Date().getFullYear()
+function getYear(isoStr) {
+  return new Date(isoStr).getFullYear()
+}
 const TITLES = {
   MATCH: 'Match',
   MESSAGE: 'Message',
 }
-const NAV_TITLES = [TITLES.MATCH, TITLES.MESSAGE]
 
-function deckScreen() {
+const NAVS = {
+  MAIN: 'Main',
+  PROFILE: 'Profile',
+  EDIT: 'Edit Profile',
+  RESET: 'Reset Password'
+}
+
+function genDeckScreen() {
   return (
     <div id="main-deck">
       <div id="cards-stack">
@@ -38,7 +45,8 @@ function deckScreen() {
       <div id="instruction"></div>
     </div>)
 }
-function chatScreen() {
+
+function genChatScreen() {
   return (
     <div id="main-chat">
       <ChatBox />
@@ -50,16 +58,26 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      chosenIndex: 0,
       arrowMargin: 5,
-      infos: [],
+
+      chosenMainNavTitle: TITLES.MATCH,
+      nav: NAVS.MAIN
     };
   }
 
-  clickNavButton(chosenIndex, index) {
-    if (chosenIndex != index) this.setState({ chosenIndex: index });
-    // handle xong cuối cùng là chọn index. Không dùng NAV_TITLES[this.state.chosenIndex] vì setState bất đồng bộ
-    switch (NAV_TITLES[index]) {
+  clickChangeNav(navName) {
+    this.setState({
+      nav: navName
+    })
+  }
+
+  
+  clickMainNavTitle(navTitle) {
+    // change state when choose a different navTitle
+    if (this.state.chosenMainNavTitle != navTitle) this.setState({ chosenMainNavTitle: navTitle });
+    // handle xong cuối cùng là chọn index.
+
+    switch (navTitle) {
       case TITLES.MATCH:
         // handle call api here
         break;
@@ -71,40 +89,17 @@ class Home extends Component {
     }
   }
 
-  toProfileButton() {
-    return (<div
-      id="nav-footer-text"
-      onMouseOver={() =>
-        this.setState({ ...this.state, arrowMargin: 12 })
-      }
-      onMouseOut={() =>
-        this.setState({ ...this.state, arrowMargin: 5 })
-      }
-    >
-      To my account
-    <span style={{ marginLeft: this.state.arrowMargin }}>➝</span>
-    </div>)
+  clickFooterAvatar() {
+    if (this.state.nav == NAVS.MAIN) {
+      this.clickChangeNav(NAVS.PROFILE)
+    } else if (this.state.nav == NAVS.PROFILE) {
+      this.clickChangeNav(NAVS.MAIN)
+    } else {
+      this.clickChangeNav(NAVS.PROFILE)
+    }
   }
 
-  genTitles(titles, chosenIndex) {
-    let list = titles.map((item, index) => {
-      return (
-        <div
-          onClick={() => this.clickNavButton(chosenIndex, index)}
-          key={index}
-          className={[
-            "nav-title",
-            index == chosenIndex ? "chosen-nav-title" : "unchosen-nav-title",
-          ].join(" ")}
-        >
-          {item}
-        </div>
-      );
-    });
-    return list;
-  }
   render() {
-    let { chosenIndex } = this.state;
     return (
     <Subscribe to={[MyContainer]}>
       {container => {
@@ -117,29 +112,131 @@ class Home extends Component {
           container.saveUserData(propsUser)
           user = propsUser
         }
+        // Use var 'user' -> it has all the data needed
         return(<div id="main-screen">
         <div id="nav">
           <div id="nav-logo">
             <Link to={ROUTES.LANDING}><img src={logo} height="30" /></Link>
           </div>
           <div id="nav-body">
-            <ResetPassword/>
-            {/* <div id="nav-titles">{this.genTitles(NAV_TITLES, chosenIndex)}</div>
-            <div id="nav-main">
-              {NAV_TITLES[this.state.chosenIndex] == TITLES.MESSAGE ? chatList() : <Match/>}
-            </div> */}
+            {this.genNav(user)}
           </div>
           <div id="nav-footer">
             <div id="nav-footer-avatar"
-              style={{backgroundImage: `url('${user.info.imgUrl || userAvatarUrl}')`}}
-            ></div>
-            {this.toProfileButton()}
+              onClick={()=>this.clickFooterAvatar()}
+              style={
+                this.state.nav == NAVS.MAIN 
+                ? {backgroundImage: `url('${user.info.imgUrl || userAvatarUrl}')`}
+                : {backgroundColor: 'white'}
+              }>
+              {this.state.nav == NAVS.MAIN 
+                ? <div></div> 
+                : <ion-icon name="caret-back-outline"></ion-icon>}
+            </div>
+            {this.genFooter()}
           </div>
         </div>
-        {deckScreen()}
+        {genDeckScreen()}
       </div>)}}
     </Subscribe>
     );
+  }
+
+  genMainNav() {
+    return (<div>
+      <div id="nav-titles">{this.genMainNavTitles()}</div>
+      <div id="nav-main">
+        {this.state.chosenMainNavTitle == TITLES.MESSAGE ? chatList() : <Match/>}
+      </div>
+    </div>)
+  }
+
+  genMainNavTitles() {
+    let list = [TITLES.MATCH, TITLES.MESSAGE].map((navTitle, index) => {
+      return (
+        <div
+          onClick={() => this.clickMainNavTitle(navTitle)}
+          key={index}
+          className={[
+            "nav-title",
+            navTitle == this.state.chosenMainNavTitle ? "chosen-nav-title" : "unchosen-nav-title",
+          ].join(" ")}
+        >
+          {navTitle}
+        </div>
+      );
+    });
+    return list;
+  }
+
+  genProfileNav(user) {
+    return (
+      <div id="nav-profile">
+        <div id="profile-avatar" 
+          style={{backgroundImage: `url('${user.info.imgUrl || userAvatarUrl}')`}}
+        ></div>
+        <div id="profile-name">{user.info.name}</div>
+        <div id="profile-sub-info">{thisYear - getYear(user.info.birthdate)} - {user.info.gender}</div>
+        <div id="profile-options">
+          <div className="profile-opt" id="opt-detail-info" onClick={()=>this.clickChangeNav(NAVS.EDIT)}>Edit Profile</div>
+          <div className="profile-opt" id="opt-change-password" onClick={()=>this.clickChangeNav(NAVS.RESET)}>Reset Password</div>
+          <div className="profile-opt" id="opt-sign-out">Sign out</div>
+        </div>
+      </div>
+    )
+  }
+
+  genNav(user) {
+    let nav = this.genMainNav()
+    switch(this.state.nav) {
+      case NAVS.PROFILE:
+        nav = this.genProfileNav(user)
+      break
+      case NAVS.EDIT:
+        nav = <EditProfile/>
+      break
+      case NAVS.RESET:
+        nav = <ResetPassword/>
+      break
+      default:
+        nav = this.genMainNav()
+      break
+    }
+    return nav
+  }
+  
+  genMainFooter() {
+    return (<div
+      id="nav-footer-text"
+      onMouseOver={() =>
+        this.setState({ ...this.state, arrowMargin: 12 })
+      }
+      onMouseOut={() =>
+        this.setState({ ...this.state, arrowMargin: 5 })
+      }
+      onClick={
+        () => this.clickChangeNav(NAVS.PROFILE)}
+    >
+      To my account
+    <span style={{ marginLeft: this.state.arrowMargin }}>➝</span>
+    </div>)
+  }
+
+  genProfileFooter() {
+    return (<div
+      id="nav-footer-text"
+      onClick={() => this.clickChangeNav(NAVS.MAIN)}
+    >
+      To main navigation
+    <span style={{ marginLeft: this.state.arrowMargin }}>➝</span>
+    </div>)
+  }
+
+  genFooter() {
+    let footer = this.genMainFooter() 
+    if (this.state.nav != NAVS.MAIN) 
+      footer = this.genProfileFooter()
+    return footer
   }
 }
 

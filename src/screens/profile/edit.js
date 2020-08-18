@@ -42,8 +42,12 @@ class EditProfile extends Component {
         return (
           <div id="nav-profile">
             <label id="profile-avatar"
-              style={{ backgroundImage: `url('${info.imgUrl || user.info.imgUrl || userAvatarUrl}')` }}
-            ><input type="file" id="avatar-input"/></label>
+              style={{ backgroundImage: `url('${info.imgUrl || user.info.imgUrl || userAvatarUrl}')` }}>
+              <div id="profile-avatar-filter">
+                <input type="file" id="avatar-input"/>
+                <ion-icon name="camera"></ion-icon>
+              </div>
+            </label>
             <div id="profile-name-email">
               <label>
                 <div className="input-label">Email:</div>

@@ -6,6 +6,19 @@
   #avatar-input {
     display: none;
   }
+  #profile-avatar-filter {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    padding-bottom: 5px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    background: linear-gradient(180deg, transparent 75%, rgba(black, 0.2) 25%);
+    @include text(20px, $lightWeight, white);
+  }
   .input-label {
     @include text(12px, $mediumWeight, black);
   } 
@@ -50,10 +63,17 @@
   #date-picker-input-label {
     margin-top: $paddingLeft;
     width: 100%;
+    display: flex;
+    align-items: center;
+    .react-date-picker__wrapper {
+      padding: 0 7px;
+      margin-left: 10px;
+    }
   }
   #desc-textarea-container {
     width: 100%;
     margin: $paddingLeft 0;
+
   }
   textarea {
     width: 100%;
@@ -62,6 +82,7 @@
     border: $lightBorder;
     border-radius: 5px;
     padding: 5px;
+    margin-top: 5px;
     @include text(12px, $lightWeight, black);
     font-family: $mainFontFam;
   }
@@ -86,6 +107,10 @@
       @include whiteButtonHover();
       @include text(14px, $mediumWeight, $mainColor)
     }
+  }
+
+  .react-date-picker__button {
+    display: none;
   }
 }
 
