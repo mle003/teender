@@ -1,4 +1,4 @@
-$mainFontFam: 'Sora', sans-serif;
+$mainFontFam: "Sora", sans-serif;
 $lightWeight: 300;
 $mediumWeight: 500;
 $boldWeight: 700;
@@ -49,7 +49,7 @@ $rightNavWidth: 350px;
   @include text(14px);
   max-width: 400px;
 
-  @include limitLine()
+  @include limitLine();
 }
 
 #chat-header {
@@ -67,18 +67,18 @@ $rightNavWidth: 350px;
       width: 47px;
       border-radius: 50%;
       border: $lightBorder;
-      @include centerBg()
+      @include centerBg();
     }
   }
-  
+
   #chat-header-text {
     width: 75%;
     text-align: left;
     #chat-header-name {
-      @include text(22px, $mediumWeight, $charcoal)
+      @include text(22px, $mediumWeight, $charcoal);
     }
     #chat-header-info {
-      @include text(12px, $lightWeight, $charcoal)
+      @include text(12px, $lightWeight, $charcoal);
     }
   }
   #chat-close-button {
@@ -103,13 +103,16 @@ $rightNavWidth: 350px;
 .sent-mess {
   background-color: $mainColor;
   color: white;
-  border-color: transparent 
+  border-color: transparent;
+  width: "100%";
+  display: "flex";
+  justify-content: flex-end;
 }
 
 .received-mess {
   background-color: rgba($lightGrey, 0.2);
   color: black;
-  border-color: transparent 
+  border-color: transparent;
 }
 
 #chat-footer {
@@ -127,7 +130,7 @@ $rightNavWidth: 350px;
     border-radius: 100px;
     width: 90%;
     @include text(14px, $lightWeight, $charcoal);
-  } 
+  }
   #send-button {
     cursor: pointer;
     outline: none;
