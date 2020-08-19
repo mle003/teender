@@ -131,7 +131,7 @@ class Home extends Component {
               }>
               {this.state.nav == NAVS.MAIN 
                 ? <div></div> 
-                : <ion-icon name="caret-back-outline"></ion-icon>}
+                : <ion-icon name="chevron-back-outline"></ion-icon>}
             </div>
             {this.genFooter()}
           </div>

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 // import { Route } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import MyRequest from "../../global/api/request";
+import AuthRequest from "../../global/api/auth";
 import MyContainer from "../../global/state";
 import "../../style/signin.scss";
 import { Subscribe } from "unstated";
@@ -32,7 +32,7 @@ class SignInScreen extends Component {
       password: this.state.password,
     };
     try {
-      let user = await MyRequest.signIn(loginData);
+      let user = await AuthRequest.signIn(loginData);
       localStorage.setItem("token", user.accessToken);
       this.props.history.push({
         pathname: ROUTES.HOME,

@@ -1,7 +1,7 @@
 import React, { Component, useEffect } from "react";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import { Provider, Subscribe } from "unstated";
-import MyRequest from "./global/api/request";
+import AuthRequest from "./global/api/auth";
 
 import ROUTES from "./global/routes";
 import LandingPage from "./screens/landing";
@@ -17,7 +17,7 @@ function PrivateHomeRoute({ children, ...rest }) {
     {container => { 
       let user = null;
       if (!loaded) {
-        MyRequest.checkUser(localStorage.getItem("token"))
+        AuthRequest.checkUser(localStorage.getItem("token"))
         .then((res) => {
           console.log('res check user');
           console.log(res);

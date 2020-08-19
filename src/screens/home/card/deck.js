@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSprings, animated, interpolate } from "react-spring";
 import { useGesture } from "react-with-gesture";
 import axios from "axios";
-import MyRequest from "../../../global/api/request";
+import UserRequest from "../../../global/api/user";
 
 const year = parseInt(new Date().getFullYear());
 const to = (i) => ({
@@ -22,7 +22,7 @@ let firstTimeLoad = true;
 
 const getCards = async (infos, page) => {
   try {
-    let data = await MyRequest.getCards(page)
+    let data = await UserRequest.getCards(page)
     let newData = [...infos, data]
     return newData
   } catch(err) {
@@ -40,7 +40,7 @@ function Deck() {
     if (infos.length === 0 && firstTimeLoad) {
       const getNewCards = async () => {
         try {
-          let data = await MyRequest.getCards(count)
+          let data = await UserRequest.getCards(count)
           setInfos(data);
         } catch(err) {console.error(err)}
         firstTimeLoad = false;

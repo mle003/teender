@@ -1,8 +1,5 @@
 import Axios from "axios";
-const BASE_URL = "http://localhost:9000";
-const headers = {
-  "Content-Type": "application/json",
-};
+import { BASE_URL, headers } from './var'
 
 class OtherRequest {
   static async uploadImage(base64Code) {

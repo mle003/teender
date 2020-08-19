@@ -5,8 +5,8 @@ import 'src/style/signup.scss'
 import Axios from "axios";
 import ROUTES from "../../global/routes";
 import { Link } from "react-router-dom";
-import MyRequest from "../../global/api/request";
-import OtherRequest from "../../global/api/external";
+import AuthRequest from "../../global/api/auth";
+import OtherRequest from "../../global/api/other";
 
 const IMAGE_STATUS = {
   DONE: 'done uploading!',
@@ -118,7 +118,7 @@ class SignUpScreen extends Component {
         throw new Error('The data provided is not valid')
 
       let registerInfo = this.state.registerInfo;
-      let newUser = await MyRequest.signUp(registerInfo)
+      let newUser = await AuthRequest.signUp(registerInfo)
       console.log(registerInfo);
 
       localStorage.setItem("token", newUser.accessToken);
