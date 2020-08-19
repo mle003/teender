@@ -1,5 +1,5 @@
 import { Container } from "unstated";
-import User from "./model/user";
+import {User} from "./model/user";
 
 class MyContainer extends Container {
   state = {

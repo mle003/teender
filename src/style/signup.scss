@@ -166,7 +166,8 @@
     @include text(12px, $mediumWeight, $redError)
   }
   #register-btn {
-    padding: 10px 45px;
+    width: 140px;
+    height: 40px;
     @include text(15px, $mediumWeight, white);
     border-radius: 10px;
     border: none;

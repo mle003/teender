@@ -21,4 +21,4 @@ class User {
     this.accessToken = item.accessToken
   }
 }
-export default User
+export {UserInfo, User}

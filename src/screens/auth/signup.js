@@ -1,12 +1,12 @@
 import React, { Component, useState } from "react";
-import logo from "../../assets/logo.png";
 import DatePicker from "react-date-picker";
 import 'src/style/signup.scss'
-import Axios from "axios";
 import ROUTES from "../../global/routes";
 import { Link } from "react-router-dom";
 import AuthRequest from "../../global/api/auth";
 import OtherRequest from "../../global/api/other";
+import SettingRequest from "../../global/api/setting";
+import { CircularProgress } from '@material-ui/core';
 
 const IMAGE_STATUS = {
   DONE: 'done uploading!',
@@ -25,7 +25,8 @@ class SignUpScreen extends Component {
       validationError: {},
       formError: '',
       imageStatus: IMAGE_STATUS.EMPTY,
-      imageCode: ''
+      imageCode: '',
+      loadingSignUp: false,
     };
   }
   handleValidation() {
@@ -71,38 +72,19 @@ class SignUpScreen extends Component {
       var file = event.target.files[0];
       let aMb = 1048576
 
-      if (!file) {
-        this.setState({
-          imageStatus: IMAGE_STATUS.EMPTY
-        })
-      }
+      if (!file) 
+        throw new Error(IMAGE_STATUS.EMPTY)
 
       if (file.size> 8 * aMb)
         throw new Error('The image size is too big! Please select another one')
 
       var reader = new FileReader();
       reader.readAsDataURL(file)
-
-      reader.onloadend = async () => {
-        try{
-          this.setState({
-            imageCode: reader.result
-          })
-          let base64Code = reader.result.split(',')[1]
-          let image = await OtherRequest.uploadImage(base64Code)
-          let registerInfo = this.state.registerInfo;
-          registerInfo['imgUrl'] = image.link;
+      reader.onloadend = () => {
           this.setState({ 
-            registerInfo,
+            imageCode: reader.result,
             imageStatus: IMAGE_STATUS.DONE
-          });
-        } catch(err) {
-          this.setState({
-            imageStatus: IMAGE_STATUS.FAILED
-          })
-          throw err
-        }
-        
+          });        
       }
     } catch(err) {
       this.setState({
@@ -112,26 +94,34 @@ class SignUpScreen extends Component {
   }
 
   async submitHandler(e) { // email, pass + info(name, gender, interest, birthdate, desc, imgUrl)
-    e.preventDefault();
+    e.preventDefault()
     try {
+      this.setState({loadingSignUp: true})
       if (!this.handleValidation())
         throw new Error('The data provided is not valid')
 
-      let registerInfo = this.state.registerInfo;
+      // handle image 
+      let registerInfo = this.state.registerInfo
       let newUser = await AuthRequest.signUp(registerInfo)
-      console.log(registerInfo);
-
       localStorage.setItem("token", newUser.accessToken);
+
+      if (!!this.state.imageCode) {
+        let base64Code = this.state.imageCode.split(',')[1]
+        let image = await OtherRequest.uploadImage(base64Code)
+        let updatedUser = await SettingRequest.updateProfile({imgUrl: image.link})
+        newUser.info = updatedUser.info
+      }
       this.props.history.push({
         pathname: ROUTES.HOME,
         state: { user: newUser }
       });
+      this.setState({loadingSignUp: false})
     } catch(err) {
       let errMess = err.message
       if (err.message.includes('duplicate key')) {
         errMess = 'An account with this data has already be created. Please sign in 💁🏻'
       }
-      this.setState({formError: errMess})
+      this.setState({formError: errMess, loadingSignUp: false})
     }
   }
 
@@ -149,8 +139,8 @@ class SignUpScreen extends Component {
           <div id="sign-up-error">{this.state.formError}</div>
           <button 
             type="submit" id="register-btn" 
-            disabled={this.state.imageStatus == IMAGE_STATUS.UPLOADING}>
-            Register
+            disabled={this.state.loadingSignUp}>
+            {this.state.loadingSignUp ? <CircularProgress size={15} color="white"/> : "Register"}
           </button>
         </div>
 
