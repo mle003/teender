@@ -21,6 +21,7 @@ function PrivateHomeRoute({ children, ...rest }) {
         .then((res) => {
           console.log('res check user');
           console.log(res);
+          
           user = res
           loaded = true
           container.saveUserData(user)
@@ -34,10 +35,12 @@ function PrivateHomeRoute({ children, ...rest }) {
         {...rest}
         render={({ location }) => {
           let thisUser = null
-          if (!!location.state)
+
+          if (location.state)
             thisUser = location.state.user
-          return (!!user || !!container.state.user || !!thisUser) ? (
-            <Home user={thisUser || user || container.state.user}/>
+
+          return (user || container.state.user || thisUser) ? (
+            <Home user={user || container.state.user || thisUser}/>
           ) : (
               <Redirect
                 to={{
