@@ -43,6 +43,8 @@ $scrollBarWidth: 8px;
 @mixin scrollBar {
   &::-webkit-scrollbar {
     width: $scrollBarWidth;
+    background-color: #f8f8f8;
+    border-radius: 99px;
   }
   &::-webkit-scrollbar-thumb {
     background-color: rgba($lightGrey, 0.7);

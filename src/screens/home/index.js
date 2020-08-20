@@ -14,16 +14,14 @@ import ResetPassword from "../profile/resetPassword";
 import "src/style/main.scss";
 import "src/style/card.scss";
 
-import MyContainer from "../../global/state.js";
-import { Link } from "react-router-dom";
+import { Link, useHistory, Redirect } from "react-router-dom";
 import ROUTES from "../../global/routes";
 import { Subscribe } from "unstated";
+import { userAvatarUrl, MAIN_SCREEN } from "../../global/utils";
+import UserContainer from "../../global/container/user";
+import HomeScreenContainer from "../../global/container/homeScreen";
 
-const userAvatarUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ8lgurxzZwpkDpQRks2gA5dSCJyoIzGrCyLQ&usqp=CAU'
-const thisYear = new Date().getFullYear()
-function getYear(isoStr) {
-  return new Date(isoStr).getFullYear()
-}
+
 const TITLES = {
   MATCH: 'Match',
   MESSAGE: 'Message',
@@ -46,11 +44,12 @@ function genDeckScreen() {
     </div>)
 }
 
-function genChatScreen() {
+function genChatScreen(container) {
+  let selectedUser = container.state.selectedUser
   return (
     <div id="main-chat">
-      <ChatBox />
-      {detailCard()}
+      <ChatBox selectedUser={selectedUser} container={container}/>
+      {detailCard(selectedUser.info)}
     </div>)
 }
 
@@ -58,6 +57,7 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      signedOut: false,
       arrowMargin: 5,
 
       chosenMainNavTitle: TITLES.MATCH,
@@ -99,17 +99,28 @@ class Home extends Component {
     }
   }
 
+  clickSignOut() {
+    localStorage.clear("token")
+    this.setState({signedOut: true})
+  }
+
   render() {
     return (
-    <Subscribe to={[MyContainer]}>
-      {container => {
-        let user = container.state.user
+    <Subscribe to={[UserContainer, HomeScreenContainer]}>
+      {(userCon, homeCon) => {
+        if (this.state.signedOut) {
+          userCon.resetData()
+          homeCon.resetData()
+          return <Redirect to={ROUTES.LANDING}/>
+        }
+        let thisMainScreen = homeCon.state.mainScreen
+        let user = userCon.state.user
         let propsUser = this.props.user
         if (!user) {
-          container.saveUserData(propsUser)
+          userCon.saveUserData(propsUser)
           user = propsUser
         } else if (!!propsUser && user.email != propsUser.email) {
-          container.saveUserData(propsUser)
+          userCon.saveUserData(propsUser)
           user = propsUser
         }
         // Use var 'user' -> it has all the data needed
@@ -136,7 +147,12 @@ class Home extends Component {
             {this.genFooter()}
           </div>
         </div>
-        {genDeckScreen()}
+        {thisMainScreen == MAIN_SCREEN.DECK 
+          ? genDeckScreen()
+          : thisMainScreen == MAIN_SCREEN.CHAT 
+            ? genChatScreen(homeCon)
+            : <div></div>
+        }
       </div>)}}
     </Subscribe>
     );
@@ -170,6 +186,10 @@ class Home extends Component {
   }
 
   genProfileNav(user) {
+    const thisYear = new Date().getFullYear()
+    function getYear(isoStr) {
+      return new Date(isoStr).getFullYear()
+    }
     return (
       <div id="nav-profile">
         <div id="profile-avatar" 
@@ -180,7 +200,9 @@ class Home extends Component {
         <div id="profile-options">
           <div className="profile-opt" id="opt-detail-info" onClick={()=>this.clickChangeNav(NAVS.EDIT)}>Edit Profile</div>
           <div className="profile-opt" id="opt-change-password" onClick={()=>this.clickChangeNav(NAVS.RESET)}>Reset Password</div>
-          <div className="profile-opt" id="opt-sign-out">Sign out</div>
+          <div className="profile-opt" id="opt-sign-out" onClick={()=>this.clickSignOut()}>
+            Sign out
+          </div>
         </div>
       </div>
     )

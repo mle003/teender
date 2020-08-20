@@ -136,7 +136,7 @@
 }
 .detail-sub-info {
   @include textOverflowFormat();
-  @include text(18px, $boldWeight, $charcoal);
+  @include text(18px, $mediumWeight, $charcoal);
   padding: 0 $paddingLeft;
 }
 .detail-desc {

@@ -3,12 +3,11 @@ import 'src/style/nav.scss'
 import 'src/style/editProfile.scss'
 
 import { Subscribe, Container } from 'unstated'
-import MyContainer from '../../global/state'
 import DatePicker from 'react-date-picker'
 import SettingRequest from '../../global/api/setting'
 import { CircularProgress } from '@material-ui/core';
-
-const userAvatarUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ8lgurxzZwpkDpQRks2gA5dSCJyoIzGrCyLQ&usqp=CAU'
+import { userAvatarUrl } from '../../global/utils'
+import UserContainer from '../../global/container/user'
 
 const MALE = "male"
 const FEMALE = "female"
@@ -118,7 +117,7 @@ class EditProfile extends Component {
   }
 
   render() {
-    return (<Subscribe to={[MyContainer]}>
+    return (<Subscribe to={[UserContainer]}>
       {container => {
         let user = container.state.user
         let { info, newData } = this.state

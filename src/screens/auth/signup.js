@@ -7,6 +7,7 @@ import AuthRequest from "../../global/api/auth";
 import OtherRequest from "../../global/api/other";
 import SettingRequest from "../../global/api/setting";
 import { CircularProgress } from '@material-ui/core';
+import { userAvatarUrl } from "../../global/utils";
 
 const IMAGE_STATUS = {
   DONE: 'done uploading!',
@@ -188,7 +189,7 @@ class SignUpScreen extends Component {
       </div>
       </div>
       <div id="profile-picture" className="form-input">
-        <label id="avatar-container" style={{backgroundImage: `url('${this.state.imageCode}')`}}>
+        <label id="avatar-container" style={{backgroundImage: `url('${this.state.imageCode || userAvatarUrl}')`}}>
           <div id="avatar-filter">
             <input
               style={{ display: 'none'}}

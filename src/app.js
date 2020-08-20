@@ -8,12 +8,12 @@ import LandingPage from "./screens/landing";
 import SignUpScreen from "./screens/auth/signup";
 import SignInScreen from "./screens/auth/signin";
 import Home from "./screens/home";
-import MyContainer from "./global/state";
+import UserContainer from "./global/container/user";
 
 function PrivateHomeRoute({ children, ...rest }) {
   let loaded = false;
   return (
-    <Subscribe to={[MyContainer]}>
+    <Subscribe to={[UserContainer]}>
     {container => { 
       let user = null;
       if (!loaded) {

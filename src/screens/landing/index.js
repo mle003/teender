@@ -1,19 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ROUTES from '../../global/routes';
-import MyContainer from '../../global/state';
 import 'src/style/landing.scss';
 import { Subscribe } from 'unstated';
+import UserContainer from '../../global/container/user';
 
-function LandingPage() {
-  let validUser = false
-  let container = new MyContainer()
-  let user = container.state.user
-  if (!!user) 
-    validUser = true
-  
+function LandingPage() {  
   return (
-  <Subscribe to={[MyContainer]}>
+  <Subscribe to={[UserContainer]}>
   {container => {
     console.log(container.state)
   return (<div id="landing">

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {ReceivedMess, SentMess} from './bubble'
 import 'src/style/chat.scss'
+import { userAvatarUrl, MAIN_SCREEN } from '../../../global/utils'
 
 class ChatBox extends Component {
   constructor(props) {
@@ -8,17 +9,25 @@ class ChatBox extends Component {
   }
 
   render() {
+    let {selectedUser, container} = this.props
     return (
       <div id="chat-box">
         <div id="chat-header">
           <div id="chat-header-avatar-container">
-            <div id="chat-header-avatar" style={{backgroundImage: "url('https://www.shorturl.at/img/shorturl-square.png')"}}></div>
+            <div id="chat-header-avatar" style={{backgroundImage: `url('${selectedUser.info.imgUrl || userAvatarUrl}')`}}></div>
           </div>
           <div id="chat-header-text">
-            <div id="chat-header-name">Hello Hello</div>
-            <div id="chat-header-info">You match with Hello on 12/12/2012</div>
+            <div id="chat-header-name">{selectedUser.info.name}</div>
+            <div id="chat-header-info">
+              You matched with {selectedUser.info.name} on
+              {" " + new Date(selectedUser.createdAt).toLocaleDateString("vi-VN") || ""}
+            </div>
           </div>
-          <button id="chat-close-button" type="button"><ion-icon id="chat-close-icon" name="close"></ion-icon></button>
+          <button 
+            onClick={()=>{container.selectDeckScreen()}}
+            id="chat-close-button" 
+            type="button"><ion-icon id="chat-close-icon" name="close"></ion-icon>
+          </button>
         </div>
         <div id="chat-body">
           {ReceivedMess()}

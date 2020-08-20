@@ -1,13 +1,18 @@
 import React from 'react'
 import 'src/style/card.scss'
+import { userAvatarUrl } from '../../../global/utils'
 
-function detailCard() {
+function detailCard(info) {
+  const thisYear = new Date().getFullYear()
+  function getYear(isoStr) {
+    return new Date(isoStr).getFullYear()
+  }
   return (
   <div className="detail-card-container">
-    <div className="detail-img" style={{backgroundImage: "url('https://live.staticflickr.com/2734/4353428267_bba2b6f6f8.jpg')"}}></div>
-    <div className="detail-name">Hello Hello</div>
-    <div className="detail-sub-info">20, male</div>
-    <div className="detail-desc">Hello it's oisahdjahdjhasjkdhjkahdjkhasjkdhkasjhdjkashjdhajkshdkjahsjkdhjkashdoisahdjahdjhasjkdhjkahdjkhasjkdhkasjhdjkashjdhajkshdkjahsjkdhjkashdjkashkjdhkajshoisahdjahdjhasjkdhjkahdjkhasjkdhkasjhdjkashjdhajkshdkjahsjkdhjkashdjkashkjdhkajshdjkhsjkhsjkhajkhjkahskjhdjashdjkhajdhjkshdjshjkdhdjkhsjkhsjkhajkhjkahskjhdjashdjkhajdhjkshdjshjkdhjkashkjdhkajshdjkhsjkhsjkhajkhjkahskjhdjashdjkhajdhjkshdjshjkdh</div>
+    <div className="detail-img" style={{backgroundImage: `url('${info.imgUrl || userAvatarUrl}')`}}></div>
+    <div className="detail-name">{info.name}</div>
+    <div className="detail-sub-info">{thisYear - getYear(info.birthdate)}, {info.gender}</div>
+    <div className="detail-desc">{info.desc}</div>
   </div>)
 }
 

@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 // import { Route } from "react-router-dom";
-import logo from "../../assets/logo.png";
 import AuthRequest from "../../global/api/auth";
-import MyContainer from "../../global/state";
 import "../../style/signin.scss";
-import { Subscribe } from "unstated";
 import { Redirect, Router, Link, withRouter } from "react-router-dom";
 import ROUTES from "../../global/routes";
 import { CircularProgress } from '@material-ui/core';

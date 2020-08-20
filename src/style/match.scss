@@ -7,7 +7,12 @@
   height: calc(100vh - 200px);
   overflow-y: scroll;
   padding: 8px;
-  @include scrollBar()
+  @include scrollBar();
+  #match-empty-part {
+    width: 100%;
+    text-align: center;
+    @include text(12px, $lightWeight, black);
+  }
 }
 
 .match-card-container {
