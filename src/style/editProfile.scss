@@ -112,6 +112,15 @@
   .react-date-picker__button {
     display: none;
   }
+
+  .err-message {
+    height: 12px;
+    @include text(11px, $lightWeight, $redError)
+  }
+  .success-message {
+    height: 12px;
+    @include text(11px, $lightWeight, $greenSuccess)
+  }
 }
 
 .react-date-picker__inputGroup {
@@ -121,4 +130,6 @@
   input {
     border: none
   }
+
+  
 }

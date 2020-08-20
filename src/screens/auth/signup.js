@@ -163,6 +163,7 @@ class SignUpScreen extends Component {
           <label>
             <div className="input-label">Email:</div>
             <input
+              maxLength="50"
               className="signup-input"
               type="email"
               onChange={this.handleChange.bind(this, "email")}
@@ -207,15 +208,16 @@ class SignUpScreen extends Component {
   formInfo() {
     return(
     <div className="form-input-row">
-      <div id="first-name" className="form-input">
+      <div id="name" className="form-input">
         <label>
           <div className="input-label">Name:</div>
           <input
+            maxLength="50"
             className="signup-input"
             type="text"
             onChange={this.handleChange.bind(this, "name")}
           />
-          <div id="firstname-error" className="message-error">
+          <div id="name" className="message-error">
             {this.state.validationError["name"]}
           </div>
         </label>

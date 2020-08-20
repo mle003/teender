@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import 'src/style/resetPassword.scss'
 import SettingRequest from '../../global/api/setting'
+import { CircularProgress } from '@material-ui/core'
 
 class ResetPassword extends Component {
   constructor(props) {
@@ -11,6 +12,7 @@ class ResetPassword extends Component {
       confirmPw: '',
       errMess: '',
       successMess: '',
+      loadingResetPassword: false
     }
   }
 
@@ -32,6 +34,7 @@ class ResetPassword extends Component {
 
   async submitChange() {
     try {
+      this.setState({loadingResetPassword: true})
       let {oldPw, newPw, confirmPw } = this.state
 
       if (!oldPw.length || !newPw.length || !confirmPw.length)
@@ -46,11 +49,12 @@ class ResetPassword extends Component {
         successMess: successMess,
         oldPw: "",
         newPw: "",
-        confirmPw: ""
+        confirmPw: "",
+        loadingResetPassword: false
       })  
 
     } catch (err) {
-      this.setState({errMess: err.message, successMess: ""})    
+      this.setState({errMess: err.message, successMess: "", loadingResetPassword: false})    
     }
 
   }
@@ -72,7 +76,12 @@ class ResetPassword extends Component {
           <div className="input-label">Confirm new password:</div>
           <input type="password" value={confirmPw} onChange={e=>this.handleInput(e,"confirmPw")} autoComplete="on"/>
         </label>
-        <button className="nav-pw-button" type="button" onClick={()=>this.submitChange()}>Confirm change</button>
+        <button 
+          className="nav-pw-button" type="button" 
+          onClick={()=>this.submitChange()} 
+          disabled={this.state.loadingResetPassword}>
+          {this.state.loadingResetPassword ? <CircularProgress size={15} color="white"/> : "Confirm change"}
+        </button>
         <div className="err-message">{this.state.errMess}</div>
         <div className="success-message">{this.state.successMess}</div>
       </form>

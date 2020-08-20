@@ -7,6 +7,7 @@ import "../../style/signin.scss";
 import { Subscribe } from "unstated";
 import { Redirect, Router, Link, withRouter } from "react-router-dom";
 import ROUTES from "../../global/routes";
+import { CircularProgress } from '@material-ui/core';
 
 class SignInScreen extends Component {
   constructor(props) {
@@ -16,31 +17,36 @@ class SignInScreen extends Component {
       password: "",
       error: "",
       user: null,
-      signedIn: false
+      signedIn: false,
+      loadingSignIn: false
     };
     // this.subscribeContainer = null;
   }
   inputHandler(e, title) {
     this.setState({
       [title]: e.target.value,
+      errror: ''
     });
   }
   async submitHandler(e) {
     e.preventDefault();
-    let loginData = {
-      email: this.state.email,
-      password: this.state.password,
-    };
     try {
+      this.setState({loadingSignIn: true})
+      let loginData = {
+        email: this.state.email,
+        password: this.state.password,
+      };
       let user = await AuthRequest.signIn(loginData);
       localStorage.setItem("token", user.accessToken);
       this.props.history.push({
         pathname: ROUTES.HOME,
         state: { user: user }
       });
+      this.setState({loadingSignIn: false})
     } catch (err) {
       this.setState({
         error: err.message,
+        loadingSignIn: false
       });
     }
   }
@@ -81,7 +87,9 @@ class SignInScreen extends Component {
               {this.state.error == "" ? null : (
                 <div id="error"> {this.state.error} </div>
               )}
-              <button type="submit">Sign In</button>
+              <button disabled={this.state.loadingSignIn}>
+                {this.state.loadingSignIn ? <CircularProgress size={15} color="#a778b6"/> : "Sign In"}
+              </button>
             </div>
             <div className="to-sign-up-container">
               <div id="ask-text">Don't have an account?</div>
