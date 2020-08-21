@@ -1,28 +1,57 @@
-import React from 'react';
+import React, {Component} from 'react';
 import 'src/style/chat.scss';
+import ChatRequest from '../../../global/api/chat';
+import { errorLoadingGifUrl } from 'src/global/utils'
+import { Subscribe } from 'unstated';
+import ChatContainer from '../../../global/container/chat';
 
-function chatList() {
-  return (
-    <div id="chat-part">
-      <ChatTile/>
-      <ChatTile/>
-      <ChatTile/>
-    </div>
-  )
+class ChatList extends Component {
+  constructor(props) {
+    super(props)
+  }
+
+  // move to homescreen -> when socket successfully implemented
+  async componentDidMount() {
+    try {
+      let list = await ChatRequest.getListChat(1);
+      this.props.chatCon.saveChatList(list)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  async clickChatTile(chatId) {
+    await this.props.chatCon.selectChatChannel(chatId)
+    this.props.homeCon.selectChatScreen()
+  }
+
+  render() {
+    let list = this.props.chatCon.state.list
+    return (
+    <Subscribe to={[ChatContainer]}>
+      {container => !list || !list.length
+      ? <div id="chat-part"></div>
+      : <div id="chat-part">
+          {list.map(item => item.messages.length ? this.chatTile(item) : <span></span>)}
+        </div>
+      }
+    </Subscribe>
+    )
+  }
+
+  chatTile(item) {
+    return (
+    <div className="chat-tile" onClick={()=>this.clickChatTile(item._id)}>
+      <div className="chat-tile-new-container">
+        <div className="chat-tile-new-dot"></div>
+      </div>
+      <div className="chat-tile-avatar" style={{backgroundImage: `url('${item.users[0].info.imgUrl || errorLoadingGifUrl}')`}}></div>
+      <div className="chat-tile-info">
+        <div className="chat-tile-name">{item.users[0].info.name}</div>
+        <div className="chat-tile-text">{item.messages[0].type == "image" ? "Tin nhắn hình ảnh" : item.messages[0].content}</div>
+      </div>
+    </div>)
+  }
 }
 
-function ChatTile() {
-  return (
-  <div className="chat-tile">
-    <div className="chat-tile-new-container">
-      <div className="chat-tile-new-dot"></div>
-    </div>
-    <div className="chat-tile-avatar" style={{backgroundImage: "url('https://live.staticflickr.com/2734/4353428267_bba2b6f6f8.jpg')"}}></div>
-    <div className="chat-tile-info">
-      <div className="chat-tile-name">Hello Hello</div>
-      <div className="chat-tile-text">new message</div>
-    </div>
-  </div>)
-}
-
-export default chatList
+export default ChatList

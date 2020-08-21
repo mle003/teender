@@ -4,7 +4,7 @@ import Deck from "./card/deck";
 import Deck2 from "./card/deck2";
 import detailCard from './card/detailCard'
 import ChatBox from './chat/index'
-import chatList from "./chat/chatList";
+import ChatList from "./chat/chatList";
 import Match from "./match/match";
 
 import EditProfile from "../profile/edit";
@@ -20,11 +20,12 @@ import { Subscribe } from "unstated";
 import { userAvatarUrl, MAIN_SCREEN } from "../../global/utils";
 import UserContainer from "../../global/container/user";
 import HomeScreenContainer from "../../global/container/homeScreen";
+import ChatContainer from "../../global/container/chat";
 
 
 const TITLES = {
   MATCH: 'Match',
-  MESSAGE: 'Message',
+  CHAT: 'Chat',
 }
 
 const NAVS = {
@@ -44,12 +45,11 @@ function genDeckScreen() {
     </div>)
 }
 
-function genChatScreen(container) {
-  let selectedUser = container.state.selectedUser
+function genChatScreen(homeCon, chatCon) {
   return (
     <div id="main-chat">
-      <ChatBox selectedUser={selectedUser} container={container}/>
-      {detailCard(selectedUser.info)}
+      <ChatBox homeCon={homeCon} chatCon={chatCon}/>
+      {detailCard(chatCon.state.selectedChatInfo.user.info)}
     </div>)
 }
 
@@ -61,7 +61,11 @@ class Home extends Component {
       arrowMargin: 5,
 
       chosenMainNavTitle: TITLES.MATCH,
-      nav: NAVS.MAIN
+      nav: NAVS.MAIN,
+
+      homeCon: null,
+      userCon: null,
+      chatCon: null
     };
   }
 
@@ -81,7 +85,7 @@ class Home extends Component {
       case TITLES.MATCH:
         // handle call api here
         break;
-      case TITLES.MESSAGE:
+      case TITLES.CHAT:
         // handle call api here
         break;
       default:
@@ -103,14 +107,15 @@ class Home extends Component {
     localStorage.clear("token")
     this.setState({signedOut: true})
   }
-
   render() {
     return (
-    <Subscribe to={[UserContainer, HomeScreenContainer]}>
-      {(userCon, homeCon) => {
+    <Subscribe to={[UserContainer, HomeScreenContainer, ChatContainer]}>
+      {(userCon, homeCon, chatCon) => {
+        // if (!this.state.homeCon) {this.setState({userCon, homeCon, chatCon})}
         if (this.state.signedOut) {
           userCon.resetData()
           homeCon.resetData()
+          chatCon.resetData()
           return <Redirect to={ROUTES.LANDING}/>
         }
         let thisMainScreen = homeCon.state.mainScreen
@@ -130,7 +135,7 @@ class Home extends Component {
             <Link to={ROUTES.LANDING}><img src={logo} height="30" /></Link>
           </div>
           <div id="nav-body">
-            {this.genNav(user)}
+            {this.genNav(user, homeCon, chatCon)}
           </div>
           <div id="nav-footer">
             <div id="nav-footer-avatar"
@@ -150,7 +155,7 @@ class Home extends Component {
         {thisMainScreen == MAIN_SCREEN.DECK 
           ? genDeckScreen()
           : thisMainScreen == MAIN_SCREEN.CHAT 
-            ? genChatScreen(homeCon)
+            ? genChatScreen(homeCon, chatCon)
             : <div></div>
         }
       </div>)}}
@@ -158,17 +163,19 @@ class Home extends Component {
     );
   }
 
-  genMainNav() {
+  genMainNav(homeCon, chatCon) {
     return (<div>
       <div id="nav-titles">{this.genMainNavTitles()}</div>
       <div id="nav-main">
-        {this.state.chosenMainNavTitle == TITLES.MESSAGE ? chatList() : <Match/>}
+        {this.state.chosenMainNavTitle == TITLES.CHAT 
+          ? <ChatList homeCon={homeCon} chatCon={chatCon}/> 
+          : <Match homeCon={homeCon} chatCon={chatCon}/>}
       </div>
     </div>)
   }
 
   genMainNavTitles() {
-    let list = [TITLES.MATCH, TITLES.MESSAGE].map((navTitle, index) => {
+    let list = [TITLES.MATCH, TITLES.CHAT].map((navTitle, index) => {
       return (
         <div
           onClick={() => this.clickMainNavTitle(navTitle)}
@@ -208,7 +215,7 @@ class Home extends Component {
     )
   }
 
-  genNav(user) {
+  genNav(user, homeCon, chatCon) {
     let nav = this.genMainNav()
     switch(this.state.nav) {
       case NAVS.PROFILE:
@@ -221,7 +228,7 @@ class Home extends Component {
         nav = <ResetPassword/>
       break
       default:
-        nav = this.genMainNav()
+        nav = this.genMainNav(homeCon, chatCon)
       break
     }
     return nav

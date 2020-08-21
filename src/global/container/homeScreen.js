@@ -2,7 +2,8 @@ import { Container } from "unstated";
 import {MAIN_SCREEN} from "src/global/utils"
 let INITIAL_STATE = {
   mainScreen: MAIN_SCREEN.DECK,
-  selectedUser: null, // userData, which includes 'info' and '_id' fields 
+  // selectedUser: null, 
+  // userData, which includes 'info' and '_id' fields 
   cards: [] // when navigating between screen => load cards
 }
 class HomeScreenContainer extends Container {
@@ -16,8 +17,8 @@ class HomeScreenContainer extends Container {
   selectDeckScreen() {
     this.setState({ mainScreen: MAIN_SCREEN.DECK })
   }
-  selectChatScreen(userData) {
-    this.setState({ selectedUser: userData, mainScreen: MAIN_SCREEN.CHAT })
+  selectChatScreen() {
+    this.setState({ mainScreen: MAIN_SCREEN.CHAT })
   }
 }
 

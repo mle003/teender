@@ -13,8 +13,8 @@ class SettingRequest {
       url: api,
       headers: thisHeaders,
       data: {
-        "old_password": oldPw,
-        "new_password": newPw
+        "oldPassword": oldPw,
+        "newPassword": newPw
       }
     });
     console.log('reset pw', response)
