@@ -13,7 +13,8 @@ class ChatList extends Component {
   // move to homescreen -> when socket successfully implemented
   async componentDidMount() {
     try {
-      let list = await ChatRequest.getListChat(1);
+      let page = this.props.chatCon.state.listChatPage
+      let list = await ChatRequest.getListChat(page);
       this.props.chatCon.saveChatList(list)
     } catch (err) {
       console.log(err)
@@ -31,7 +32,7 @@ class ChatList extends Component {
     <Subscribe to={[ChatContainer]}>
       {container => !list || !list.length
       ? <div id="chat-part"></div>
-      : <div id="chat-part">
+      : <div id="chat-list">
           {list.map(item => item.messages.length ? this.chatTile(item) : <span></span>)}
         </div>
       }
@@ -45,7 +46,9 @@ class ChatList extends Component {
       <div className="chat-tile-new-container">
         <div className="chat-tile-new-dot"></div>
       </div>
-      <div className="chat-tile-avatar" style={{backgroundImage: `url('${item.users[0].info.imgUrl || errorLoadingGifUrl}')`}}></div>
+      <div className="chat-tile-avatar-container">
+        <div className="chat-tile-avatar" style={{backgroundImage: `url('${item.users[0].info.imgUrl || errorLoadingGifUrl}')`}}></div>
+      </div>
       <div className="chat-tile-info">
         <div className="chat-tile-name">{item.users[0].info.name}</div>
         <div className="chat-tile-text">{item.messages[0].type == "image" ? "Tin nhắn hình ảnh" : item.messages[0].content}</div>

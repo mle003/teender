@@ -23,6 +23,11 @@
     @include scrollBar();
     display: flex;
     flex-direction: column-reverse;
+    #chat-body-empty {
+      @include text(15px, $lightWeight, $charcoal);
+      margin-bottom: 30px;
+      text-align: center;
+    }
   }
 }
 .mess {
@@ -32,6 +37,9 @@
   border-radius: 16px;
   @include text(14px);
   max-width: 400px;
+
+  min-width: 30;
+  min-height: 30;
 
   @include multipleLines();
   @include centerBg();
@@ -106,17 +114,25 @@
   align-items: center;
   justify-content: space-between;
 
-  #chat-input {
-    padding: 10px 10px;
-    border: $lightBorder;
-    border-radius: 100px;
+  .chat-input-container {
     width: 90%;
-    @include text(14px, $lightWeight, $charcoal);
-    &:focus {
-      outline: none;
-      background-color: rgba($lightGrey, 0.1);
+    .err-message {
+      @include text(10px, $lightWeight, $redError);
+      margin-left: 10px
     }
-  } 
+    #chat-input {
+      padding: 10px 10px;
+      border: $lightBorder;
+      border-radius: 100px;
+      width: 100%;
+      @include text(14px, $lightWeight, $charcoal);
+      &:focus {
+        outline: none;
+        background-color: rgba($lightGrey, 0.1);
+      }
+    } 
+  }
+  
   #send-button {
     cursor: pointer;
     outline: none;
@@ -126,6 +142,8 @@
     border: none;
     border-radius: 50%;
     text-align: center;
+
+    padding-bottom: 10;
     #send-icon {
       font-size: 24px;
       color: $mainColor;
@@ -141,34 +159,11 @@
 .chat-tile {
   cursor: pointer;
   height: 80px;
-  width: $rightNavWidth;
-  display: flex;
-  align-items: center;
-  .chat-tile-avatar {
-    height: 46px;
-    width: 46px;
-    margin-right: 17px;
-    @include centerBg();
-    border: $lightBorder;
-    border-radius: 50%;
-  }
-  .chat-tile-info {
-    width: $rightNavWidth;
-    .chat-tile-name {
-      width: $rightNavWidth - 150px;
-      @include text(17px, $boldWeight, $charcoal);
-      // width: 100%;
-      @include limitOneLine();
-    }
-    .chat-tile-text {
-      width: $rightNavWidth - 150px;
-      @include text(13.5px, $lightWeight, $charcoal);
-      // width: 100%;
-      @include limitOneLine();
-    }
-  }
+  width: $rightNavWidth - $scrollBarWidth - 1;
+  display: grid;
+  grid-template-columns: 30px 55px calc(100% - 85px);
   .chat-tile-new-container {
-    margin: 0 12px;
+    @include displayCenter();
     .chat-tile-new-dot {
       height: 10px;
       width: 10px;
@@ -176,9 +171,60 @@
       background-color: $blue;
     }
   }
+  .chat-tile-avatar-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    .chat-tile-avatar {
+      height: 46px;
+      width: 46px;
+      @include centerBg();
+      border: $lightBorder;
+      border-radius: 50%;
+    }
+  }
+  .chat-tile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding-right: 10px;
+    .chat-tile-name {
+      width: 100%;
+      @include text(17px, $boldWeight, $charcoal);
+      // width: 100%;
+      @include limitOneLine();
+    }
+    .chat-tile-text {
+      width: 100%;
+      @include text(13.5px, $lightWeight, $charcoal);
+      // width: 100%;
+      @include limitOneLine();
+    }
+  }
+  
   @include whiteButtonHover()
 }
 
 .chat-tile-chosen {
   background-color: rgba($lightGrey, 0.3);
+}
+
+#chat-list {
+  height: 100%;
+  overflow-y: scroll;
+  @include scrollBar();
+}
+
+#load-more-chat {
+  cursor: pointer;
+  @include text(11px, $lightWeight, $blue);
+  text-align: center;
+  padding-top: 15px;
+  &:hover {
+    text-decoration: underline;
+  }
+  &:active {
+    opacity: 0.7;
+  }
 }

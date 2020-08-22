@@ -4,7 +4,9 @@ import { concatAndFilterDuplicateById } from "../utils";
 let INITIAL_STATE = {
   list: null, // list of chat, display latest message => socket.io -> change latest mess
   selectedChatInfo: null, // _id and info of user
-  messages: null // messages of a channel chat => socket.io -> unshift to arr
+  messages: null, // messages of a channel chat => socket.io -> unshift to arr
+  messagePage: 1,
+  chatListPage: 1,
 }
 
 
@@ -21,11 +23,10 @@ class ChatContainer extends Container {
     // update list
     let newList = list.map(item => {
       if (item._id == chatId) {
-        if(item.messages.length) {
+        if(!item.messages.length || 
+          (item.messages.length && item.messages[0]._id != newMess._id)
+        ) {
           // remove duplicate when catch socket.io
-          if(item.messages[0]._id != newMess._id) 
-            item.messages.unshift(newMess) // insert at beginning of array
-        } else {
           item.messages.unshift(newMess) // insert at beginning of array
         }
       }
@@ -34,18 +35,25 @@ class ChatContainer extends Container {
     
     // if chat is selected
     if (this.state.selectedChatInfo._id == chatId) {
-      messages.unshift(newMess)
+      if(!messages.length || 
+        (messages.length && messages[0]._id != newMess._id)
+      ) {
+        // remove duplicate when catch socket.io
+        messages.unshift(newMess) // insert at beginning of array
+      }
     }
 
     this.setState({list: newList, messages: messages})
   }
   
   selectChatChannel(chatId) {
-    // get list mess
-    let messages = []
-    let chatInfo = null
-    let list = this.state.list
-    
+    if (!this.state.selectedChatInfo || 
+      this.state.selectedChatInfo._id != chatId
+    ) {
+      let messages = []
+      let chatInfo = {}
+      let list = this.state.list
+      
     for (let item of list) {
       if (item._id == chatId) {
         // chat info model
@@ -59,7 +67,16 @@ class ChatContainer extends Container {
       }
     }
     // get list mess
-    this.setState({selectedChatInfo: chatInfo, messages: messages})
+    this.setState({selectedChatInfo: chatInfo, messages: messages, messagePage: 1})
+    }
+  }
+  increaseMessagePage() {
+    let page = this.state.messagePage + 1
+    this.setState({messagePage: page})
+  }
+  increaseChatListPage() {
+    let page = this.state.chatListPage + 1
+    this.setState({chatListPage: page})
   }
   saveChatList(list) {
     this.setState({list: list})    

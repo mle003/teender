@@ -12,7 +12,43 @@ class ChatBox extends Component {
     this.state = {
       contentMessage: '',
       type: 'text',
-      sendingOnload: false
+      sendingOnload: false,
+      errorSendingMess: '',
+      loadedAllMess: false,
+      currentChatId: this.props.chatCon.state.selectedChatInfo_id
+    }
+    this.chatListRef = React.createRef()
+  }
+
+  scrollToBottom = () => {
+    this.chatListRef.current.scrollIntoView({ behavior: "smooth", block: 'nearest', inline: 'start'  });
+  }
+
+  componentDidUpdate() {
+    console.log('hi updated')
+    if (this.state.currentChatId != this.props.chatCon.state.selectedChatInfo_id) {
+      console.log('hi change channel')
+      this.setState({
+        loadedAllMess: false,
+        currentChatId: this.props.chatCon.state.selectedChatInfo_id
+      })
+    }
+  }
+
+  componentDidMount() {
+    this.scrollToBottom()  
+  }
+
+  async loadMoreOldMessages() {
+    this.props.chatCon.increaseMessagePage()
+    let page = this.props.chatCon.state.messagePage
+    let chatId = this.props.chatCon.state.selectedChatInfo._id
+    let oldMessages = await ChatRequest.getMessage(page, chatId)
+    oldMessages = oldMessages.messages
+    if (oldMessages.length) {
+      this.props.chatCon.loadMoreOldMessages(oldMessages)
+    } else {
+      this.setState({loadedAllMess: true})
     }
   }
 
@@ -23,17 +59,23 @@ class ChatBox extends Component {
       let chatId = this.props.chatCon.state.selectedChatInfo._id
       let content = this.state.contentMessage
       let type = this.state.type
-
+      if (!content.trim()) {
+        throw new Error('')
+      }
       let mess = {
         content,
         type
       }
       let newMess = await ChatRequest.sendMessage(mess, chatId)
-      await this.props.chatCon.saveNewMess(newMess, chatId)
-      this.setState({sendingOnload: false})
+      this.props.chatCon.saveNewMess(newMess.messages[0], chatId)
+      this.setState({sendingOnload: false, contentMessage: ''})
+      this.scrollToBottom()
     } catch(err) {
       console.log(err)
-      this.setState({sendingOnload: false})
+      let sendingOnload = false
+      let errorSendingMess = err.message
+      let contentMess = errorSendingMess.length ? this.state.contentMessage : ''
+      this.setState({sendingOnload, errorSendingMess, contentMess})
     } 
   }
 
@@ -61,18 +103,27 @@ class ChatBox extends Component {
           </button>
         </div>
         <div id="chat-body">
-          { container.state.messages.length
+          <div ref={this.chatListRef}></div>
+          {container.state.messages.length
             ? container.state.messages
               .map(item => item.owner == selectedUser._id ? ReceivedMess(item) : SentMess(item))
-            : <div>Send your first message!</div>
+            : <div id="chat-body-empty">Let's say hello to each other! 👋</div>
           }
+          <div id="load-more-chat" 
+            style={{display: this.state.loadedAllMess ? 'none' : 'block'}}
+            onClick={()=>this.loadMoreOldMessages()}>
+              Load older messages...
+          </div>
         </div>
         <div id="chat-footer">
           <form id="chat-form" onSubmit={e=>this.handleSendMessage(e)}>
-            <input id="chat-input" 
-              value={this.state.contentMessage} 
-              onChange={e=>this.setState({contentMessage: e.target.value})} 
-              placeholder="Type something..."/>
+            <div className="chat-input-container">
+              <input id="chat-input" 
+                value={this.state.contentMessage} 
+                onChange={e=>this.setState({contentMessage: e.target.value})} 
+                placeholder="Type something..."/>
+              <div className="err-message">{this.state.errorSendingMess}</div>
+            </div>      
             <button id="send-button" disabled={this.state.sendingOnload}><ion-icon name="send" id="send-icon"></ion-icon></button>
           </form>
         </div>
