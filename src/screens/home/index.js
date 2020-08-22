@@ -121,13 +121,10 @@ class Home extends Component {
         let thisMainScreen = homeCon.state.mainScreen
         let user = userCon.state.user
         let propsUser = this.props.user
-        if (!user) {
+        if (!user || (!!propsUser && user.email != propsUser.email)) {
           userCon.saveUserData(propsUser)
           user = propsUser
-        } else if (!!propsUser && user.email != propsUser.email) {
-          userCon.saveUserData(propsUser)
-          user = propsUser
-        }
+        } 
         // Use var 'user' -> it has all the data needed
         return(<div id="main-screen">
         <div id="nav">

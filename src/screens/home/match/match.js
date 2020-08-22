@@ -29,13 +29,13 @@ class Match extends Component {
     let list = this.props.chatCon.state.list
     return (
     <Subscribe to={[ChatContainer]}>
-      {container => <div className="match-part">
-        {list == null 
-          ? <div></div>
+      {container => 
+        list == null 
+          ? <div className="match-part"><div></div></div>
           :  !list.length 
-            ? <div id="match-empty-part">💕 Your matches will be shown here, soon! 💕</div> 
-            :  list.map(data => this.matchCard(data.users[0], data._id))}
-      </div>}
+            ? <div className="match-part" style={{display: 'block'}}><div id="match-empty-part">💕 Your matches will be shown here, soon! 💕</div> </div>
+            : <div className="match-part">{list.map(data => this.matchCard(data.users[0], data._id))}</div>
+      }
     </Subscribe>
     )
   }

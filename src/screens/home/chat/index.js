@@ -25,9 +25,7 @@ class ChatBox extends Component {
   }
 
   componentDidUpdate() {
-    console.log('hi updated')
     if (this.state.currentChatId != this.props.chatCon.state.selectedChatInfo_id) {
-      console.log('hi change channel')
       this.setState({
         loadedAllMess: false,
         currentChatId: this.props.chatCon.state.selectedChatInfo_id
@@ -109,11 +107,14 @@ class ChatBox extends Component {
               .map(item => item.owner == selectedUser._id ? ReceivedMess(item) : SentMess(item))
             : <div id="chat-body-empty">Let's say hello to each other! 👋</div>
           }
-          <div id="load-more-chat" 
+          {container.state.messages.length < 20
+            ? <div></div>
+            : <div id="load-more-chat" 
             style={{display: this.state.loadedAllMess ? 'none' : 'block'}}
             onClick={()=>this.loadMoreOldMessages()}>
               Load older messages...
           </div>
+          }
         </div>
         <div id="chat-footer">
           <form id="chat-form" onSubmit={e=>this.handleSendMessage(e)}>

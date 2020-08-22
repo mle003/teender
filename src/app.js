@@ -39,8 +39,8 @@ function PrivateHomeRoute({ children, ...rest }) {
           if (location.state)
             thisUser = location.state.user
 
-          return (user || container.state.user || thisUser) ? (
-            <Home user={user || container.state.user || thisUser}/>
+          return (user || thisUser || container.state.user) ? (
+            <Home user={user || thisUser || container.state.user}/>
           ) : (
               <Redirect
                 to={{
