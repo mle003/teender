@@ -45,7 +45,7 @@ class ChatContainer extends Container {
 
     this.setState({list: newList, messages: messages})
   }
-  
+
   selectChatChannel(chatId) {
     if (!this.state.selectedChatInfo || 
       this.state.selectedChatInfo._id != chatId

@@ -5,6 +5,18 @@ const MAIN_SCREEN = {
   CHAT: 'chat'
 }
 
+const TITLES = {
+  MATCH: 'Match',
+  CHAT: 'Chat',
+}
+
+const NAVS = {
+  MAIN: 'Main',
+  PROFILE: 'Profile',
+  EDIT_PROFILE: 'Edit Profile',
+  RESET_PASSWORD: 'Reset Password'
+}
+
 function concatAndFilterDuplicateById(mainList, addedList) {
   let addedListFiltered = mainList
   for (let item of addedList) {
@@ -22,5 +34,7 @@ export {
   userAvatarUrl,
   errorLoadingGifUrl,
   MAIN_SCREEN,
+  TITLES,
+  NAVS,
   concatAndFilterDuplicateById
 }

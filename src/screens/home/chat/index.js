@@ -5,6 +5,8 @@ import { userAvatarUrl, MAIN_SCREEN } from '../../../global/utils'
 import ChatRequest from '../../../global/api/chat'
 import { Subscribe } from 'unstated'
 import ChatContainer from '../../../global/container/chat'
+// import io from 'socket.io-client'
+// import { BASE_URL } from "../../../global/api/var";
 
 class ChatBox extends Component {
   constructor(props) {
@@ -15,34 +17,39 @@ class ChatBox extends Component {
       sendingOnload: false,
       errorSendingMess: '',
       loadedAllMess: false,
-      currentChatId: this.props.chatCon.state.selectedChatInfo_id
+      // currentChatId: this.props.chatCon.state.selectedChatInfo_id
     }
     this.chatListRef = React.createRef()
+    this.socket = this.props.socket
   }
+
 
   scrollToBottom = () => {
     this.chatListRef.current.scrollIntoView({ behavior: "smooth", block: 'nearest', inline: 'start'  });
   }
 
-  componentDidUpdate() {
-    if (this.state.currentChatId != this.props.chatCon.state.selectedChatInfo_id) {
-      this.setState({
-        loadedAllMess: false,
-        currentChatId: this.props.chatCon.state.selectedChatInfo_id
-      })
-    }
-  }
-
   componentDidMount() {
-    this.scrollToBottom()  
+    let chatCon = this.props.chatCon
+    let scrollBottom = this.scrollToBottom
+    this.setState({
+      loadedAllMess: false,
+    })
+
+    this.socket.on('receive-message', function(newMess, chatId, userId) {
+      console.log(userId + ' is my Id')
+      chatCon.saveNewMess(newMess, chatId)
+      scrollBottom()
+    })
   }
 
   async loadMoreOldMessages() {
     this.props.chatCon.increaseMessagePage()
     let page = this.props.chatCon.state.messagePage
     let chatId = this.props.chatCon.state.selectedChatInfo._id
+
     let oldMessages = await ChatRequest.getMessage(page, chatId)
     oldMessages = oldMessages.messages
+    
     if (oldMessages.length) {
       this.props.chatCon.loadMoreOldMessages(oldMessages)
     } else {
@@ -55,6 +62,7 @@ class ChatBox extends Component {
     try {
       this.setState({sendingOnload: true})
       let chatId = this.props.chatCon.state.selectedChatInfo._id
+      let matchId = this.props.chatCon.state.selectedChatInfo.user._id
       let content = this.state.contentMessage
       let type = this.state.type
       if (!content.trim()) {
@@ -64,8 +72,11 @@ class ChatBox extends Component {
         content,
         type
       }
-      let newMess = await ChatRequest.sendMessage(mess, chatId)
-      this.props.chatCon.saveNewMess(newMess.messages[0], chatId)
+      // api here
+      let newMessData = await ChatRequest.sendMessage(mess, chatId)
+      this.socket.emit('send-message', newMessData.messages[0], chatId, matchId)
+      this.props.chatCon.saveNewMess(newMessData.messages[0], chatId)
+
       this.setState({sendingOnload: false, contentMessage: ''})
       this.scrollToBottom()
     } catch(err) {
@@ -121,7 +132,7 @@ class ChatBox extends Component {
             <div className="chat-input-container">
               <input id="chat-input" 
                 value={this.state.contentMessage} 
-                onChange={e=>this.setState({contentMessage: e.target.value})} 
+                onChange={e=>this.setState({contentMessage: e.target.value, errorSendingMess: ''})} 
                 placeholder="Type something..."/>
               <div className="err-message">{this.state.errorSendingMess}</div>
             </div>      

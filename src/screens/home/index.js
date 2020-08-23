@@ -17,169 +17,203 @@ import "src/style/card.scss";
 import { Link, useHistory, Redirect } from "react-router-dom";
 import ROUTES from "../../global/routes";
 import { Subscribe } from "unstated";
-import { userAvatarUrl, MAIN_SCREEN } from "../../global/utils";
+import { userAvatarUrl, MAIN_SCREEN, TITLES, NAVS } from "../../global/utils";
 import UserContainer from "../../global/container/user";
 import HomeScreenContainer from "../../global/container/homeScreen";
 import ChatContainer from "../../global/container/chat";
 
+import io from 'socket.io-client'
+import { BASE_URL } from "../../global/api/var";
+import ChatRequest from "../../global/api/chat";
 
-const TITLES = {
-  MATCH: 'Match',
-  CHAT: 'Chat',
-}
 
-const NAVS = {
-  MAIN: 'Main',
-  PROFILE: 'Profile',
-  EDIT: 'Edit Profile',
-  RESET: 'Reset Password'
-}
-
-function genDeckScreen() {
-  return (
-    <div id="main-deck">
-      <div id="cards-stack">
-        <Deck2 />
-      </div>
-      <div id="instruction"></div>
-    </div>)
-}
-
-function genChatScreen(homeCon, chatCon) {
-  return (
-    <div id="main-chat">
-      <ChatBox homeCon={homeCon} chatCon={chatCon}/>
-      {detailCard(chatCon.state.selectedChatInfo.user.info)}
-    </div>)
-}
-
-class Home extends Component {
+class HomeComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       signedOut: false,
-      arrowMargin: 5,
-
-      chosenMainNavTitle: TITLES.MATCH,
-      nav: NAVS.MAIN,
-
-      homeCon: null,
-      userCon: null,
-      chatCon: null
     };
+    this.socket = null
   }
 
-  clickChangeNav(navName) {
-    this.setState({
-      nav: navName
+  componentWillMount() {
+    this.socket = io(BASE_URL);
+  }
+
+  async componentDidMount() {
+    let chatCon = this.props.chatCon
+    let userCon = this.props.userCon
+
+    // get list chat/matches
+    try {
+      let page = chatCon.state.listChatPage
+      let list = await ChatRequest.getListChat(page);
+      await chatCon.saveChatList(list)
+
+      let matchesIds = list.map(e => e.users[0]._id)
+      this.socket.emit('online', userCon.state.user._id, matchesIds)
+
+    } catch (err) {
+      console.log(err)
+    }
+
+    this.socket.on('matches-online', function (myOnlineMatches) {
+      let list = chatCon.state.list
+      let newList = list.map(item => {
+        if (myOnlineMatches.includes(item.users[0]._id)) {
+          item.online = true
+        } else {
+          item.online = false
+        }
+        return item
+      })
+      chatCon.saveChatList(newList)
     })
-  }
 
-  
-  clickMainNavTitle(navTitle) {
-    // change state when choose a different navTitle
-    if (this.state.chosenMainNavTitle != navTitle) this.setState({ chosenMainNavTitle: navTitle });
-    // handle xong cuối cùng là chọn index.
+    this.socket.on('a-match-online', function (matchId) {
+      let newList = handleStatus(matchId, true, chatCon.state.list)
+      chatCon.saveChatList(newList)
+      console.log(matchId + ' is now online!')
+    })
+    this.socket.on('a-match-offline', function (matchId) {
+      let newList = handleStatus(matchId, false, chatCon.state.list)
+      chatCon.saveChatList(newList)
+      console.log(matchId + ' is now offline!')
+    })
 
-    switch (navTitle) {
-      case TITLES.MATCH:
-        // handle call api here
-        break;
-      case TITLES.CHAT:
-        // handle call api here
-        break;
-      default:
-        break;
+    function handleStatus(matchId, online, oldList) {
+      let list = [...oldList]
+      for (let item of list) {
+        if (matchId == item.users[0]._id) {
+          item.online = online
+          break
+        }
+      }
+      return list
     }
   }
 
   clickFooterAvatar() {
-    if (this.state.nav == NAVS.MAIN) {
-      this.clickChangeNav(NAVS.PROFILE)
-    } else if (this.state.nav == NAVS.PROFILE) {
-      this.clickChangeNav(NAVS.MAIN)
-    } else {
-      this.clickChangeNav(NAVS.PROFILE)
+    let homeCon = this.props.homeCon
+    switch (homeCon.state.nav) {
+      case NAVS.MAIN:
+        homeCon.selectNavProfile()
+        break
+      case NAVS.PROFILE:
+        homeCon.selectNavMain()
+        break
+      default:
+        homeCon.selectNavProfile()
+        break
     }
   }
-
-  clickSignOut() {
-    localStorage.clear("token")
-    this.setState({signedOut: true})
-  }
   render() {
-    return (
-    <Subscribe to={[UserContainer, HomeScreenContainer, ChatContainer]}>
-      {(userCon, homeCon, chatCon) => {
-        // if (!this.state.homeCon) {this.setState({userCon, homeCon, chatCon})}
-        if (this.state.signedOut) {
-          userCon.resetData()
-          homeCon.resetData()
-          chatCon.resetData()
-          return <Redirect to={ROUTES.LANDING}/>
-        }
-        let thisMainScreen = homeCon.state.mainScreen
-        let user = userCon.state.user
-        let propsUser = this.props.user
-        if (!user || (!!propsUser && user.email != propsUser.email)) {
-          userCon.saveUserData(propsUser)
-          user = propsUser
-        } 
-        // Use var 'user' -> it has all the data needed
-        return(<div id="main-screen">
-        <div id="nav">
-          <div id="nav-logo">
-            <Link to={ROUTES.LANDING}><img src={logo} height="30" /></Link>
-          </div>
-          <div id="nav-body">
-            {this.genNav(user, homeCon, chatCon)}
-          </div>
-          <div id="nav-footer">
-            <div id="nav-footer-avatar"
-              onClick={()=>this.clickFooterAvatar()}
-              style={
-                this.state.nav == NAVS.MAIN 
-                ? {backgroundImage: `url('${user.info.imgUrl || userAvatarUrl}')`}
-                : {backgroundColor: 'white'}
-              }>
-              {this.state.nav == NAVS.MAIN 
-                ? <div></div> 
-                : <ion-icon name="chevron-back-outline"></ion-icon>}
-            </div>
-            {this.genFooter()}
-          </div>
-        </div>
-        {thisMainScreen == MAIN_SCREEN.DECK 
-          ? genDeckScreen()
-          : thisMainScreen == MAIN_SCREEN.CHAT 
-            ? genChatScreen(homeCon, chatCon)
-            : <div></div>
-        }
-      </div>)}}
-    </Subscribe>
-    );
-  }
+    // get containers from HOC ----------
+    let userCon = this.props.userCon
+    let homeCon = this.props.homeCon
+    let chatCon = this.props.chatCon
 
-  genMainNav(homeCon, chatCon) {
-    return (<div>
-      <div id="nav-titles">{this.genMainNavTitles()}</div>
-      <div id="nav-main">
-        {this.state.chosenMainNavTitle == TITLES.CHAT 
-          ? <ChatList homeCon={homeCon} chatCon={chatCon}/> 
-          : <Match homeCon={homeCon} chatCon={chatCon}/>}
+    // handle sign out here -----------
+    if (this.state.signedOut) {
+      localStorage.clear("token")
+      userCon.resetData()
+      homeCon.resetData()
+      chatCon.resetData()
+      return <Redirect to={ROUTES.LANDING} />
+    }
+
+    // handle save userData ------------------
+    let user = userCon.state.user
+    let propsUser = this.props.user
+    if (!user || (propsUser && user._id != propsUser._id)) {
+      userCon.saveUserData(propsUser)
+      user = propsUser
+    }
+
+    // Use var 'user' -> it has all the data needed
+    return (<div id="main-screen">
+      <div id="nav">
+        <div id="nav-logo">
+          <Link to={ROUTES.LANDING}><img src={logo} height="30" /></Link>
+        </div>
+        <div id="nav-body">
+          {this.genProfileNavTitles(user)}
+        </div>
+        <div id="nav-footer">
+          <div id="nav-footer-avatar"
+            onClick={() => this.clickFooterAvatar()}
+            style={
+              homeCon.state.nav == NAVS.MAIN
+                ? { backgroundImage: `url('${user.info.imgUrl || userAvatarUrl}')` }
+                : { backgroundColor: 'white' }
+            }>
+            {homeCon.state.nav == NAVS.MAIN
+              ? <div></div>
+              : <ion-icon name="chevron-back-outline"></ion-icon>}
+          </div>
+          {this.genFooter()}
+        </div>
       </div>
+      {this.genMainScreen()}
     </div>)
   }
 
+  // Gen main screen here -------------------
+  genMainScreen() {
+    let homeCon = this.props.homeCon
+    return homeCon.state.mainScreen == MAIN_SCREEN.DECK
+      ? this.genDeckScreen()
+      : homeCon.state.mainScreen == MAIN_SCREEN.CHAT
+        ? this.genChatScreen()
+        : <div></div>
+  }
+  genDeckScreen() {
+    return (
+      <div id="main-deck">
+        <div id="cards-stack">
+          <Deck2 />
+        </div>
+        <div id="instruction"></div>
+      </div>)
+  }
+  genChatScreen() {
+    let homeCon = this.props.homeCon
+    let chatCon = this.props.chatCon
+    return (
+      <div id="main-chat">
+        <ChatBox socket={this.socket} homeCon={homeCon} chatCon={chatCon} />
+        {detailCard(chatCon.state.selectedChatInfo.user.info)}
+      </div>)
+  }
+
+  // Gen main nav here -------------------
+  genMainNav() {
+    let homeCon = this.props.homeCon
+    let chatCon = this.props.chatCon
+    return (<div>
+      <div id="nav-titles">{this.genMainNavTitles()}</div>
+      <div id="nav-main">
+        {homeCon.state.navTitle == TITLES.CHAT
+          ? <ChatList socket={this.socket} homeCon={homeCon} chatCon={chatCon} />
+          : <Match socket={this.socket} homeCon={homeCon} chatCon={chatCon} />}
+      </div>
+    </div>)
+  }
+  // Gen main nav titles UI here -------------------
   genMainNavTitles() {
+    let homeCon = this.props.homeCon
     let list = [TITLES.MATCH, TITLES.CHAT].map((navTitle, index) => {
       return (
         <div
-          onClick={() => this.clickMainNavTitle(navTitle)}
+          onClick={
+            navTitle == TITLES.MATCH
+              ? () => homeCon.selectNavTitlesMatch()
+              : () => homeCon.selectNavTitlesChat()
+          }
           key={index}
           className={[
             "nav-title",
-            navTitle == this.state.chosenMainNavTitle ? "chosen-nav-title" : "unchosen-nav-title",
+            navTitle == homeCon.state.navTitle ? "chosen-nav-title" : "unchosen-nav-title",
           ].join(" ")}
         >
           {navTitle}
@@ -189,80 +223,96 @@ class Home extends Component {
     return list;
   }
 
+  // Gen profile nav here -------------------
   genProfileNav(user) {
+    let homeCon = this.props.homeCon
     const thisYear = new Date().getFullYear()
     function getYear(isoStr) {
       return new Date(isoStr).getFullYear()
     }
     return (
       <div id="nav-profile">
-        <div id="profile-avatar" 
-          style={{backgroundImage: `url('${user.info.imgUrl || userAvatarUrl}')`}}
+        <div id="profile-avatar"
+          style={{ backgroundImage: `url('${user.info.imgUrl || userAvatarUrl}')` }}
         ></div>
         <div id="profile-name">{user.info.name}</div>
         <div id="profile-sub-info">{thisYear - getYear(user.info.birthdate)} - {user.info.gender}</div>
         <div id="profile-options">
-          <div className="profile-opt" id="opt-detail-info" onClick={()=>this.clickChangeNav(NAVS.EDIT)}>Edit Profile</div>
-          <div className="profile-opt" id="opt-change-password" onClick={()=>this.clickChangeNav(NAVS.RESET)}>Reset Password</div>
-          <div className="profile-opt" id="opt-sign-out" onClick={()=>this.clickSignOut()}>
+          <div className="profile-opt" id="opt-detail-info" onClick={() => homeCon.selectNavEditProfile()}>Edit Profile</div>
+          <div className="profile-opt" id="opt-change-password" onClick={() => homeCon.selectNavResetPassword()}>Reset Password</div>
+          <div className="profile-opt" id="opt-sign-out" onClick={() => this.setState({ signedOut: true })}>
             Sign out
           </div>
         </div>
       </div>
     )
   }
-
-  genNav(user, homeCon, chatCon) {
+  // gen profile options UI here (not main nav - update UI in left nav)
+  genProfileNavTitles(user) {
+    let homeCon = this.props.homeCon
     let nav = this.genMainNav()
-    switch(this.state.nav) {
+    switch (homeCon.state.nav) {
       case NAVS.PROFILE:
         nav = this.genProfileNav(user)
-      break
+        break
       case NAVS.EDIT:
-        nav = <EditProfile/>
-      break
+        nav = <EditProfile />
+        break
       case NAVS.RESET:
-        nav = <ResetPassword/>
-      break
+        nav = <ResetPassword />
+        break
       default:
-        nav = this.genMainNav(homeCon, chatCon)
-      break
+        nav = this.genMainNav()
+        break
     }
     return nav
   }
-  
+
+  // gen footer here ----------------
+  genFooter() {
+    let homeCon = this.props.homeCon
+
+    let footer = this.genMainFooter()
+
+    if (homeCon.state.nav != NAVS.MAIN)
+      footer = this.genProfileFooter()
+
+    return footer
+  }
   genMainFooter() {
+    let homeCon = this.props.homeCon
     return (<div
       id="nav-footer-text"
-      onMouseOver={() =>
-        this.setState({ ...this.state, arrowMargin: 12 })
-      }
-      onMouseOut={() =>
-        this.setState({ ...this.state, arrowMargin: 5 })
-      }
       onClick={
-        () => this.clickChangeNav(NAVS.PROFILE)}
+        () => homeCon.selectNavProfile()}
     >
       To my account
-    <span style={{ marginLeft: this.state.arrowMargin }}>➝</span>
+      <span style={{ marginLeft: 7 }}>➝</span>
     </div>)
   }
-
   genProfileFooter() {
+    let homeCon = this.props.homeCon
     return (<div
       id="nav-footer-text"
-      onClick={() => this.clickChangeNav(NAVS.MAIN)}
+      onClick={() => homeCon.selectNavMain()}
     >
       To main navigation
-    <span style={{ marginLeft: this.state.arrowMargin }}>➝</span>
+      <span style={{ marginLeft: 7 }}>➝</span>
     </div>)
   }
+}
 
-  genFooter() {
-    let footer = this.genMainFooter() 
-    if (this.state.nav != NAVS.MAIN) 
-      footer = this.genProfileFooter()
-    return footer
+class Home extends Component {
+  constructor(props) {
+    super(props)
+  }
+  render() {
+    return (
+      <Subscribe to={[UserContainer, HomeScreenContainer, ChatContainer]}>
+        {(userCon, homeCon, chatCon) => <HomeComponent
+          user={this.props.user} userCon={userCon} homeCon={homeCon} chatCon={chatCon} />}
+      </Subscribe>
+    )
   }
 }
 

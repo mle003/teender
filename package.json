@@ -37,6 +37,7 @@
     "react-router-dom": "^5.2.0",
     "react-spring": "^8.0.27",
     "react-with-gesture": "^4.0.8",
+    "socket.io-client": "^2.3.0",
     "unstated": "^2.1.1"
   }
 }

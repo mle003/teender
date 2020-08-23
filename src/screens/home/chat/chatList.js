@@ -10,17 +10,6 @@ class ChatList extends Component {
     super(props)
   }
 
-  // move to homescreen -> when socket successfully implemented
-  async componentDidMount() {
-    try {
-      let page = this.props.chatCon.state.listChatPage
-      let list = await ChatRequest.getListChat(page);
-      this.props.chatCon.saveChatList(list)
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
   async clickChatTile(chatId) {
     await this.props.chatCon.selectChatChannel(chatId)
     this.props.homeCon.selectChatScreen()

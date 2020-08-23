@@ -10,18 +10,8 @@ class Match extends Component {
     super(props)
   }
 
-  // move to homescreen -> when socket successfully implemented
-  async componentDidMount() {
-    try {
-      let list = await ChatRequest.getListChat(1);
-      this.props.chatCon.saveChatList(list)
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  async clickMatchCard(chatId) {
-    await this.props.chatCon.selectChatChannel(chatId)
+  clickMatchCard(chatId) {
+    this.props.chatCon.selectChatChannel(chatId)
     this.props.homeCon.selectChatScreen()
   }
 
