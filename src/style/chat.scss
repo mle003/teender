@@ -60,7 +60,20 @@
       width: 47px;
       border-radius: 50%;
       border: $lightBorder;
-      @include centerBg()
+      @include centerBg();
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      .chat-header-online-dot {
+        height: 12px;
+        width: 12px;
+        border-radius: 50%;
+        background-color: $greenSuccess;
+  
+        display: relative;
+        left: -12;
+        top: -12
+      }
     }
   }
   
@@ -161,19 +174,10 @@
   height: 80px;
   width: $rightNavWidth - $scrollBarWidth - 1;
   display: grid;
-  grid-template-columns: 30px 55px calc(100% - 85px);
-  .chat-tile-new-container {
-    @include displayCenter();
-    .chat-tile-new-dot {
-      height: 10px;
-      width: 10px;
-      border-radius: 50%;
-      background-color: $blue;
-    }
-  }
+  grid-template-columns: 70px calc(100% - 90px) 20px;
   .chat-tile-avatar-container {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     .chat-tile-avatar {
       height: 46px;
@@ -181,6 +185,21 @@
       @include centerBg();
       border: $lightBorder;
       border-radius: 50%;
+
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+
+      .chat-tile-online-dot {
+        height: 12px;
+        width: 12px;
+        border-radius: 50%;
+        background-color: $greenSuccess;
+  
+        display: relative;
+        left: -12;
+        top: -12
+      }
     }
   }
   .chat-tile-info {
@@ -200,6 +219,17 @@
       @include text(13.5px, $lightWeight, $charcoal);
       // width: 100%;
       @include limitOneLine();
+    }
+  }
+
+  .chat-tile-new-container {
+    display: flex;
+    align-items: center;
+    .chat-tile-new-dot {
+      height: 10px;
+      width: 10px;
+      border-radius: 50%;
+      background-color: $blue;
     }
   }
   

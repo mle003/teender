@@ -2,7 +2,7 @@ import Axios from "axios";
 import { BASE_URL, headers } from './var'
 
 class ChatRequest {
-  static async getListChat(page) {
+  static async getChatList(page) {
     let thisHeaders = {...headers}
     thisHeaders.token = localStorage.getItem("token")
 

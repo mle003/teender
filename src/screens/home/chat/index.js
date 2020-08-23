@@ -5,8 +5,6 @@ import { userAvatarUrl, MAIN_SCREEN } from '../../../global/utils'
 import ChatRequest from '../../../global/api/chat'
 import { Subscribe } from 'unstated'
 import ChatContainer from '../../../global/container/chat'
-// import io from 'socket.io-client'
-// import { BASE_URL } from "../../../global/api/var";
 
 class ChatBox extends Component {
   constructor(props) {
@@ -30,20 +28,18 @@ class ChatBox extends Component {
 
   componentDidMount() {
     let chatCon = this.props.chatCon
-    let scrollBottom = this.scrollToBottom
     this.setState({
       loadedAllMess: false,
     })
 
-    this.socket.on('receive-message', function(newMess, chatId, userId) {
+    this.socket.on('receive-message', async function(newMess, chatId, userId) {
       console.log(userId + ' is my Id')
-      chatCon.saveNewMess(newMess, chatId)
-      scrollBottom()
+      await chatCon.saveNewMess(newMess, chatId)
     })
   }
 
   async loadMoreOldMessages() {
-    this.props.chatCon.increaseMessagePage()
+    await this.props.chatCon.increaseMessagePage()
     let page = this.props.chatCon.state.messagePage
     let chatId = this.props.chatCon.state.selectedChatInfo._id
 
@@ -89,14 +85,24 @@ class ChatBox extends Component {
   }
 
   render() {
-    let selectedUser = this.props.chatCon.state.selectedChatInfo.user
-    let createdAt = this.props.chatCon.state.selectedChatInfo.createdAt
+    let selectedInfo = this.props.chatCon.state.selectedChatInfo
+    let selectedUser = selectedInfo.user
+    let list = this.props.chatCon.state.list
+
+    let isOnline = false
+    for (let item of list) {
+      if (item._id == selectedInfo._id && item.online)
+        isOnline = true; break 
+    }
+    let createdAt = selectedInfo.createdAt
     return (
     <Subscribe to={[ChatContainer]}>
       {container => <div id="chat-box">
         <div id="chat-header">
           <div id="chat-header-avatar-container">
-            <div id="chat-header-avatar" style={{backgroundImage: `url('${selectedUser.info.imgUrl || userAvatarUrl}')`}}></div>
+            <div id="chat-header-avatar" style={{backgroundImage: `url('${selectedUser.info.imgUrl || userAvatarUrl}')`}}>
+              {isOnline ? <div className="chat-header-online-dot"></div> : <div></div>}
+            </div>
           </div>
           <div id="chat-header-text">
             <div id="chat-header-name">{selectedUser.info.name}</div>

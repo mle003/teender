@@ -32,15 +32,17 @@ class ChatList extends Component {
   chatTile(item) {
     return (
     <div className="chat-tile" onClick={()=>this.clickChatTile(item._id)}>
-      <div className="chat-tile-new-container">
-        <div className="chat-tile-new-dot"></div>
-      </div>
       <div className="chat-tile-avatar-container">
-        <div className="chat-tile-avatar" style={{backgroundImage: `url('${item.users[0].info.imgUrl || errorLoadingGifUrl}')`}}></div>
+        <div className="chat-tile-avatar" style={{backgroundImage: `url('${item.users[0].info.imgUrl || errorLoadingGifUrl}')`}}>
+          {item.online ? <div className="chat-tile-online-dot"></div> : <div></div>}
+        </div>
       </div>
       <div className="chat-tile-info">
         <div className="chat-tile-name">{item.users[0].info.name}</div>
         <div className="chat-tile-text">{item.messages[0].type == "image" ? "Tin nhắn hình ảnh" : item.messages[0].content}</div>
+      </div>
+      <div className="chat-tile-new-container">
+        <div className="chat-tile-new-dot"></div>
       </div>
     </div>)
   }

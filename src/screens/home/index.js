@@ -47,7 +47,7 @@ class HomeComponent extends Component {
     // get list chat/matches
     try {
       let page = chatCon.state.listChatPage
-      let list = await ChatRequest.getListChat(page);
+      let list = await ChatRequest.getChatList(page);
       await chatCon.saveChatList(list)
 
       let matchesIds = list.map(e => e.users[0]._id)
