@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import 'src/style/chat.scss'
 import { errorLoadingGifUrl } from 'src/global/utils'
-import { Tooltip } from '@material-ui/core'
+import Tooltip from '@material-ui/core/Tooltip'
 
 function ReceivedMess(item) {
   return (

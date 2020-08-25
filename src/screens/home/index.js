@@ -43,7 +43,8 @@ class HomeComponent extends Component {
   async componentDidMount() {
     let chatCon = this.props.chatCon
     let userCon = this.props.userCon
-
+    let homeCon = this.props.homeCon
+    
     // get list chat/matches
     try {
       let page = chatCon.state.listChatPage
@@ -79,6 +80,38 @@ class HomeComponent extends Component {
       let newList = handleStatus(matchId, false, chatCon.state.list)
       chatCon.saveChatList(newList)
       console.log(matchId + ' is now offline!')
+    })
+
+    this.socket.on('receive-message', async function(newMess, chatId, userId) {
+      console.log(userId + ' is my Id receive mess')
+      chatCon.saveNewMess(newMess, chatId)
+      let selectedChat = chatCon.state.selectedChatInfo
+
+      if (selectedChat && 
+        selectedChat._id == chatId && homeCon.state.mainScreen // when user is chatting
+          == MAIN_SCREEN.CHAT) {
+        let readMessage = await ChatRequest.readMessage(chatId)
+        let list = chatCon.state.list
+        for (let item of list) {
+          if(item._id == chatId) {
+            item.usersRead = readMessage.usersRead; break
+          }
+        }
+        chatCon.saveChatList(list)
+      } else { // when user is not chatting
+        let list = chatCon.state.list
+        for (let item of list) {
+          if(item._id == chatId) {
+            let usersRead = item.usersRead.map(el=>{
+              if(el.userId == userId)
+                el.read = false
+              return el
+            })
+            item.usersRead = usersRead; break
+          }
+        }
+        chatCon.saveChatList(list)
+      }
     })
 
     function handleStatus(matchId, online, oldList) {
@@ -190,11 +223,12 @@ class HomeComponent extends Component {
   genMainNav() {
     let homeCon = this.props.homeCon
     let chatCon = this.props.chatCon
+    let userCon = this.props.userCon
     return (<div>
       <div id="nav-titles">{this.genMainNavTitles()}</div>
       <div id="nav-main">
         {homeCon.state.navTitle == TITLES.CHAT
-          ? <ChatList socket={this.socket} homeCon={homeCon} chatCon={chatCon} />
+          ? <ChatList socket={this.socket} homeCon={homeCon} chatCon={chatCon} user={userCon.state.user}/>
           : <Match socket={this.socket} homeCon={homeCon} chatCon={chatCon} />}
       </div>
     </div>)
@@ -202,6 +236,15 @@ class HomeComponent extends Component {
   // Gen main nav titles UI here -------------------
   genMainNavTitles() {
     let homeCon = this.props.homeCon
+    let chatCon = this.props.chatCon
+    let userId = this.props.user._id
+
+    let countUnreadChat = ''
+    if (chatCon.state.list) {
+      countUnreadChat = chatCon.state.list.filter(item =>{
+        return (item.usersRead && item.usersRead.filter(e=>(e.userId == userId && e.read == false)).length && item.messages)
+      }).length || ''
+    }     
     let list = [TITLES.MATCH, TITLES.CHAT].map((navTitle, index) => {
       return (
         <div
@@ -217,6 +260,7 @@ class HomeComponent extends Component {
           ].join(" ")}
         >
           {navTitle}
+          {navTitle == TITLES.MATCH ? '' : countUnreadChat ? <span id="noti-tile">{countUnreadChat}</span> : ''}
         </div>
       );
     });
@@ -255,10 +299,10 @@ class HomeComponent extends Component {
       case NAVS.PROFILE:
         nav = this.genProfileNav(user)
         break
-      case NAVS.EDIT:
+      case NAVS.EDIT_PROFILE:
         nav = <EditProfile />
         break
-      case NAVS.RESET:
+      case NAVS.RESET_PASSWORD:
         nav = <ResetPassword />
         break
       default:

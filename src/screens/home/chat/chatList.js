@@ -4,6 +4,7 @@ import ChatRequest from '../../../global/api/chat';
 import { errorLoadingGifUrl } from 'src/global/utils'
 import { Subscribe } from 'unstated';
 import ChatContainer from '../../../global/container/chat';
+import { MAIN_SCREEN } from '../../../global/utils';
 
 class ChatList extends Component {
   constructor(props) {
@@ -11,8 +12,12 @@ class ChatList extends Component {
   }
 
   async clickChatTile(chatId) {
-    await this.props.chatCon.selectChatChannel(chatId)
-    this.props.homeCon.selectChatScreen()
+    let homeCon = this.props.homeCon
+    let chatCon = this.props.chatCon
+    await ChatRequest.readMessage(chatId)
+    await chatCon.selectChatChannel(chatId)
+    if(homeCon.state.mainScreen != MAIN_SCREEN.CHAT)
+      homeCon.selectChatScreen()
   }
 
   render() {
@@ -30,6 +35,13 @@ class ChatList extends Component {
   }
 
   chatTile(item) {
+    let read = false
+    for(let u of item.usersRead) {
+      if (u.userId == this.props.user._id) {
+        read = u.read; break
+      }
+    }
+
     return (
     <div className="chat-tile" onClick={()=>this.clickChatTile(item._id)}>
       <div className="chat-tile-avatar-container">
@@ -39,10 +51,12 @@ class ChatList extends Component {
       </div>
       <div className="chat-tile-info">
         <div className="chat-tile-name">{item.users[0].info.name}</div>
-        <div className="chat-tile-text">{item.messages[0].type == "image" ? "Tin nhắn hình ảnh" : item.messages[0].content}</div>
+        <div className="chat-tile-text" 
+          style={{fontWeight: read ? 300 : 500}}
+        >{item.messages[0].type == "image" ? "Tin nhắn hình ảnh" : item.messages[0].content}</div>
       </div>
       <div className="chat-tile-new-container">
-        <div className="chat-tile-new-dot"></div>
+        {read ? <div></div> : <div className="chat-tile-new-dot"></div>}
       </div>
     </div>)
   }

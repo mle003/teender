@@ -20,7 +20,7 @@ class ChatRequest {
     // return list 20 list with 20 latest mess
     else throw new Error(responseData.message);
   }
-  static async getMessage(page, chatId) {
+  static async getMessage(chatId, page, size) {
     let thisHeaders = {...headers}
     thisHeaders.token = localStorage.getItem("token")
 
@@ -30,8 +30,9 @@ class ChatRequest {
       url: api,
       headers: thisHeaders,
       params: {
+        chatId: chatId, // required
         pageIndex: page,
-        chatId: chatId // required
+        pageSize: size
       }
     });
     let responseData = response.data;
@@ -39,7 +40,7 @@ class ChatRequest {
     // return mess of a channel
     else throw new Error(responseData.message);
   }
-  static async sendMessage(mess, chatId) {
+  static async sendMessage(mess, chatId, matchId) {
     // data must contain at lease 1 field: content
     // if send img => type = "image"
     let thisHeaders = {...headers}
@@ -51,9 +52,27 @@ class ChatRequest {
       url: api,
       headers: thisHeaders,
       params: {
-        chatId: chatId
+        chatId: chatId,
+        matchId: matchId
       },
       data: mess
+    });
+    let responseData = response.data;
+    if (responseData.success) return responseData.data;
+    else throw new Error(responseData.message);
+  }
+  static async readMessage(chatId) {
+    let thisHeaders = {...headers}
+    thisHeaders.token = localStorage.getItem("token")
+
+    let api = BASE_URL + "/api/chat/read-message";
+    let response = await Axios.request({
+      method: "PUT",
+      url: api,
+      headers: thisHeaders,
+      data: {
+        chatId: chatId
+      }
     });
     let responseData = response.data;
     if (responseData.success) return responseData.data;

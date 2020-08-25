@@ -120,6 +120,22 @@
 
 #chat-footer {
   padding: 0 14px;
+  #read-new-mess {
+    display: flex;
+    justify-content: center;
+    span {
+      @include text(12px, $lightWeight, white);
+      padding: 5 8;
+      border-radius: 99px;
+      background-color: rgba($charcoal, 0.5);
+      bottom: $footerNavHeight;
+      position: absolute;
+      z-index: 20;
+      margin: auto;
+      opacity: 0.2;
+      @include buttonHover();
+    }
+  }
 }
 #chat-form {
   height: 100%;

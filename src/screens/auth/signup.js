@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import AuthRequest from "../../global/api/auth";
 import OtherRequest from "../../global/api/other";
 import SettingRequest from "../../global/api/setting";
-import { CircularProgress } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { userAvatarUrl } from "../../global/utils";
 
 const IMAGE_STATUS = {

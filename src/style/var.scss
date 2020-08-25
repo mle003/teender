@@ -75,3 +75,15 @@ $scrollBarWidth: 8px;
 button {
   outline: none;
 }
+#noti-tile {
+  height: 12;
+  width: 12;
+  border-radius: 50%;
+  margin-left: 5;
+  background-color: $redError;
+  color: white;
+  font-weight: $mediumWeight;
+  font-size: 9;
+
+  @include displayCenter()
+}

@@ -5,7 +5,7 @@ import 'src/style/editProfile.scss'
 import { Subscribe, Container } from 'unstated'
 import DatePicker from 'react-date-picker'
 import SettingRequest from '../../global/api/setting'
-import { CircularProgress } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { userAvatarUrl } from '../../global/utils'
 import UserContainer from '../../global/container/user'
 

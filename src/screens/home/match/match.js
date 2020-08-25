@@ -10,9 +10,13 @@ class Match extends Component {
     super(props)
   }
 
-  clickMatchCard(chatId) {
-    this.props.chatCon.selectChatChannel(chatId)
-    this.props.homeCon.selectChatScreen()
+  async clickMatchCard(chatId) {
+    let homeCon = this.props.homeCon
+    let chatCon = this.props.chatCon
+    await ChatRequest.readMessage(chatId)
+    await chatCon.selectChatChannel(chatId)
+    if(homeCon.state.mainScreen != MAIN_SCREEN.CHAT)
+      homeCon.selectChatScreen()
   }
 
   render() {

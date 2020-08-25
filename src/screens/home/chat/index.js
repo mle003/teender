@@ -14,42 +14,39 @@ class ChatBox extends Component {
       type: 'text',
       sendingOnload: false,
       errorSendingMess: '',
-      loadedAllMess: false,
-      // currentChatId: this.props.chatCon.state.selectedChatInfo_id
     }
     this.chatListRef = React.createRef()
     this.socket = this.props.socket
   }
 
-
   scrollToBottom = () => {
     this.chatListRef.current.scrollIntoView({ behavior: "smooth", block: 'nearest', inline: 'start'  });
   }
 
-  componentDidMount() {
-    let chatCon = this.props.chatCon
-    this.setState({
-      loadedAllMess: false,
-    })
-
-    this.socket.on('receive-message', async function(newMess, chatId, userId) {
-      console.log(userId + ' is my Id')
-      await chatCon.saveNewMess(newMess, chatId)
-    })
-  }
+  // async readMessAndUpdate(chatCon, selectedChat) {
+  //   let readMessage = await ChatRequest.readMessage(selectedChat._id)
+  //   let list = chatCon.state.list
+  //   for (let e of list) {
+  //     if(e._id == selectedChat._id)
+  //       e.usersRead = readMessage.usersRead; break
+  //   }
+  //   chatCon.saveChatList(list)
+  // }
 
   async loadMoreOldMessages() {
-    await this.props.chatCon.increaseMessagePage()
+    let chatCon = this.props.chatCon
+    await chatCon.increaseMessagePage()
     let page = this.props.chatCon.state.messagePage
+    let size = page == 1 ? this.props.chatCon.state.messages.length : 20
     let chatId = this.props.chatCon.state.selectedChatInfo._id
 
-    let oldMessages = await ChatRequest.getMessage(page, chatId)
+    let oldMessages = await ChatRequest.getMessage(chatId, page, size)
     oldMessages = oldMessages.messages
     
     if (oldMessages.length) {
-      this.props.chatCon.loadMoreOldMessages(oldMessages)
+      chatCon.loadMoreOldMessages(oldMessages)
     } else {
-      this.setState({loadedAllMess: true})
+      chatCon.setLoadedMess(true)
     }
   }
 
@@ -69,7 +66,7 @@ class ChatBox extends Component {
         type
       }
       // api here
-      let newMessData = await ChatRequest.sendMessage(mess, chatId)
+      let newMessData = await ChatRequest.sendMessage(mess, chatId, matchId)
       this.socket.emit('send-message', newMessData.messages[0], chatId, matchId)
       this.props.chatCon.saveNewMess(newMessData.messages[0], chatId)
 
@@ -97,7 +94,8 @@ class ChatBox extends Component {
     let createdAt = selectedInfo.createdAt
     return (
     <Subscribe to={[ChatContainer]}>
-      {container => <div id="chat-box">
+      {container => 
+      <div id="chat-box">
         <div id="chat-header">
           <div id="chat-header-avatar-container">
             <div id="chat-header-avatar" style={{backgroundImage: `url('${selectedUser.info.imgUrl || userAvatarUrl}')`}}>
@@ -112,7 +110,7 @@ class ChatBox extends Component {
             </div>
           </div>
           <button 
-            onClick={()=>{this.props.homeCon.selectDeckScreen()}}
+            onClick={()=>{this.props.homeCon.selectDeckScreen(); this.props.chatCon.closeChatInfo()}}
             id="chat-close-button" 
             type="button"><ion-icon id="chat-close-icon" name="close"></ion-icon>
           </button>
@@ -127,13 +125,18 @@ class ChatBox extends Component {
           {container.state.messages.length < 20
             ? <div></div>
             : <div id="load-more-chat" 
-            style={{display: this.state.loadedAllMess ? 'none' : 'block'}}
+            style={{display: this.props.chatCon.state.loadedAllMess ? 'none' : 'block'}}
             onClick={()=>this.loadMoreOldMessages()}>
               Load older messages...
           </div>
           }
         </div>
-        <div id="chat-footer">
+        <div id="chat-footer" >
+          <div id="read-new-mess" 
+            style={{}}>
+            <span onClick={()=>this.scrollToBottom()}
+              >Scroll to bottom <ion-icon name="chevron-down-outline"></ion-icon></span>
+          </div>
           <form id="chat-form" onSubmit={e=>this.handleSendMessage(e)}>
             <div className="chat-input-container">
               <input id="chat-input" 

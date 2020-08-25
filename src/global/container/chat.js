@@ -1,5 +1,6 @@
 import { Container } from "unstated";
 import { concatAndFilterDuplicateById } from "../utils";
+import ChatRequest from "../api/chat";
 
 let INITIAL_STATE = {
   list: null, // list of chat, display latest message => socket.io -> change latest mess
@@ -7,8 +8,8 @@ let INITIAL_STATE = {
   messages: null, // messages of a channel chat => socket.io -> unshift to arr
   messagePage: 1,
   chatListPage: 1,
+  loadedAllMess: false
 }
-
 
 class ChatContainer extends Container {
   state = INITIAL_STATE
@@ -34,27 +35,41 @@ class ChatContainer extends Container {
     })
     
     // if chat is selected
-    if (this.state.selectedChatInfo._id == chatId) {
-      if(!messages.length || 
-        (messages.length && messages[0]._id != newMess._id)
-      ) {
-        // remove duplicate when catch socket.io
-        messages.unshift(newMess) // insert at beginning of array
+    if (this.state.selectedChatInfo) {
+      if (this.state.selectedChatInfo._id == chatId) {
+        if(!messages.length || 
+          (messages.length && messages[0]._id != newMess._id)
+        ) {
+          // remove duplicate when catch socket.io
+          messages.unshift(newMess) // insert at beginning of array
+        }
       }
     }
-
     this.setState({list: newList, messages: messages})
   }
-  selectChatChannel(chatId) {
+
+  closeChatInfo() {
+    this.setState({selectedChatInfo: null, messages: null, messagePage: 1, loadedAllMess: false})
+  }
+
+  async selectChatChannel(chatId) {
     if (!this.state.selectedChatInfo || 
       this.state.selectedChatInfo._id != chatId
-    ) {
-      let messages = []
-      let chatInfo = {}
-      let list = this.state.list
+    ) {      
+    let messages = []
+    let chatInfo = {}
+    let list = this.state.list
+    
       
     for (let item of list) {
       if (item._id == chatId) {
+        let usersRead = item.usersRead.map(e => {
+          if(!item.users.includes(e.userId)) { // ko co id cua current user trong list
+            e.read = true
+          }
+          return e
+        })
+        item.usersRead = usersRead
         // chat info model
         chatInfo = {
           user: item.users[0],
@@ -66,7 +81,7 @@ class ChatContainer extends Container {
       }
     }
     // get list mess
-    this.setState({selectedChatInfo: chatInfo, messages: messages, messagePage: 1})
+    this.setState({selectedChatInfo: chatInfo, messages: messages, list: list, messagePage: 1, loadedAllMess: false})
     }
   }
   increaseMessagePage() {
@@ -90,6 +105,9 @@ class ChatContainer extends Container {
   loadMoreOldMessages(olderMessages) {
     let messages = [...this.state.messages, ...olderMessages]
     this.setState({messages: messages})
+  }
+  setLoadedMess(loadedAllMess) {
+    this.setState({loadedAllMess: loadedAllMess}) 
   }
 }
 

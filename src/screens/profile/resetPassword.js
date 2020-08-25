@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import 'src/style/resetPassword.scss'
 import SettingRequest from '../../global/api/setting'
-import { CircularProgress } from '@material-ui/core'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 class ResetPassword extends Component {
   constructor(props) {

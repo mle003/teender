@@ -1,5 +1,5 @@
 import React, { Component, useEffect } from "react";
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Redirect } from "react-router-dom";
 import { Provider, Subscribe } from "unstated";
 import AuthRequest from "./global/api/auth";
 
@@ -61,14 +61,14 @@ function App() {
   return (
     // unstated
     <Provider>
-      <Router>
+      <BrowserRouter>
         <Route exact path={ROUTES.LANDING} component={LandingPage} />
         <Route path={ROUTES.SIGN_UP} component={SignUpScreen} />
         <Route path={ROUTES.SIGN_IN} component={SignInScreen} />
         <PrivateHomeRoute path={ROUTES.HOME}>
           <Home />
         </PrivateHomeRoute>
-      </Router>
+      </BrowserRouter>
     </Provider>
   );
 }

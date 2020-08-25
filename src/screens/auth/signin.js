@@ -4,7 +4,7 @@ import AuthRequest from "../../global/api/auth";
 import "../../style/signin.scss";
 import { Redirect, Router, Link, withRouter } from "react-router-dom";
 import ROUTES from "../../global/routes";
-import { CircularProgress } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class SignInScreen extends Component {
   constructor(props) {
