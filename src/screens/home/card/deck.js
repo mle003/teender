@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useSprings, animated, interpolate } from "react-spring";
 import { useGesture } from "react-with-gesture";
+import like from "src/assets/like.png";
+import dislike from "src/assets/dislike.png";
 import axios from "axios";
 import UserRequest from "../../../global/api/user";
+import "src/style/card.scss";
 
 const year = parseInt(new Date().getFullYear());
 const to = (i) => ({
@@ -16,39 +19,46 @@ const to = (i) => ({
 
 const from = (i) => ({ x: 0, rot: 0, scale: 1.5, y: -1000 });
 const trans = (r, s) =>
-  `perspective(1500px) rotateX(0deg) rotateY(${r/10}deg) rot0ateZ(${r}deg) scale(${s})`;
+  `perspective(1500px) rotateX(0deg) rotateY(${
+    r / 10
+  }deg) rot0ateZ(${r}deg) scale(${s})`;
 // const trans = (r, s) => `perspective(1500px) rotateX(0deg) rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`
 let firstTimeLoad = true;
 
+const removedPersonFromDataSrc = (peopleSource, userId) =>
+  peopleSource.filter((info) => info._id !== userId);
+
 const getCards = async (infos, page) => {
   try {
-    let data = await UserRequest.getCards(page)
-    let newData = [...infos, data]
-    return newData
-  } catch(err) {
-    console.error(err)
-    return []
+    let data = await UserRequest.getCards(page);
+    let newData = [...infos, data];
+    return newData;
+  } catch (err) {
+    console.error(err);
+    return [];
   }
-}
+};
 
 function Deck() {
-  
   const [infos, setInfos] = useState([]);
   const [count, setCount] = useState(1);
+  const removedPersonFromDataSrc = (peopleSource, userId) =>
+    peopleSource.filter((info) => info._id !== userId);
+
   useEffect(() => {
-    console.log('use effect')
-    if (infos.length === 0 && firstTimeLoad) {
+    console.log("use effect");
+    if (infos.length === 0) {
       const getNewCards = async () => {
         try {
-          let data = await UserRequest.getCards(count)
+          let data = await UserRequest.getCards(count);
+          console.log(data);
           setInfos(data);
-        } catch(err) {console.error(err)}
-        firstTimeLoad = false;
-      }
-      getNewCards(count)
-    } else 
-      console.log("infos has length");
-    
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      getNewCards(count);
+    } else console.log("infos has length");
   });
   const [gone] = useState(() => new Set()); // The set flags all the cards that are flicked out
   const [props, set] = useSprings(infos.length, (i) => ({
@@ -59,7 +69,7 @@ function Deck() {
 
   const bind = useGesture(
     ({
-      args: [index],
+      args: [index, info],
       down,
       delta: [xDelta],
       distance,
@@ -98,55 +108,142 @@ function Deck() {
 
   // Now we're just mapping the animated values to our view, that's it. Btw, this component only renders once. :-)
   return props.map(({ x, y, rot, scale }, i) => {
-    console.log('render infos list')
-    console.log(infos)
-    return (<animated.div
-      key={i}
-      className="card-container"
-      style={{
-        transform: interpolate(
-          [x, y],
-          (x, y) => `translate3d(${x}px,${y}px,0)`
-        ),
-      }}
-    >
+    console.log("render infos list");
+    console.log(infos);
+    return (
       <animated.div
-        {...bind(i)}
-        // {...removeUsers(i)}
-        onDoubleClick={(e) => clickInfo(e)}
-        className="card"
+        key={i}
+        className="card-container"
         style={{
-          transform: interpolate([rot, scale], trans),
-          backgroundImage: `url(${infos[i].info.imgUrl})`,
+          transform: interpolate(
+            [x, y],
+            (x, y) => `translate3d(${x}px,${y}px,0)`
+          ),
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <div className="card-info">
-          <div className="big-info">
-            {infos[i].info.name}{" "}
-            {year - parseInt(infos[i].info.birthdate.substring(0, 4))}
-            {infos[i].info.gender === "male" ? (
+        <animated.div
+          // {...bind(i)}
+          onDoubleClick={(e) => clickInfo(e)}
+          className="card"
+          style={{
+            // transform: interpolate([rot, scale], trans),
+            backgroundImage: `url(${infos[i].info.imgUrl})`,
+          }}
+        >
+          <div className="card-info">
+            <div className="big-info">
+              {infos[i].info.name}{" "}
+              {year - parseInt(infos[i].info.birthdate.substring(0, 4))}
+              {infos[i].info.gender === "male" ? (
+                <ion-icon
+                  name="male"
+                  style={{ position: "relative", bottom: -2, marginLeft: 5 }}
+                ></ion-icon>
+              ) : (
+                <ion-icon
+                  name="female"
+                  style={{ position: "relative", bottom: -2, marginLeft: 5 }}
+                ></ion-icon>
+              )}
               <ion-icon
-                name="male"
-                style={{ position: "relative", bottom: -2, marginLeft: 5 }}
+                onClick={(e) => clickInfo(e)}
+                name="information-circle"
+                class="info-icon"
+                style={{ position: "relative", bottom: -2.5, marginLeft: 5 }}
               ></ion-icon>
-            ) : (
-              <ion-icon
-                name="female"
-                style={{ position: "relative", bottom: -2, marginLeft: 5 }}
-              ></ion-icon>
-            )}
-            <ion-icon
-              onClick={(e) => clickInfo(e)}
-              name="information-circle"
-              class="info-icon"
-              style={{ position: "relative", bottom: -2.5, marginLeft: 5 }}
-            ></ion-icon>
+            </div>
+            <div className="small-info">{infos[i].info.desc}</div>
           </div>
-          <div className="small-info">{infos[i].info.desc}</div>
+        </animated.div>
+        <div
+          id="action-button"
+          style={{ width: 362, justifyContent: "space-between" }}
+        >
+          <button
+            className="action-button"
+            style={{
+              height: 50,
+              width: 50,
+              marginLeft: 100,
+              alignItems: "center",
+              justifyContent: "flex-start",
+            }}
+            onClick={() => {
+              setInfos(removedPersonFromDataSrc(infos, infos[i]._id));
+              UserRequest.handleLike(infos[i]._id, "like");
+              console.log(infos);
+            }}
+          >
+            <img
+              src={like}
+              alt="like"
+              style={{ height: 35, width: 35, flex: 1 }}
+            />
+          </button>
+          <button
+            className="action-button"
+            style={{
+              height: 50,
+              width: 50,
+              alignItems: "center",
+              justifyContent: "flex-start",
+              marginLeft: 54,
+            }}
+            onClick={() => {
+              setInfos(removedPersonFromDataSrc(infos, infos[i]._id));
+              UserRequest.handleLike(infos[i]._id, "unlike");
+            }}
+          >
+            <img
+              src={dislike}
+              alt="like"
+              style={{ height: 35, width: 35, flex: 1 }}
+            />
+          </button>
+          {/* <button
+          className="action-button"
+          style={{
+            height: 50,
+            width: 50,
+            alignItems: "center",
+            justifyContent: "flex-start",
+            marginLeft: 54,
+          }}
+          onClick={() => {
+            setInfos(removedPersonFromDataSrc(infos, infos[i]._id));
+          }}
+        >
+          <img
+            src={superlike}
+            alt="like"
+            style={{ height: 35, width: 35, flex: 1 }}
+          />
+        </button>
+        <button
+          className="action-button"
+          style={{
+            height: 50,
+            width: 50,
+            alignItems: "center",
+            justifyContent: "flex-start",
+            marginLeft: 54,
+          }}
+          onClick={() => {
+            setInfos(removedPersonFromDataSrc(infos, infos[i]._id));
+          }}
+        >
+          <img
+            src={rewind}
+            alt="like"
+            style={{ height: 35, width: 35, flex: 1 }}
+          />
+        </button> */}
         </div>
       </animated.div>
-    </animated.div>
-  )});
+    );
+  });
 }
 function clickInfo(x) {
   console.log(x);

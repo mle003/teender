@@ -23,7 +23,7 @@ const trans = (r, s) =>
   }deg) rot0ateZ(${r}deg) scale(${s})`;
 let check = true;
 
-function Deck2() {
+function Deck3() {
   const [infos, setInfos] = useState([]);
   const [props, set] = useSprings(infos.length, (i) => ({
     ...to(i),
@@ -88,6 +88,7 @@ function Deck2() {
         if (check) {
           let data = res.data.data;
           setInfos(data);
+          check = false;
         }
       })
       .catch((err) => {
@@ -119,6 +120,7 @@ function Deck2() {
       fetchImage();
     }
     if (infos.length === 1) {
+      console.log("333");
       fetchMorePeople();
     }
   });
@@ -146,12 +148,11 @@ function Deck2() {
             handleLike(info[i]._id, "like");
             info = removedPersonFromDataSrc(info, info[i]._id);
             console.log(i);
-            if (i === 0) {
-              setInfos([]);
-            }
-            // setInfos(info);
+            setInfos(info);
           } else {
-            console.log("unlike");
+            info = removedPersonFromDataSrc(info, info[i]._id);
+            setInfos(info);
+            handleLike(info[i]._id, "unlike");
           }
         }
 
@@ -170,7 +171,6 @@ function Deck2() {
 
   return props.map(({ x, y, rot, scale }, i) => (
     <animated.div
-      // {...bind(i)}
       key={i}
       className="card-container"
       style={{
@@ -184,7 +184,7 @@ function Deck2() {
     >
       {/* This is the card itself, we're binding our gesture to it (and inject its index so we know which is which) */}
       <animated.div
-        // {...bind(i, infos)}
+        {...bind(i, infos)}
         key={i}
         className="card"
         style={{
@@ -231,7 +231,6 @@ function Deck2() {
             justifyContent: "flex-start",
           }}
           onClick={() => {
-            bind(i);
             setInfos(removedPersonFromDataSrc(infos, infos[i]._id));
             handleLike(infos[i]._id, "like");
           }}
@@ -305,4 +304,4 @@ function Deck2() {
   ));
 }
 
-export default Deck2;
+export default Deck3;
