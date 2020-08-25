@@ -12,7 +12,7 @@ function ReceivedMess(item) {
         ? <div className="mess received-mess" 
           style={{backgroundColor: 'transparent', 
           backgroundImage: `url('${item.content || errorLoadingGifUrl}')`, 
-          height: 250, width: 250}}></div>
+          height: 150, width: 150}}></div>
         : <div className="mess received-mess">{item.content}</div> 
       }
     </Tooltip>

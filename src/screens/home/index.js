@@ -152,6 +152,7 @@ class HomeComponent extends Component {
       userCon.resetData()
       homeCon.resetData()
       chatCon.resetData()
+      if (this.socket) {this.socket.disconnect()}
       return <Redirect to={ROUTES.LANDING} />
     }
 

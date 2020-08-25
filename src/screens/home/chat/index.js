@@ -5,15 +5,16 @@ import { userAvatarUrl, MAIN_SCREEN } from '../../../global/utils'
 import ChatRequest from '../../../global/api/chat'
 import { Subscribe } from 'unstated'
 import ChatContainer from '../../../global/container/chat'
+import Popover from '@material-ui/core/Popover'
 
 class ChatBox extends Component {
   constructor(props) {
     super(props)
     this.state = {
       contentMessage: '',
-      type: 'text',
       sendingOnload: false,
       errorSendingMess: '',
+      anchorStickerPopper: null
     }
     this.chatListRef = React.createRef()
     this.socket = this.props.socket
@@ -50,14 +51,13 @@ class ChatBox extends Component {
     }
   }
 
-  async handleSendMessage(e) {
+  async handleSendMessage(e, type) {
     e.preventDefault()
     try {
       this.setState({sendingOnload: true})
       let chatId = this.props.chatCon.state.selectedChatInfo._id
       let matchId = this.props.chatCon.state.selectedChatInfo.user._id
-      let content = this.state.contentMessage
-      let type = this.state.type
+      let content = type == 'image' ? e.target.src : this.state.contentMessage
       if (!content.trim()) {
         throw new Error('')
       }
@@ -69,8 +69,7 @@ class ChatBox extends Component {
       let newMessData = await ChatRequest.sendMessage(mess, chatId, matchId)
       this.socket.emit('send-message', newMessData.messages[0], chatId, matchId)
       this.props.chatCon.saveNewMess(newMessData.messages[0], chatId)
-
-      this.setState({sendingOnload: false, contentMessage: ''})
+      this.setState({sendingOnload: false, contentMessage: '', anchorStickerPopper: null})
       this.scrollToBottom()
     } catch(err) {
       console.log(err)
@@ -137,7 +136,7 @@ class ChatBox extends Component {
             <span onClick={()=>this.scrollToBottom()}
               >Scroll to bottom <ion-icon name="chevron-down-outline"></ion-icon></span>
           </div>
-          <form id="chat-form" onSubmit={e=>this.handleSendMessage(e)}>
+          <form id="chat-form" onSubmit={e=>this.handleSendMessage(e, 'text')}>
             <div className="chat-input-container">
               <input id="chat-input" 
                 value={this.state.contentMessage} 
@@ -145,13 +144,39 @@ class ChatBox extends Component {
                 placeholder="Type something..."/>
               <div className="err-message">{this.state.errorSendingMess}</div>
             </div>      
-            <button id="send-button" disabled={this.state.sendingOnload}><ion-icon name="send" id="send-icon"></ion-icon></button>
+            <button id="chat-button" type="button" 
+              onClick={e=>this.setState({anchorStickerPopper: e.currentTarget})}>
+                <ion-icon name="happy-outline" id="chat-icon"
+                  style={{color: !!this.state.anchorStickerPopper ? '#a778b6' : 'gray'}}
+                  ></ion-icon>
+            </button>
+            <Popover 
+              open={!!this.state.anchorStickerPopper}
+              anchorEl={this.state.anchorStickerPopper}
+              onClose={e=>this.setState({anchorStickerPopper: null})}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'center',
+              }}
+              transformOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+            >
+              <div>
+              {this.stickersTemplate()}
+              </div>
+            </Popover>
+            <button id="chat-button-send" disabled={this.state.sendingOnload}><ion-icon name="send" id="chat-icon-send"></ion-icon></button>
           </form>
         </div>
       </div>}
     </Subscribe>
     )
   }
+
+  stickersTemplate() {return (<div id="stickers-table"><img loading="lazy" class="alignnone size-full wp-image-155374" 
+  onClick={e=>this.handleSendMessage(e, 'image')} src="https://pic.chinesefontdesign.com/uploads/2018/01/chinesefontdesign.com-2018-01-04_11-06-16_217563.gif"  width="80" height="80"/> <img loading="lazy" class="alignnone size-full wp-image-155375" onClick={e=>this.handleSendMessage(e, 'image')} src="https://pic.chinesefontdesign.com/uploads/2018/01/chinesefontdesign.com-2018-01-04_11-06-17_375325.gif"  width="80" height="80"/> <img loading="lazy" class="alignnone size-full wp-image-155376" onClick={e=>this.handleSendMessage(e, 'image')} src="https://pic.chinesefontdesign.com/uploads/2018/01/chinesefontdesign.com-2018-01-04_11-06-18_476256.gif"  width="80" height="80"/> <img loading="lazy" class="alignnone size-full wp-image-155377" onClick={e=>this.handleSendMessage(e, 'image')} src="https://pic.chinesefontdesign.com/uploads/2018/01/chinesefontdesign.com-2018-01-04_11-06-19_813750.gif"  width="80" height="80"/> <img loading="lazy" class="alignnone size-full wp-image-155378" onClick={e=>this.handleSendMessage(e, 'image')} src="https://pic.chinesefontdesign.com/uploads/2018/01/chinesefontdesign.com-2018-01-04_11-06-21_133477.gif"  width="80" height="80"/> <img loading="lazy" class="alignnone size-full wp-image-155379" onClick={e=>this.handleSendMessage(e, 'image')} src="https://pic.chinesefontdesign.com/uploads/2018/01/chinesefontdesign.com-2018-01-04_11-06-22_293878.gif"  width="80" height="80"/> <img loading="lazy" class="alignnone size-full wp-image-155380" onClick={e=>this.handleSendMessage(e, 'image')} src="https://pic.chinesefontdesign.com/uploads/2018/01/chinesefontdesign.com-2018-01-04_11-06-23_767995.gif"  width="80" height="80"/> <img loading="lazy" class="alignnone size-full wp-image-155381" onClick={e=>this.handleSendMessage(e, 'image')} src="https://pic.chinesefontdesign.com/uploads/2018/01/chinesefontdesign.com-2018-01-04_11-06-25_143029.gif"  width="80" height="80"/> <img loading="lazy" class="alignnone size-full wp-image-155382" onClick={e=>this.handleSendMessage(e, 'image')} src="https://pic.chinesefontdesign.com/uploads/2018/01/chinesefontdesign.com-2018-01-04_11-06-26_229713.gif"  width="80" height="80"/> <img loading="lazy" class="alignnone size-full wp-image-155383" onClick={e=>this.handleSendMessage(e, 'image')} src="https://pic.chinesefontdesign.com/uploads/2018/01/chinesefontdesign.com-2018-01-04_11-06-27_551542.gif"  width="80" height="80"/> <img loading="lazy" class="alignnone size-full wp-image-155384" onClick={e=>this.handleSendMessage(e, 'image')} src="https://pic.chinesefontdesign.com/uploads/2018/01/chinesefontdesign.com-2018-01-04_11-06-28_925937.gif"  width="80" height="80"/> <img loading="lazy" class="alignnone size-full wp-image-155385" onClick={e=>this.handleSendMessage(e, 'image')} src="https://pic.chinesefontdesign.com/uploads/2018/01/chinesefontdesign.com-2018-01-04_11-06-30_271533.gif"  width="80" height="80"/> <img loading="lazy" class="alignnone size-full wp-image-155386" onClick={e=>this.handleSendMessage(e, 'image')} src="https://pic.chinesefontdesign.com/uploads/2018/01/chinesefontdesign.com-2018-01-04_11-06-31_607742.gif"  width="80" height="80"/> <img loading="lazy" class="alignnone size-full wp-image-155387" onClick={e=>this.handleSendMessage(e, 'image')} src="https://pic.chinesefontdesign.com/uploads/2018/01/chinesefontdesign.com-2018-01-04_11-06-32_744465.gif"  width="80" height="80"/> <img loading="lazy" class="alignnone size-full wp-image-155388" onClick={e=>this.handleSendMessage(e, 'image')} src="https://pic.chinesefontdesign.com/uploads/2018/01/chinesefontdesign.com-2018-01-04_11-06-33_831942.gif"  width="80" height="80"/> <img loading="lazy" class="alignnone size-full wp-image-155389" onClick={e=>this.handleSendMessage(e, 'image')} src="https://pic.chinesefontdesign.com/uploads/2018/01/chinesefontdesign.com-2018-01-04_11-06-34_894287.gif"  width="80" height="80"/></div>)}
 }
 
 export default ChatBox

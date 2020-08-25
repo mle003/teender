@@ -144,7 +144,7 @@
   justify-content: space-between;
 
   .chat-input-container {
-    width: 90%;
+    width: 85%;
     .err-message {
       @include text(10px, $lightWeight, $redError);
       margin-left: 10px
@@ -162,7 +162,7 @@
     } 
   }
   
-  #send-button {
+  #chat-button, #chat-button-send {
     cursor: pointer;
     outline: none;
     width: 50px;
@@ -173,9 +173,13 @@
     text-align: center;
 
     padding-bottom: 10;
-    #send-icon {
+    #chat-icon-send {
       font-size: 24px;
       color: $mainColor;
+    }
+    #chat-icon {
+      font-size: 24px;
+      color: gray;
     }
     &:hover {
       opacity: 0.8;
@@ -272,5 +276,20 @@
   }
   &:active {
     opacity: 0.7;
+  }
+}
+
+#stickers-table {
+  width: 340px;
+  height: 340px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  img {
+    cursor: pointer;
+    &:hover {
+      background-color: rgba($lightGrey, 0.3);
+    }
   }
 }

@@ -42,6 +42,8 @@ class ChatList extends Component {
       }
     }
 
+    let preMess = item.messages[0].owner == this.props.user._id ? 'You: ' : ''
+
     return (
     <div className="chat-tile" onClick={()=>this.clickChatTile(item._id)}>
       <div className="chat-tile-avatar-container">
@@ -53,7 +55,7 @@ class ChatList extends Component {
         <div className="chat-tile-name">{item.users[0].info.name}</div>
         <div className="chat-tile-text" 
           style={{fontWeight: read ? 300 : 500}}
-        >{item.messages[0].type == "image" ? "Tin nhắn hình ảnh" : item.messages[0].content}</div>
+        >{item.messages[0].type == "image" ? "Sticker/Image 🤡" : preMess + item.messages[0].content}</div>
       </div>
       <div className="chat-tile-new-container">
         {read ? <div></div> : <div className="chat-tile-new-dot"></div>}
