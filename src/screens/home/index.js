@@ -53,7 +53,11 @@ class HomeComponent extends Component {
     this.state = {
       signedOut: false,
       matchDialogOpened: false,
-      matchInfo: null
+      matchInfo: {
+        name: 'Hello',
+        birthdate: '2000',
+        gender: 'male'
+      }
     };
     this.socket = null
   }
@@ -211,7 +215,7 @@ class HomeComponent extends Component {
       {this.state.matchDialogOpened 
       ? <MatchDialog matchInfo={this.state.matchInfo} 
         open={this.state.matchDialogOpened} 
-        onClose={()=>this.setState({matchDialogOpened: false, matchInfo: null})}/>
+        onClose={()=>this.setState({matchDialogOpened: false})}/>
       : null
       }
       <div id="nav">

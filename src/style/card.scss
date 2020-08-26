@@ -155,7 +155,7 @@
 }
 
 #action-buttons {
-  width: calc(100vw - $rightNavWidth);
+  width: calc(100vw - 350px);
   display: flex;
   justify-content: center;
   align-items: flex-end;

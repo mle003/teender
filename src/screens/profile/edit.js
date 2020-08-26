@@ -12,9 +12,9 @@ import UserContainer from '../../global/container/user'
 const MALE = "male"
 const FEMALE = "female"
 const IMAGE_STATUS = {
-  DONE: 'done uploading!',
-  UPLOADING: 'uploading',
-  FAILED: 'failed uploading :(',
+  DONE: 'done uploading image!',
+  UPLOADING: 'uploading image',
+  FAILED: 'failed uploading image :(',
   EMPTY: ''
 }
 
@@ -63,7 +63,7 @@ class EditProfile extends Component {
       reader.readAsDataURL(file)
       reader.onloadend = () => {
           let info = this.state.info
-          info.imgUrl = render.result
+          info.imgUrl = reader.result
           this.setState({ 
             info: info,
             imageStatus: IMAGE_STATUS.DONE
@@ -180,6 +180,7 @@ class EditProfile extends Component {
                 onChange={e=>this.handleInput(e, "desc")}/>
             </label>
             <div style={{display: 'flex', marginBottom: 10}}>
+              <div className="err-message" style={{color: 'black'}}>{this.state.imageStatus}</div>
               <div className="err-message">{this.state.errMess}</div>
               <div className="success-message">{this.state.successMess}</div>
             </div>

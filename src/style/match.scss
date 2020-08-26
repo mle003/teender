@@ -1,11 +1,11 @@
 @import "var";
 
 .match-part {
-  // display: flex;
-  // justify-content: space-between;
-  // flex-wrap: wrap;
-  display: grid;
-  grid-template-columns: 33% 33% 33%;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  height: calc(100vh - 150px);
+
   overflow-y: scroll;
   padding: 8px;
   @include scrollBar();
@@ -19,7 +19,7 @@
 .match-card-container {
   cursor: pointer;
   height: 140px;
-  width: 100%;
+  width: 33%;
   @include smoothTransition();
   .match-card {
     height: calc(100% - 16px);
