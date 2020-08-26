@@ -2,7 +2,8 @@ const userAvatarUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ
 const errorLoadingGifUrl = 'https://media.tenor.com/images/f5cb4fb6a45ea2a469fd3ef5b1ad06f8/tenor.gif'
 const MAIN_SCREEN = {
   DECK: 'deck',
-  CHAT: 'chat'
+  CHAT: 'chat',
+  EMPTY: 'empty'
 }
 
 const TITLES = {

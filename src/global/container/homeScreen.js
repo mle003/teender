@@ -6,12 +6,16 @@ let INITIAL_STATE = {
   navTitle: TITLES.MATCH,
   // selectedUser: null, 
   // userData, which includes 'info' and '_id' fields 
-  cards: [] // when navigating between screen => load cards
+  cards: [], // when navigating between screen => load cards
+  fetchedAll: false
 }
 class HomeScreenContainer extends Container {
   state = INITIAL_STATE
   resetData = () => {
     this.setState(INITIAL_STATE)
+  }
+  hasFetchedAll = (fetchedAll) => {
+    this.setState({fetchedAll: fetchedAll})
   }
   saveCards = (cardsData) => {
     this.setState({cards: cardsData})
@@ -23,6 +27,9 @@ class HomeScreenContainer extends Container {
   }
   selectChatScreen() {
     this.setState({ mainScreen: MAIN_SCREEN.CHAT })
+  }
+  selectEmptyScreen() {
+    this.setState({ mainScreen: MAIN_SCREEN.EMPTY })
   }
 
   // select nav-titles -----------

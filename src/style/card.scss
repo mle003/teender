@@ -47,14 +47,20 @@
 }
 
 #main-deck {
-  display: grid;
-  grid-template-rows: 90% 10%;
-
+  #instruction {
+    width: 100%;
+    @include displayCenter();
+    #instruction-text {
+      position: absolute;
+      bottom: 7%;
+      @include text(11px, $mediumWeight, rgba($charcoal, 0.4));
+    }
+  }
   #cards-stack {
     position: fixed;
     overflow: hidden;
     width: 75%;
-    height: 100%;
+    height: 87%;
     cursor: pointer;
     @include displayCenter()
   }
@@ -146,4 +152,33 @@
   margin-top: $paddingLeft*0.5;
   margin-bottom: $paddingLeft * 1.5;
   word-wrap: break-word;
+}
+
+#action-buttons {
+  width: calc(100vw - $rightNavWidth);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  position: absolute;
+  bottom: 17%;
+  margin-left: 20;
+  z-index: 200;
+  .action-button {
+    margin: 0 20px;
+    height: 10vh;
+    width: 10vh;
+    border-radius: 50%;
+    border: none;
+    @include buttonHover();
+    @include displayCenter();
+    &:hover {
+      transform: scale(1.06)
+    }
+    &:active {
+      transform: scale(1.15)
+    }
+    &:focus {
+      transform: scale(1.1)
+    }
+  }
 }

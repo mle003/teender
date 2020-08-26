@@ -119,6 +119,22 @@ body {
 #nav-footer-text:active {
   background-color: #ececec;
 }
+
+#main-chat {
+  width: 100%;
+  display: grid;
+  grid-template-columns: calc(100% - 330px) 330px;
+}
+
+#out-of-cards-screen {
+  height: 100vh;
+  @include displayCenter();
+  flex-direction: column;
+  #out-of-cards {
+    @include text(16px, $lightWeight, $charcoal);
+    text-align: center;
+  }
+}
 @media only screen and (max-width: 700px) {
   #main-screen {
     display: flex;
@@ -132,8 +148,36 @@ body {
   }
 }
 
-#main-chat {
-  width: 100%;
-  display: grid;
-  grid-template-columns: calc(100% - 330px) 330px;
+#match-dialog {
+  background-color: transparent;
+  text-align: center;
+  #match-dialog-title {
+    text-transform: uppercase;
+    margin-bottom: 20;
+    font-style: italic;
+    @include text(50px, $boldWeight, transparent);
+    -webkit-text-stroke: 1px white;
+    animation: matchTextAnimation 2s normal infinite;
+  }
+  @keyframes matchTextAnimation {
+    49% {
+      -webkit-text-stroke: 1px white;
+    }
+    50% {
+      -webkit-text-stroke: 1px $mainColor;
+    }
+    99% {
+      -webkit-text-stroke: 1px $mainColor;
+    }
+    100% {
+      -webkit-text-stroke: 1px white;
+    }
+  }
+  #match-img {
+    border: 0.5 solid $mainColor;
+  }
+  #match-info {
+    @include text(18px, $mediumWeight, white);
+    margin-top: 20;
+  }
 }

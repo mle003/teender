@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import logo from "../../assets/logo.png";
-import Deck from "./card/deck";
 import Deck2 from "./card/deck2";
+
 import detailCard from './card/detailCard'
 import ChatBox from './chat/index'
 import ChatList from "./chat/chatList";
@@ -9,7 +9,6 @@ import Match from "./match/match";
 
 import EditProfile from "../profile/edit";
 import ResetPassword from "../profile/resetPassword";
-
 // style
 import "src/style/main.scss";
 import "src/style/card.scss";
@@ -25,13 +24,36 @@ import ChatContainer from "../../global/container/chat";
 import io from 'socket.io-client'
 import { BASE_URL } from "../../global/api/var";
 import ChatRequest from "../../global/api/chat";
+import UserRequest from "../../global/api/user";
 
+import Dialog from '@material-ui/core/Dialog';
+
+function MatchDialog(props) {
+  let {onClose, matchInfo, open} = props
+  let yearOfBirth = parseInt(new Date().getFullYear()) - parseInt(matchInfo.birthdate.substring(0, 4))
+  return (
+    <Dialog open={open} onClose={onClose} PaperProps={{
+      style: {
+        backgroundColor: 'transparent',
+        boxShadow: 'none',
+      },
+    }}>
+      <div id="match-dialog">
+        <div id="match-dialog-title">You matched with</div>
+        <img id="match-img" src={userAvatarUrl} style={{height: '40vh'}}/>
+        <div id="match-info">{matchInfo.name} - {yearOfBirth}, {matchInfo.gender}</div>
+      </div>
+    </Dialog>
+  )
+}
 
 class HomeComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       signedOut: false,
+      matchDialogOpened: false,
+      matchInfo: null
     };
     this.socket = null
   }
@@ -44,12 +66,18 @@ class HomeComponent extends Component {
     let chatCon = this.props.chatCon
     let userCon = this.props.userCon
     let homeCon = this.props.homeCon
-    
+
     // get list chat/matches
     try {
       let page = chatCon.state.listChatPage
       let list = await ChatRequest.getChatList(page);
       await chatCon.saveChatList(list)
+
+      let cards = await UserRequest.getCards(1);
+      await homeCon.saveCards(cards)
+      console.log(cards)
+      if (!cards.length)
+        homeCon.selectEmptyScreen()
 
       let matchesIds = list.map(e => e.users[0]._id)
       this.socket.emit('online', userCon.state.user._id, matchesIds)
@@ -82,18 +110,30 @@ class HomeComponent extends Component {
       console.log(matchId + ' is now offline!')
     })
 
-    this.socket.on('receive-message', async function(newMess, chatId, userId) {
+    this.socket.on('receive-match', async function (senderData) {
+      console.log(senderData.info.name + ' matched with you!!!')
+      // handle popover here
+      let list = await ChatRequest.getChatList(1);
+      chatCon.saveChatList(list)
+
+      this.setState({
+        matchDialogOpened: true,
+        matchInfo: senderData.info
+      })
+    })
+
+    this.socket.on('receive-message', async function (newMess, chatId, userId) {
       console.log(userId + ' is my Id receive mess')
       chatCon.saveNewMess(newMess, chatId)
       let selectedChat = chatCon.state.selectedChatInfo
 
-      if (selectedChat && 
+      if (selectedChat &&
         selectedChat._id == chatId && homeCon.state.mainScreen // when user is chatting
-          == MAIN_SCREEN.CHAT) {
+        == MAIN_SCREEN.CHAT) {
         let readMessage = await ChatRequest.readMessage(chatId)
         let list = chatCon.state.list
         for (let item of list) {
-          if(item._id == chatId) {
+          if (item._id == chatId) {
             item.usersRead = readMessage.usersRead; break
           }
         }
@@ -101,9 +141,9 @@ class HomeComponent extends Component {
       } else { // when user is not chatting
         let list = chatCon.state.list
         for (let item of list) {
-          if(item._id == chatId) {
-            let usersRead = item.usersRead.map(el=>{
-              if(el.userId == userId)
+          if (item._id == chatId) {
+            let usersRead = item.usersRead.map(el => {
+              if (el.userId == userId)
                 el.read = false
               return el
             })
@@ -140,6 +180,7 @@ class HomeComponent extends Component {
         break
     }
   }
+
   render() {
     // get containers from HOC ----------
     let userCon = this.props.userCon
@@ -152,7 +193,7 @@ class HomeComponent extends Component {
       userCon.resetData()
       homeCon.resetData()
       chatCon.resetData()
-      if (this.socket) {this.socket.disconnect()}
+      if (this.socket) { this.socket.disconnect() }
       return <Redirect to={ROUTES.LANDING} />
     }
 
@@ -166,6 +207,13 @@ class HomeComponent extends Component {
 
     // Use var 'user' -> it has all the data needed
     return (<div id="main-screen">
+      {/* this is a dialog to announce that have a match */}
+      {this.state.matchDialogOpened 
+      ? <MatchDialog matchInfo={this.state.matchInfo} 
+        open={this.state.matchDialogOpened} 
+        onClose={()=>this.setState({matchDialogOpened: false, matchInfo: null})}/>
+      : null
+      }
       <div id="nav">
         <div id="nav-logo">
           <Link to={ROUTES.LANDING}><img src={logo} height="30" /></Link>
@@ -199,16 +247,17 @@ class HomeComponent extends Component {
       ? this.genDeckScreen()
       : homeCon.state.mainScreen == MAIN_SCREEN.CHAT
         ? this.genChatScreen()
-        : <div></div>
+        : homeCon.state.mainScreen == MAIN_SCREEN.EMPTY
+          ? this.genEmptyScreen()
+          : <div></div>
   }
   genDeckScreen() {
     return (
-      <div id="main-deck">
-        <div id="cards-stack">
-          <Deck2 />
-        </div>
-        <div id="instruction"></div>
-      </div>)
+        <Deck2 socket={this.socket}
+          chatCon={this.props.chatCon}
+          homeCon={this.props.homeCon}
+          user={this.props.user} />
+    )
   }
   genChatScreen() {
     let homeCon = this.props.homeCon
@@ -220,6 +269,15 @@ class HomeComponent extends Component {
       </div>)
   }
 
+  genEmptyScreen() {
+    return (
+      <div id="out-of-cards-screen">
+        <img height="140" src="https://i.pinimg.com/originals/ee/e9/a0/eee9a0ee35cba67af8a64268d575d94b.gif"/>
+        <div id="out-of-cards">Out of cards 😢<br/>You can edit gender/interest to explore more</div>
+      </div>
+    )
+  }
+
   // Gen main nav here -------------------
   genMainNav() {
     let homeCon = this.props.homeCon
@@ -229,7 +287,7 @@ class HomeComponent extends Component {
       <div id="nav-titles">{this.genMainNavTitles()}</div>
       <div id="nav-main">
         {homeCon.state.navTitle == TITLES.CHAT
-          ? <ChatList socket={this.socket} homeCon={homeCon} chatCon={chatCon} user={userCon.state.user}/>
+          ? <ChatList socket={this.socket} homeCon={homeCon} chatCon={chatCon} user={userCon.state.user} />
           : <Match socket={this.socket} homeCon={homeCon} chatCon={chatCon} />}
       </div>
     </div>)
@@ -242,10 +300,10 @@ class HomeComponent extends Component {
 
     let countUnreadChat = ''
     if (chatCon.state.list) {
-      countUnreadChat = chatCon.state.list.filter(item =>{
-        return (item.usersRead && item.usersRead.filter(e=>(e.userId == userId && e.read == false)).length && item.messages)
+      countUnreadChat = chatCon.state.list.filter(item => {
+        return (item.usersRead && item.usersRead.filter(e => (e.userId == userId && e.read == false)).length && item.messages.length)
       }).length || ''
-    }     
+    }
     let list = [TITLES.MATCH, TITLES.CHAT].map((navTitle, index) => {
       return (
         <div

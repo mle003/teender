@@ -22,6 +22,21 @@ class ChatList extends Component {
 
   render() {
     let list = this.props.chatCon.state.list
+    if(list) {
+      function compare(a, b) {
+        const dateA = a.messages.length ? a.messages[0].createdAt : a.createdAt
+        const dateB = b.messages.length ? b.messages[0].createdAt : b.createdAt
+      
+        let comparison = 0;
+        if (dateA > dateB) {
+          comparison = 1;
+        } else if (dateA < dateB) {
+          comparison = -1;
+        }
+        return comparison * -1;
+      }
+      list.sort(compare)
+    }
     return (
     <Subscribe to={[ChatContainer]}>
       {container => !list || !list.length
